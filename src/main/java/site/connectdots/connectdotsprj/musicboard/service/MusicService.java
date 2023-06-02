@@ -1,4 +1,4 @@
-package site.connectdots.connectdotsprj.music.service;
+package site.connectdots.connectdotsprj.musicboard.service;
 
 
 import lombok.RequiredArgsConstructor;

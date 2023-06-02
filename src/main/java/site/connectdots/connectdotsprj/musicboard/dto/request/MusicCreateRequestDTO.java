@@ -1,4 +1,4 @@
-package site.connectdots.connectdotsprj.music.dto.request;
+package site.connectdots.connectdotsprj.musicboard.dto.request;
 
 
 import lombok.*;
@@ -16,14 +16,6 @@ import javax.validation.constraints.Size;
 public class MusicCreateRequestDTO {
 
 
-    private String userNum;
-
-    @NotNull
-    @Size(min = 2, max = 30)
-    private String title;
-
-    @NotNull
-    private String songTitle;
 
 
 }
