@@ -39,6 +39,7 @@ class HotplaceRepositoryTest {
     @DisplayName("hotplace bulk data 50")
     void insertBulkTest() {
 
+        String[] contents = {"치킨맛집", "맛도리", "꿀잼", "데이트코스"};
         HotplaceLocation[] hotplaceLocations = {
                 HotplaceLocation.강남구, HotplaceLocation.강북구, HotplaceLocation.강동구, HotplaceLocation.강서구,
                 HotplaceLocation.관악구, HotplaceLocation.광진구, HotplaceLocation.구로구, HotplaceLocation.금천구,
@@ -52,7 +53,7 @@ class HotplaceRepositoryTest {
         for (int i = 1; i <= 50; i++) {
             hotplaceRepository.save(
                     Hotplace.builder()
-                            .hotplaceContent("내용" + i)
+                            .hotplaceContent(contents[i % 4])
                             .hotplaceLocation(hotplaceLocations[i % 25])
                             .memberIdx((long) i)
                             .build()
@@ -168,7 +169,39 @@ class HotplaceRepositoryTest {
         System.out.println(hotplace);
         System.out.println("\n\n\n");
 
-    }정
+    }
+
+
+    @Test
+    @DisplayName("위치정보를 서대문구로 조회시, 2개가 조회되어야 한다.")
+    void testFindByHotplaceLocation() {
+        //given
+        HotplaceLocation hotplaceLocation = HotplaceLocation.서대문구;
+        //when
+        List<Hotplace> foundLocationList = hotplaceRepository.findByHotplaceLocation(hotplaceLocation);
+        //then
+        assertEquals(2, foundLocationList.size());
+
+        System.out.println("\n\n\n");
+        System.out.println("foundLocationList 1번째 = " + foundLocationList.get(0));
+        System.out.println("\n\n\n");
+        System.out.println("foundLocationList 2번째 = " + foundLocationList.get(1));
+        System.out.println("\n\n\n");
+    }
+
+
+    @Test
+    @DisplayName("내용에서 '맛'이 들어간 키워드로 검색하면 25개가 조회되어야 한다")
+    void testFindByHotplaceContentContaining() {
+        //given
+        String keyword = "맛";
+        //when
+        List<Hotplace> hotplaceList = hotplaceRepository.findByHotplaceContentContaining(keyword);
+        //then
+        assertEquals(25, hotplaceList.size());
+
+    }
+
 
 
 
