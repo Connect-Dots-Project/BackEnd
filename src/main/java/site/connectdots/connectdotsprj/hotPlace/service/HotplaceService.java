@@ -17,4 +17,7 @@ public class HotplaceService {
 
     private final HotplaceRepository hotplaceRepository;
 
+    public List<Hotplace> findAll() {
+        return hotplaceRepository.findAll();
+    }
 }

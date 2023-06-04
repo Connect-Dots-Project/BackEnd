@@ -19,4 +19,12 @@ public class HotplaceController {
 
     private final HotplaceService hotplaceService;
 
+    @GetMapping
+    public ResponseEntity<?> list() {
+
+        List<Hotplace> hotplaceList = hotplaceService.findAll();
+
+        return ResponseEntity.ok().body(hotplaceList);
+    }
+
 }
