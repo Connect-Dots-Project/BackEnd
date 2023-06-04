@@ -88,6 +88,25 @@ class HotplaceRepositoryTest {
     }
 
 
+    @Test
+    @DisplayName("modify")
+    void modifyTest()  {
+        //given
+        Long hotplaceIdx = 5L;
+        //when
+        Hotplace hotplace = hotplaceRepository.findById(hotplaceIdx)
+                .orElseThrow();
+
+        hotplace.setHotplaceContent("내용수정해봄!");
+
+        hotplaceRepository.save(hotplace);
+
+        //then
+        System.out.println("/n/n/n");
+        System.out.println(hotplace);
+        System.out.println("/n/n/n");
+
+    }
 
 
 
