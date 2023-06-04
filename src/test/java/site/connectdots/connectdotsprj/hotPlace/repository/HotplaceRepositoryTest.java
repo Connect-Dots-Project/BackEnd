@@ -10,6 +10,7 @@ import site.connectdots.connectdotsprj.hotPlace.entity.Hotplace;
 import site.connectdots.connectdotsprj.hotPlace.entity.HotplaceLocation;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -87,10 +88,71 @@ class HotplaceRepositoryTest {
         assertEquals("강서구", hotplace.getHotplaceLocation().name());
     }
 
+    @Test
+    @DisplayName("findByIdTest")
+    void findByIdTest() {
+        //given
+        Long hotplaceIdx = 7L;
+        //when
+        Optional<Hotplace> hotplace = hotplaceRepository.findById(hotplaceIdx);
+        //then
+        hotplace.ifPresent(hp -> {
+            assertEquals("금천구", hp.getHotplaceLocation().name());
+        });
+
+        Hotplace foundHotplace = hotplace.get();
+        assertNotNull(foundHotplace);
+
+        System.out.println("\n\n\n");
+        System.out.println("foundHotplace = " + foundHotplace);
+        System.out.println("\n\n\n");
+    }
 
     @Test
-    @DisplayName("modify")
+    @DisplayName("deleteByIdTest")
+    @Transactional
+    @Rollback(value = true)
+    void deleteByIdTest() {
+        //given
+        Long hotplaceIdx = 10L;
+        //when
+        hotplaceRepository.deleteById(hotplaceIdx);
+
+        List<Hotplace> hotplaceList = hotplaceRepository.findAll();
+        //then
+        assertEquals(49, hotplaceList.size());
+
+
+    }
+
+    @Test
+    @DisplayName("modifyTest")
     void modifyTest()  {
+        //given
+        Long hotplaceIdx = 10L;
+        HotplaceLocation location = HotplaceLocation.강남구;
+        String content = "내용 수정수정~~~~";
+
+        //when
+        Optional<Hotplace> hotplace = hotplaceRepository.findById(hotplaceIdx);
+        hotplace.ifPresent(hp-> {
+            hp.setHotplaceLocation(location);
+            hp.setHotplaceContent(content);
+
+            hotplaceRepository.save(hp);
+        });
+
+        //then
+        assertTrue(hotplace.isPresent());
+
+        Hotplace place = hotplace.get();
+        assertEquals("강남구", place.getHotplaceLocation().name());
+    }
+
+
+    @Test
+    @DisplayName("modifyOneTest")
+    void modifyOneTest()  {
         //given
         Long hotplaceIdx = 5L;
         //when
@@ -102,11 +164,11 @@ class HotplaceRepositoryTest {
         hotplaceRepository.save(hotplace);
 
         //then
-        System.out.println("/n/n/n");
+        System.out.println("\n\n\n");
         System.out.println(hotplace);
-        System.out.println("/n/n/n");
+        System.out.println("\n\n\n");
 
-    }
+    }정
 
 
 
