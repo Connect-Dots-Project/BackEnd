@@ -16,7 +16,11 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://jitpack.io'
+    }
 }
+
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -30,6 +34,8 @@ dependencies {
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 //	testImplementation 'org.springframework.security:spring-security-test'
 
+     implementation 'se.michaelthelin.spotify:spotify-web-api-java:6.5.2'
+     implementation 'com.github.thelinmichael:spotify-web-api-java:master-SNAPSHOT'
 }
 
 tasks.named('test') {
