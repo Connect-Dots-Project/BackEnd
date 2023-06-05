@@ -1,7 +1,7 @@
 package site.connectdots.connectdotsprj.musicboard.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import net.bytebuddy.implementation.bind.annotation.DefaultMethod;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -33,10 +33,12 @@ public class Music {
 
 
     @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private Genre music_board_genre;
 
     @CreationTimestamp
     @Column(updatable = false)
+    @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDateTime createDate;
 
     @ColumnDefault("0")
