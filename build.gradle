@@ -31,6 +31,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    // swagger api 문서화
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 //	testImplementation 'org.springframework.security:spring-security-test'
 
