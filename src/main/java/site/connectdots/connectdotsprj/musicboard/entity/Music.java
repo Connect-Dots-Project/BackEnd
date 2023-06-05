@@ -21,20 +21,20 @@ public class Music {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
-    private Long music_board_idx;
+    private Long musicBoardIdx;
 
     @Column(nullable = false)
-    private String music_board_title;
+    private String musicBoardTitle;
 
     @Column(nullable = false)
-    private String music_board_singer;
+    private String musicBoardSinger;
 
-    private String music_board_lyrics;
+    private String musicBoardLyrics;
 
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private Genre music_board_genre;
+    private Genre musicBoardGenre;
 
     @CreationTimestamp
     @Column(updatable = false)

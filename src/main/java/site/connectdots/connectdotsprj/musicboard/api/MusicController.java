@@ -18,7 +18,7 @@ public class MusicController {
 
     @GetMapping
     public ResponseEntity<?> musiclist(MusicListResponseDTO musicListResponseDTO){
-        log.info("{}{}", musicListResponseDTO.getMusic_board_title());
+        log.info("{}{}", musicListResponseDTO.getMusicBoardTitle());
 
         MusicListResponseDTO dto = musicservice.findAll(musicListResponseDTO);
         return ResponseEntity.ok().body(dto);
