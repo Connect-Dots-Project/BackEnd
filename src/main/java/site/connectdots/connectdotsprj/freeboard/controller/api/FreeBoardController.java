@@ -28,6 +28,7 @@ public class FreeBoardController {
     @GetMapping("/free-board/{freeBoardIdx}")
     public ResponseEntity<FreeBoardDetailResponseDTO> findById(@PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {
         FreeBoardDetailResponseDTO foundFreeBoardDetail = freeBoardService.findById(freeBoardIdx);
+
         return ResponseEntity.ok().body(foundFreeBoardDetail);
     }
 

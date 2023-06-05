@@ -1,19 +1,20 @@
 package site.connectdots.connectdotsprj.freeboard.entity;
 
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import site.connectdots.connectdotsprj.member.entity.Member;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"member"})
+@ToString(exclude = {"member", "freeBoardReplyList"})
 @Builder
 @Entity
 @EqualsAndHashCode(of = "freeBoardIdx")
@@ -32,7 +33,8 @@ public class FreeBoard {
     @Column(nullable = false, length = 20)
     private String freeBoardLocation;
     @Column(nullable = false, length = 20)
-    private String freeBoardCategory;
+    @Enumerated(value = EnumType.STRING)
+    private FreeBoardCategory freeBoardCategory;
     @CreationTimestamp
     private LocalDateTime freeBoardWriteDate;
     @UpdateTimestamp
@@ -46,4 +48,8 @@ public class FreeBoard {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_idx", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Member member;
+
+    @OneToMany(mappedBy = "freeBoard")
+    @Builder.Default
+    private List<FreeBoardReply> freeBoardReplyList = new ArrayList<>();
 }
