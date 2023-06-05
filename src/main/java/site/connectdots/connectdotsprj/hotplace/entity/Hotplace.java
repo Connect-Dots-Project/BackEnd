@@ -23,31 +23,32 @@ public class Hotplace {
     private Long hotplaceIdx ;
 
     @Column(nullable = false, length = 200)
-    private String hotplaceImg;
+    @Builder.Default
+    private String hotplaceImg = "사진없음";
 
     @Column(nullable = false, length = 100)
     private String hotplaceContent;
 
     @Column(nullable = false, length = 20)
+    @Enumerated(EnumType.STRING)
     private HotplaceLocation hotplaceLocation;
 
     @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime hotplaceWriteDate;
 
-    @ColumnDefault("0")
-    private Long hotplaceLikeCount;
+    @Builder.Default
+    private Long hotplaceLikeCount = 0L;
 
     @Column(nullable = false, length = 20)
-    @ColumnDefault("0.000000")
-    private String hotplaceLatitude;
+    @Builder.Default
+    private String hotplaceLatitude = "0.0000";
 
     @Column(nullable = false, length = 20)
-    @ColumnDefault("0.000000")
-    private String hotplaceLongitude;
+    @Builder.Default
+    private String hotplaceLongitude = "0.0000";
 
     @Column(nullable = false, length = 10)
     private Long memberIdx;
 
-    //이상하당
 }

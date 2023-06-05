@@ -1,4 +1,4 @@
-package site.connectdots.connectdotsprj.hotPlace.repository;
+package site.connectdots.connectdotsprj.hotplace.repository;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import site.connectdots.connectdotsprj.hotPlace.entity.Hotplace;
-import site.connectdots.connectdotsprj.hotPlace.entity.HotplaceLocation;
+import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
+import site.connectdots.connectdotsprj.hotplace.entity.HotplaceLocation;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +63,7 @@ class HotplaceRepositoryTest {
 
     @Test
     @DisplayName("전체 조회시 데이터가 50개여야만 한다.")
-    void findAllTest()  {
+    void findAllTest() {
         //given
 
         //when
@@ -74,7 +74,6 @@ class HotplaceRepositoryTest {
 //        System.out.println(all);
         all.forEach(System.out::println);
     }
-
 
 
     @Test
@@ -94,18 +93,21 @@ class HotplaceRepositoryTest {
     void findByIdTest() {
         //given
         Long hotplaceIdx = 7L;
-        //when
-        Optional<Hotplace> hotplace = hotplaceRepository.findById(hotplaceIdx);
-        //then
-        hotplace.ifPresent(hp -> {
-            assertEquals("금천구", hp.getHotplaceLocation().name());
-        });
 
-        Hotplace foundHotplace = hotplace.get();
-        assertNotNull(foundHotplace);
+        //when
+        Hotplace hotplace = hotplaceRepository
+                .findById(hotplaceIdx)
+                .orElseThrow(
+                        () -> new RuntimeException("없음")
+                );
+
+        //then
+        assertEquals("금천구", hotplace.getHotplaceLocation().toString());
+
+        assertNotNull(hotplace);
 
         System.out.println("\n\n\n");
-        System.out.println("foundHotplace = " + foundHotplace);
+        System.out.println("foundHotplace = " + hotplace);
         System.out.println("\n\n\n");
     }
 
@@ -128,7 +130,7 @@ class HotplaceRepositoryTest {
 
     @Test
     @DisplayName("modifyTest")
-    void modifyTest()  {
+    void modifyTest() {
         //given
         Long hotplaceIdx = 10L;
         HotplaceLocation location = HotplaceLocation.강남구;
@@ -136,7 +138,7 @@ class HotplaceRepositoryTest {
 
         //when
         Optional<Hotplace> hotplace = hotplaceRepository.findById(hotplaceIdx);
-        hotplace.ifPresent(hp-> {
+        hotplace.ifPresent(hp -> {
             hp.setHotplaceLocation(location);
             hp.setHotplaceContent(content);
 
@@ -153,7 +155,7 @@ class HotplaceRepositoryTest {
 
     @Test
     @DisplayName("modifyOneTest")
-    void modifyOneTest()  {
+    void modifyOneTest() {
         //given
         Long hotplaceIdx = 5L;
         //when
@@ -201,8 +203,6 @@ class HotplaceRepositoryTest {
         assertEquals(25, hotplaceList.size());
 
     }
-
-
 
 
 }
