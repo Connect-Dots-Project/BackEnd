@@ -12,7 +12,6 @@ import site.connectdots.connectdotsprj.musicboard.entity.Genre;
 import site.connectdots.connectdotsprj.musicboard.entity.Music;
 
 
-
 @SpringBootTest
 @Transactional
 @Rollback(value = false)
@@ -35,8 +34,8 @@ class MusicRepositoryTest {
                             .musicBoardTitle("Title " + i)
                             .musicBoardSinger("Singer " + i)
                             .musicBoardLyrics("Lyrics " + i)
-                            .musicBoardGenre(Genre.댄스)
-                                            //Genre.댄스 + i 로 하고 싶을땐 어떻게 해야할까요?
+                            .musicBoardGenre(Genre.values()[i % 7])
+                            //Genre.댄스 + i 로 하고 싶을땐 어떻게 해야할까요?
                             .build()
             );
         }
@@ -44,17 +43,13 @@ class MusicRepositoryTest {
 
     @Test
     @DisplayName("idx14를 조회하면 title13이 나와야한다")
-    void musicSearch(){
+    void musicSearch() {
         long music_board_idx = 14L;
 
 //        Music music = musicRepository.findById();
 
 
-
     }
-
-
-
 
 
 }
