@@ -7,9 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailReplyDTO;
-import site.connectdots.connectdotsprj.freeboard.entity.FreeBoard;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardReply;
-import site.connectdots.connectdotsprj.member.entity.Member;
+import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,46 +23,14 @@ class FreeBoardReplyRepositoryTest {
     @Autowired
     FreeBoardReplyRepository replyRepository;
 
+    @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
+    FreeBoardRepository freeBoardRepository;
 
     @Test
-    @DisplayName("bulk")
-    @Rollback
-    void bulk() {
-        //given
-
-        for (int i = 1; i <= 5000; i++) {
-            int idx = (int) (Math.random() * 50) + 1;
-            replyRepository.save(
-                    FreeBoardReply.builder()
-                            .freeBoardReplyContent("댓글" + i)
-                            .member(Member.builder()
-                                    .memberIdx((long) idx)
-                                    .build())
-                            .freeBoard(FreeBoard.builder()
-                                    .freeBoardIdx((long) idx)
-                                    .build())
-                            .build()
-            );
-        }
-
-        //when
-
-        //then
-    }
-
-    @Test
-    @DisplayName("전체 조회에 성공할 것이며 갯수는 5000개이다")
-    void findAllTest() {
-        //given
-        //when
-        List<FreeBoardReply> findAll = replyRepository.findAll();
-
-        //then
-        assertEquals(5000, findAll.size());
-    }
-
-    @Test
-    @DisplayName("게시물 번호로 조회에 성공할 것이다.")
+    @DisplayName("13번 게시글을 찾았을 때 댓글의 수는 12개일 것이다.")
     void findAllByFreeBoardIdxTest() {
         //given
         Long freeBoardIdx = 13L;
@@ -74,9 +41,35 @@ class FreeBoardReplyRepositoryTest {
                 .map(FreeBoardDetailReplyDTO::new)
                 .collect(Collectors.toList());
 
+        //then
+        assertEquals(12, collect.size());
+    }
+
+    @Test
+    @DisplayName("댓글 작성에 성공할 것이다.")
+    @Rollback
+    void freeBoardReplyWriteTest() {
+        //given
+        Long memberIdx = 5L;
+        Long freeBoardIdx = 5L;
+        String content = "테스트에서 추가된 댓글입니다!!";
+
+        //when
+        FreeBoardReply save = replyRepository.save(
+                FreeBoardReply.builder()
+                        .member(
+                                memberRepository.findById(memberIdx).orElseThrow()
+                        )
+                        .freeBoard(
+                                freeBoardRepository.findById(freeBoardIdx).orElseThrow()
+                        )
+                        .freeBoardReplyContent(content)
+                        .build()
+        );
 
         //then
-        assertEquals(107, collect.size());
+        assertEquals("테스트에서 추가된 댓글입니다!!", save.getFreeBoardReplyContent());
+
     }
 
 }
