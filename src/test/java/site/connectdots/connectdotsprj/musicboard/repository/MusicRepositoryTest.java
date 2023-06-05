@@ -25,14 +25,18 @@ class MusicRepositoryTest {
     @DisplayName("bulk insert")
     void musicList() {
 
+//        Music music1 = musicRepository.findById(musicBoardIdx).orElseThrow(
+//                () -> new RuntimeException()
+//        );
         for (int i = 0; i < 50; i++) {
 
             musicRepository.save(
                     Music.builder()
-                            .music_board_title("Title " + i)
-                            .music_board_singer("Singer " + i)
-                            .music_board_lyrics("Lyrics " + i)
-                            .music_board_genre(Genre.댄스)
+                            .musicBoardTitle("Title " + i)
+                            .musicBoardSinger("Singer " + i)
+                            .musicBoardLyrics("Lyrics " + i)
+                            .musicBoardGenre(Genre.댄스)
+                                            //Genre.댄스 + i 로 하고 싶을땐 어떻게 해야할까요?
                             .build()
             );
         }

@@ -17,22 +17,22 @@ import java.time.LocalDateTime;
 @Builder
 public class MusicListResponseDTO {
 
-    private Long music_board_idx;
-    private String music_board_title;
-    private String music_board_singer;
-    private String music_board_lyrics;
-    private Genre music_board_genre;
+    private Long musicBoardIdx;
+    private String musicBoardTitle;
+    private String musicBoardSinger;
+    private String musicBoardLyrics;
+    private Genre musicBoardGenre;
 
     @JsonFormat(pattern = "yyyy/MM/dd")
     private LocalDateTime createDate;
     private  Long viewCount;
 
     public MusicListResponseDTO(Music music){
-        this.music_board_idx=music.getMusic_board_idx();
-        this.music_board_title=music.getMusic_board_title();
-        this.music_board_singer=music.getMusic_board_singer();
-        this.music_board_lyrics=music.getMusic_board_lyrics();
-        this.music_board_genre=music.getMusic_board_genre();
+        this.musicBoardIdx=music.getMusicBoardIdx();
+        this.musicBoardTitle=music.getMusicBoardTitle();
+        this.musicBoardSinger=music.getMusicBoardSinger();
+        this.musicBoardLyrics=music.getMusicBoardLyrics();
+        this.musicBoardGenre=music.getMusicBoardGenre();
         this.createDate=music.getCreateDate();
         this.viewCount=music.getViewCount();
 

@@ -6,8 +6,8 @@ import site.connectdots.connectdotsprj.musicboard.entity.Music;
 
 import java.util.List;
 
-public interface MusicRepository extends JpaRepository<Music, String> {
+public interface MusicRepository extends JpaRepository<Music, Long> {
 
 
-    List<Music> findById(Music music);
+
 }
