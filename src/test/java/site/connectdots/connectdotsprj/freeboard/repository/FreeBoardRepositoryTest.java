@@ -25,27 +25,6 @@ class FreeBoardRepositoryTest {
     @Autowired
     FreeBoardRepository freeBoardRepository;
 
-    @Test
-    @DisplayName("bulk data")
-    @Rollback
-    void insertBulk() {
-        String[] location = {"강남구", "강북구", "강동구", "강서구"};
-
-        for (int i = 1; i <= 50; i++) {
-            freeBoardRepository.save(
-                    FreeBoard.builder()
-                            .freeBoardTitle("title" + i)
-                            .freeBoardContent("content" + i)
-                            .freeBoardLocation(location[i % 4])
-                            .freeBoardCategory(FreeBoardCategory.values()[i % 8])
-                            .member(Member.builder()
-                                    .memberIdx((long) i)
-                                    .build())
-                            .build()
-            );
-
-        }
-    }
 
 
     @Test
