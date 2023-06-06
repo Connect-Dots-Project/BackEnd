@@ -26,6 +26,8 @@ public interface HotplaceRepository extends JpaRepository<Hotplace, Long> {
     // 게시물이 없으면 어떻게 처리하징?
 
 
+
+
     //TODO: 작성자로 조회하기
 
     //List<Member> findByNickname(String nickname);

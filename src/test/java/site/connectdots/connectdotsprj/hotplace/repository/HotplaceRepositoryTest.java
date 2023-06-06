@@ -8,6 +8,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.hotplace.entity.HotplaceLocation;
+import site.connectdots.connectdotsprj.member.entity.Member;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,12 +25,14 @@ class HotplaceRepositoryTest {
 
     @Test
     @DisplayName("데이터 1개 저장")
-    void initialTest() {
+    void initial1111Test() {
         hotplaceRepository.save(
                 Hotplace.builder()
-                        .hotplaceContent("내용")
+                        .hotplaceContent("ASDFADSFDSFSF내용")
                         .hotplaceLocation(HotplaceLocation.강남구)
-                        .memberIdx(1L)
+                        .member(Member.builder()
+                                .memberIdx(1L)
+                                .build())
                         .build()
         );
     }
@@ -55,7 +58,9 @@ class HotplaceRepositoryTest {
                     Hotplace.builder()
                             .hotplaceContent(contents[i % 4])
                             .hotplaceLocation(hotplaceLocations[i % 25])
-                            .memberIdx((long) i)
+                            .member(Member.builder()
+                                    .memberIdx((long) i)
+                                    .build())
                             .build()
             );
         }

@@ -47,7 +47,7 @@ public class Member {
     @Column(nullable = false, length = 50)
     private String memberComment;
 
-    @OneToMany(mappedBy = "member")
-    @Builder.Default
-    private List<FreeBoard> freeBoardList = new ArrayList<>();
+//    @OneToMany(mappedBy = "member")
+//    @Builder.Default
+//    private List<FreeBoard> freeBoardList = new ArrayList<>();
 }
