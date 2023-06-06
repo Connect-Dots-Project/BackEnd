@@ -10,7 +10,9 @@ import site.connectdots.connectdotsprj.musicboard.dto.response.MusicListResponse
 import site.connectdots.connectdotsprj.musicboard.entity.Music;
 import site.connectdots.connectdotsprj.musicboard.repository.MusicRepository;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +36,7 @@ public class MusicService {
 
         return musicListResponseDTO;
     }
+
 
 
 }
