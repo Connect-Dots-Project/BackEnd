@@ -39,29 +39,3 @@ public class ReadJsonService {
     }
 
 }
-
-//    File file = new File(filePath);
-//
-//    // JSON 데이터 파싱
-//    ObjectMapper objectMapper = new ObjectMapper();
-//    JsonNode rootNode = objectMapper.readTree(file);
-////        System.out.println("rootNode = " + rootNode); //list 형식
-//
-//// 추출한 데이터로 객체 생성
-//
-
-//        JsonData data = new JsonData();
-//
-//        for (JsonNode node : rootNode) {
-//            String img = node.get("img").asText();
-//            String title = node.get("title").asText();
-//            String price = node.get("price").asText();
-//            String sale = node.get("sale").asText();
-//            String csv = node.get("csv").asText();
-//
-//            data.setImg(img);
-//            data.setTitle(title);
-//            data.setPrice(price);
-//            data.setSale(sale);
-//            data.setCsv(csv);
-//        }
