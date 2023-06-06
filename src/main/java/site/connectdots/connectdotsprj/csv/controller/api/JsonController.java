@@ -21,26 +21,6 @@ public class JsonController {
 
     private final ReadJsonService jsonService;
 
-//    @GetMapping
-//    public ResponseEntity<?> getData(){
-//        try {
-//            // JSON 파일 경로
-//            String filePath = "C:\\BackEnd\\src\\main\\resources\\static\\json_csv\\GS25.json";
-////            String filePath = "/json_csv/CUcsv.json";
-////            String filePath = "/json_csv/7eleven.json";
-//
-//            // JSON 파일 읽기
-//            JsonData data = jsonService.readJsonFile(filePath);
-//
-//            return ResponseEntity.ok().body(data);
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-////            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//            return ResponseEntity.internalServerError().body(e.getMessage());
-//            }
-//        }
-
 
     @GetMapping("/csv")
     public ResponseEntity<List<JsonData>> getAllProducts() {
