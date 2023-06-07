@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardReplyWriteRequestDTO;
+import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardWriteRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailReplyDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailResponseDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardResponseDTO;
@@ -29,6 +30,13 @@ public class FreeBoardController {
         FreeBoardDetailResponseDTO foundFreeBoardDetail = freeBoardService.findById(freeBoardIdx);
 
         return ResponseEntity.ok().body(foundFreeBoardDetail);
+    }
+
+    @PostMapping("/free-board")
+    public ResponseEntity<List<FreeBoardResponseDTO>> writeFreeBoard(@RequestBody FreeBoardWriteRequestDTO dto) {
+        List<FreeBoardResponseDTO> freeBoardResponseDTO = freeBoardService.writeFreeBoard(dto);
+
+        return ResponseEntity.ok().body(freeBoardResponseDTO);
     }
 
     @PostMapping("/free-board/replies")
