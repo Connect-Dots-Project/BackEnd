@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoard;
+import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardReply;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"freeBoardList"})
+@ToString(exclude = {"freeBoardList", "freeBoardReplyList"})
 @Builder
 @Entity
 @EqualsAndHashCode(of = "memberIdx")
@@ -50,4 +51,8 @@ public class Member {
     @OneToMany(mappedBy = "member")
     @Builder.Default
     private List<FreeBoard> freeBoardList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    @Builder.Default
+    private List<FreeBoardReply> freeBoardReplyList = new ArrayList<>();
 }
