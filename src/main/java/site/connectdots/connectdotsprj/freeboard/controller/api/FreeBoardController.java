@@ -18,6 +18,10 @@ import java.util.List;
 public class FreeBoardController {
     private final FreeBoardService freeBoardService;
 
+    private final int LIKE = 1;
+    private final int HATE = -1;
+
+
     @GetMapping("/free-board")
     public ResponseEntity<List<FreeBoardResponseDTO>> findAll() {
         List<FreeBoardResponseDTO> freeBoardList = freeBoardService.findAll();
@@ -26,7 +30,7 @@ public class FreeBoardController {
     }
 
     @GetMapping("/free-board/{freeBoardIdx}")
-    public ResponseEntity<FreeBoardDetailResponseDTO> findById(@PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {
+    public ResponseEntity<FreeBoardDetailResponseDTO> detailViewById(@PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {
         FreeBoardDetailResponseDTO foundFreeBoardDetail = freeBoardService.findById(freeBoardIdx);
 
         return ResponseEntity.ok().body(foundFreeBoardDetail);
@@ -44,6 +48,20 @@ public class FreeBoardController {
         List<FreeBoardDetailReplyDTO> freeBoardDetailReplyDTO = freeBoardService.writeReplyByFreeBoard(dto);
 
         return ResponseEntity.ok().body(freeBoardDetailReplyDTO);
+    }
+
+    @PostMapping("/free-board/like/{freeBoardIdx}")
+    public ResponseEntity<FreeBoardDetailResponseDTO> likeCount(@PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {
+        FreeBoardDetailResponseDTO responseDTO = freeBoardService.updateLikeCount(freeBoardIdx, LIKE);
+
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PostMapping("/free-board/hate/{freeBoardIdx}")
+    public ResponseEntity<FreeBoardDetailResponseDTO> hateCount(@PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {
+        FreeBoardDetailResponseDTO responseDTO = freeBoardService.updateLikeCount(freeBoardIdx, HATE);
+
+        return ResponseEntity.ok().body(responseDTO);
     }
 
 }
