@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
+import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.hotplace.repository.HotplaceRepository;
 import site.connectdots.connectdotsprj.member.entity.Member;
@@ -28,7 +29,7 @@ public class HotplaceService {
     }
 
     // 글 작성
-    public Hotplace write(final HotplaceWriteRequestDTO dto)throws RuntimeException {
+    public HotplaceResponseDTO write(final HotplaceWriteRequestDTO dto)throws RuntimeException {
 
         Member member = memberRepository.findById(dto.getMemberIdx())
                         .orElseThrow();
@@ -37,7 +38,10 @@ public class HotplaceService {
         hotplace.setMember(member);
 
         log.info("hotplaceService.write.info {}", member);
-        return hotplaceRepository.save(hotplace);
+
+        Hotplace save = hotplaceRepository.save(hotplace);
+
+        return new HotplaceResponseDTO(save);
     }
 
     // 글 삭제

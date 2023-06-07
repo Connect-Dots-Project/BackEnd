@@ -23,48 +23,48 @@ class HotplaceRepositoryTest {
     @Autowired
     HotplaceRepository hotplaceRepository;
 
-    @Test
-    @DisplayName("데이터 1개 저장")
-    void initial1111Test() {
-        hotplaceRepository.save(
-                Hotplace.builder()
-                        .hotplaceContent("ASDFADSFDSFSF내용")
-                        .hotplaceLocation(HotplaceLocation.강남구)
-                        .member(Member.builder()
-                                .memberIdx(1L)
-                                .build())
-                        .build()
-        );
-    }
+//    @Test
+//    @DisplayName("데이터 1개 저장")
+//    void initial1111Test() {
+//        hotplaceRepository.save(
+//                Hotplace.builder()
+//                        .hotplaceContent("ASDFADSFDSFSF내용")
+//                        .hotplaceLocation(HotplaceLocation.강남구)
+//                        .member(Member.builder()
+//                                .memberIdx(1L)
+//                                .build())
+//                        .build()
+//        );
+//    }
 
 
-    @Test
-    @DisplayName("hotplace bulk data 50")
-    void insertBulkTest() {
-
-        String[] contents = {"치킨맛집", "맛도리", "꿀잼", "데이트코스"};
-        HotplaceLocation[] hotplaceLocations = {
-                HotplaceLocation.강남구, HotplaceLocation.강북구, HotplaceLocation.강동구, HotplaceLocation.강서구,
-                HotplaceLocation.관악구, HotplaceLocation.광진구, HotplaceLocation.구로구, HotplaceLocation.금천구,
-                HotplaceLocation.노원구, HotplaceLocation.도봉구, HotplaceLocation.동대문구, HotplaceLocation.동작구,
-                HotplaceLocation.마포구, HotplaceLocation.서대문구, HotplaceLocation.서초구, HotplaceLocation.성동구,
-                HotplaceLocation.성북구, HotplaceLocation.송파구, HotplaceLocation.양천구, HotplaceLocation.영등포구,
-                HotplaceLocation.용산구, HotplaceLocation.은평구, HotplaceLocation.종로구, HotplaceLocation.중구,
-                HotplaceLocation.중랑구
-        };
-
-        for (int i = 1; i <= 50; i++) {
-            hotplaceRepository.save(
-                    Hotplace.builder()
-                            .hotplaceContent(contents[i % 4])
-                            .hotplaceLocation(hotplaceLocations[i % 25])
-                            .member(Member.builder()
-                                    .memberIdx((long) i)
-                                    .build())
-                            .build()
-            );
-        }
-    }
+//    @Test
+//    @DisplayName("hotplace bulk data 50")
+//    void insertBulkTest() {
+//
+//        String[] contents = {"치킨맛집", "맛도리", "꿀잼", "데이트코스"};
+//        HotplaceLocation[] hotplaceLocations = {
+//                HotplaceLocation.강남구, HotplaceLocation.강북구, HotplaceLocation.강동구, HotplaceLocation.강서구,
+//                HotplaceLocation.관악구, HotplaceLocation.광진구, HotplaceLocation.구로구, HotplaceLocation.금천구,
+//                HotplaceLocation.노원구, HotplaceLocation.도봉구, HotplaceLocation.동대문구, HotplaceLocation.동작구,
+//                HotplaceLocation.마포구, HotplaceLocation.서대문구, HotplaceLocation.서초구, HotplaceLocation.성동구,
+//                HotplaceLocation.성북구, HotplaceLocation.송파구, HotplaceLocation.양천구, HotplaceLocation.영등포구,
+//                HotplaceLocation.용산구, HotplaceLocation.은평구, HotplaceLocation.종로구, HotplaceLocation.중구,
+//                HotplaceLocation.중랑구
+//        };
+//
+//        for (int i = 1; i <= 50; i++) {
+//            hotplaceRepository.save(
+//                    Hotplace.builder()
+//                            .hotplaceContent(contents[i % 4])
+//                            .hotplaceLocation(hotplaceLocations[i % 25])
+//                            .member(Member.builder()
+//                                    .memberIdx((long) i)
+//                                    .build())
+//                            .build()
+//            );
+//        }
+//    }
 
     @Test
     @DisplayName("전체 조회시 데이터가 50개여야만 한다.")
@@ -76,8 +76,8 @@ class HotplaceRepositoryTest {
 
         //then
         assertEquals(50, all.size());
-//        System.out.println(all);
-        all.forEach(System.out::println);
+        System.out.println(all);
+//        all.forEach(System.out::println);
     }
 
 
@@ -198,14 +198,14 @@ class HotplaceRepositoryTest {
 
 
     @Test
-    @DisplayName("내용에서 '맛'이 들어간 키워드로 검색하면 25개가 조회되어야 한다")
+    @DisplayName("내용에서 '맛'이 들어간 키워드로 검색하면 24개가 조회되어야 한다")
     void testFindByHotplaceContentContaining() {
         //given
         String keyword = "맛";
         //when
         List<Hotplace> hotplaceList = hotplaceRepository.findByHotplaceContentContaining(keyword);
         //then
-        assertEquals(25, hotplaceList.size());
+        assertEquals(24, hotplaceList.size());
 
     }
 

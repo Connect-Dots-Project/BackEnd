@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
-@ToString
+@ToString(exclude = {"member"})
 @EqualsAndHashCode(of= "hotplaceIdx")
 @NoArgsConstructor
 @AllArgsConstructor

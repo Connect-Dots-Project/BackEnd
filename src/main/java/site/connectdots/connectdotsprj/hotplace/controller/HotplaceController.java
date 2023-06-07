@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
+import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.hotplace.service.HotplaceService;
 
@@ -32,33 +34,72 @@ public class HotplaceController {
     // 글 작성
     @PostMapping
     public ResponseEntity<?> write(@Validated @RequestBody HotplaceWriteRequestDTO dto, BindingResult result) {
-        log.info("{}", dto);
-        Hotplace hotplace = null;
+
+        log.info("HotplaceController.write.info 글 작성 {}, {}", dto, result);
+//        Hotplace hotplace = null;
+
+        if (dto == null) {
+            return ResponseEntity.badRequest().body("핫플레이스 게시물 정보를 전달해주세요!");
+        }
+
+        ResponseEntity<List<FieldError>> fieldErrors = getValidatedResult(result);
+        if (fieldErrors != null) return fieldErrors;
+
         try {
-            hotplace = hotplaceService.write(dto);
+            HotplaceResponseDTO hotplaceResponseDTO = hotplaceService.write(dto);
+            return ResponseEntity.ok().body(hotplaceResponseDTO);
         } catch (RuntimeException e) {
             e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
-        log.info("HotplaceController.write.info 글 작성 {}, {}", dto, result);
-        return ResponseEntity.ok().body(hotplace);
     }
 
 
     // 글 삭제
     @DeleteMapping("/{hotplaceIdx}")
     public ResponseEntity<?> delete(@PathVariable Long hotplaceIdx) {
-        hotplaceService.delete(hotplaceIdx);
         log.info("HotplaceController.delete.info 글 삭제 {}", hotplaceIdx);
-        return ResponseEntity.ok().build();
+
+        try {
+            hotplaceService.delete(hotplaceIdx);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
 
     // 글 수정
     @PatchMapping("/{hotplaceIdx}")
-    public ResponseEntity<?> modify(@Validated @PathVariable Long hotplaceIdx, @RequestBody HotplaceModifyRequestDTO dto) {
-        Hotplace modifiedHotplace = hotplaceService.modify(hotplaceIdx, dto);
+    public ResponseEntity<?> modify(@Validated @PathVariable Long hotplaceIdx
+                                    , @RequestBody HotplaceModifyRequestDTO dto
+                                    , BindingResult result) {
         log.info("HotplaceController.modify.info 글 수정 {}, {}", hotplaceIdx, dto);
-        return ResponseEntity.ok().body(modifiedHotplace);
+
+        ResponseEntity<List<FieldError>> fieldErrors = getValidatedResult(result);
+        if (fieldErrors != null) return fieldErrors;
+
+        try {
+            Hotplace modifiedHotplace = hotplaceService.modify(hotplaceIdx, dto);
+            return ResponseEntity.ok().body(modifiedHotplace);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    // 입력값 검증
+    private ResponseEntity<List<FieldError>> getValidatedResult(BindingResult result) {
+        if(result.hasErrors()) {
+            List<FieldError> fieldErrors = result.getFieldErrors();
+            fieldErrors.forEach(err -> {
+                log.warn("입력값 검증에 걸림!!!!!!!!!!!! invalid client data - {}", err.toString());
+            });
+
+            return ResponseEntity.badRequest().body(fieldErrors);
+        }
+        return null;
     }
 
     // 포스트맨 응답이 짤려서 나옴..
