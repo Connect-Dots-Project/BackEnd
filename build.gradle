@@ -37,6 +37,13 @@ dependencies {
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 //	testImplementation 'org.springframework.security:spring-security-test'
 
+
+
+    // jsp 설정
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+    implementation 'javax.servlet:jstl:1.2'
+
+
     // -------------- chatting
     //websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
@@ -52,5 +59,6 @@ dependencies {
     implementation 'org.webjars.bower:axios:0.17.1'
     implementation 'com.google.code.gson:gson:2.8.0'
     // -------------- chatting
+
 
 }

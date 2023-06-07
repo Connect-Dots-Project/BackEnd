@@ -23,10 +23,8 @@ public interface HotplaceRepository extends JpaRepository<Hotplace, Long> {
      * @return 키워드로 조회시 핫플레이스 게시물 목록 반환
      */
     List<Hotplace> findByHotplaceContentContaining(String keyword);
-    // 게시물이 없으면 어떻게 처리하징?
 
 
-    //TODO: 작성자로 조회하기
-
+    //작성자로 조회하기
     //List<Member> findByNickname(String nickname);
 }
