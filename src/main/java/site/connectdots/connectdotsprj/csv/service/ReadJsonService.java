@@ -20,9 +20,9 @@ public class ReadJsonService {
         List<JsonData> csvMergedData = new ArrayList<>();
 
         String[] jsonFilePath = {
-                "C:\\BackEnd\\src\\main\\resources\\static\\json_csv\\GS25.json",
-                "C:\\BackEnd\\src\\main\\resources\\static\\json_csv\\CUcsv.json",
-                "C:\\BackEnd\\src\\main\\resources\\static\\json_csv\\7eleven.json"
+                "C:\\BackEnd-fork\\src\\main\\resources\\static\\json_csv\\GS25.json",
+                "C:\\BackEnd-fork\\src\\main\\resources\\static\\json_csv\\CUcsv.json",
+                "C:\\BackEnd-fork\\src\\main\\resources\\static\\json_csv\\7eleven.json"
         };
 
         // ObjectMapper를 사용하여 JSON 파일을 읽고 Product 리스트로 변환
