@@ -16,6 +16,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class HotplaceModifyRequestDTO {
 
+    private Long hotplaceIdx;
     private HotplaceLocation hotplaceLocation;
     private String hotplaceImg;
     @NotBlank(message = "수정할 내용을 입력하세요.")

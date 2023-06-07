@@ -1,8 +1,11 @@
 package site.connectdots.connectdotsprj.hotplace.dto.responseDTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.hotplace.entity.HotplaceLocation;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -11,22 +14,23 @@ import site.connectdots.connectdotsprj.hotplace.entity.HotplaceLocation;
 @ToString
 @EqualsAndHashCode
 @Builder
-public class HotplaceResponseDTO {
+public class HotplaceDetilResponseDTO {
 
     private HotplaceLocation hotplaceLocation;
     private String hotplaceImg;
     private String hotplaceContent;
     private Long hotplaceLikeCount;
-    private String memberNickname;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime hotplaceWriteDate;
     // 위도경도-지도
 
-    public HotplaceResponseDTO(Hotplace hotplace) {
+    public HotplaceDetilResponseDTO(Hotplace hotplace) {
         this.hotplaceLocation = hotplace.getHotplaceLocation();
         this.hotplaceImg = hotplace.getHotplaceImg();
         this.hotplaceContent = hotplace.getHotplaceContent();
         this.hotplaceLikeCount = hotplace.getHotplaceLikeCount();
-        this.memberNickname = hotplace.getMember().getMemberNickname();
-        // 이거맞낭..?
+        this.hotplaceWriteDate = hotplace.getHotplaceWriteDate();
     }
 
 

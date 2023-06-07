@@ -9,8 +9,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
-import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceResponseDTO;
+import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetilResponseDTO;
+import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceListResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
+import site.connectdots.connectdotsprj.hotplace.entity.HotplaceLocation;
 import site.connectdots.connectdotsprj.hotplace.service.HotplaceService;
 
 import java.util.List;
@@ -26,7 +28,13 @@ public class HotplaceController {
     // 글 전체조회
     @GetMapping
     public ResponseEntity<?> list() {
-        List<Hotplace> hotplaceList = hotplaceService.findAll();
+        log.info("전체조회!");
+        HotplaceListResponseDTO hotplaceList = null;
+        try {
+            hotplaceList = hotplaceService.findAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         log.info("HotplaceController.list.info 글 전체조회 {} ", hotplaceList);
         return ResponseEntity.ok().body(hotplaceList);
     }
@@ -36,7 +44,6 @@ public class HotplaceController {
     public ResponseEntity<?> write(@Validated @RequestBody HotplaceWriteRequestDTO dto, BindingResult result) {
 
         log.info("HotplaceController.write.info 글 작성 {}, {}", dto, result);
-//        Hotplace hotplace = null;
 
         if (dto == null) {
             return ResponseEntity.badRequest().body("핫플레이스 게시물 정보를 전달해주세요!");
@@ -46,8 +53,8 @@ public class HotplaceController {
         if (fieldErrors != null) return fieldErrors;
 
         try {
-            HotplaceResponseDTO hotplaceResponseDTO = hotplaceService.write(dto);
-            return ResponseEntity.ok().body(hotplaceResponseDTO);
+            HotplaceDetilResponseDTO hotplaceDetilResponseDTO = hotplaceService.write(dto);
+            return ResponseEntity.ok().body(hotplaceDetilResponseDTO);
         } catch (RuntimeException e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(e.getMessage());
@@ -62,7 +69,7 @@ public class HotplaceController {
 
         try {
             hotplaceService.delete(hotplaceIdx);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("정상적으로 삭제되었습니다!");
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(e.getMessage());
@@ -71,23 +78,23 @@ public class HotplaceController {
 
 
     // 글 수정
-    @PatchMapping("/{hotplaceIdx}")
-    public ResponseEntity<?> modify(@Validated @PathVariable Long hotplaceIdx
-                                    , @RequestBody HotplaceModifyRequestDTO dto
-                                    , BindingResult result) {
-        log.info("HotplaceController.modify.info 글 수정 {}, {}", hotplaceIdx, dto);
+    @RequestMapping(method = {RequestMethod.PUT, RequestMethod.PATCH})
+    public ResponseEntity<?> modify(@Validated @RequestBody HotplaceModifyRequestDTO dto
+            , BindingResult result) {
+        log.info("HotplaceController.modify.info 글 수정 {}", dto);
 
         ResponseEntity<List<FieldError>> fieldErrors = getValidatedResult(result);
         if (fieldErrors != null) return fieldErrors;
 
         try {
-            Hotplace modifiedHotplace = hotplaceService.modify(hotplaceIdx, dto);
+            HotplaceDetilResponseDTO modifiedHotplace = hotplaceService.modify(dto);
             return ResponseEntity.ok().body(modifiedHotplace);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
+
 
     // 입력값 검증
     private ResponseEntity<List<FieldError>> getValidatedResult(BindingResult result) {
@@ -102,7 +109,17 @@ public class HotplaceController {
         return null;
     }
 
-    // 포스트맨 응답이 짤려서 나옴..
+    // 행정구역으로 핫플레이스 게시물 목록 조회하기
+//    @GetMapping("/{hotplaceLocation}")
+//    public ResponseEntity<?> locationList(@PathVariable HotplaceLocation hotplaceLocation) {
+//
+//        log.info("행정구역!");
+//        HotplaceListResponseDTO hotplacelist = hotplaceService.findByHotplaceLocation(hotplaceLocation);
+//        log.info("HotplaceController.locationList.info 행정구역별 글 전체조회 {} ", hotplacelist);
+//
+//        return ResponseEntity.ok().body(hotplacelist);
+//    }
+
 
 
     // 위도경도

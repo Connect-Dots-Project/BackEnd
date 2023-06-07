@@ -23,19 +23,19 @@ class HotplaceRepositoryTest {
     @Autowired
     HotplaceRepository hotplaceRepository;
 
-//    @Test
-//    @DisplayName("데이터 1개 저장")
-//    void initial1111Test() {
-//        hotplaceRepository.save(
-//                Hotplace.builder()
-//                        .hotplaceContent("ASDFADSFDSFSF내용")
-//                        .hotplaceLocation(HotplaceLocation.강남구)
-//                        .member(Member.builder()
-//                                .memberIdx(1L)
-//                                .build())
-//                        .build()
-//        );
-//    }
+    @Test
+    @DisplayName("데이터 1개 저장")
+    void initial1111Test() {
+        hotplaceRepository.save(
+                Hotplace.builder()
+                        .hotplaceContent("ASDFADSFDSFSF내용")
+                        .hotplaceLocation(HotplaceLocation.강남구)
+                        .member(Member.builder()
+                                .memberIdx(1L)
+                                .build())
+                        .build()
+        );
+    }
 
 
 //    @Test
