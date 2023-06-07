@@ -10,7 +10,9 @@ public enum FreeBoardErrorCode {
     /**
      * 404 - NOT_FOUND
      */
-    FREE_BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 게시물입니다.");
+    FREE_BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 게시물입니다."),
+
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 회원입니다.");
     private final HttpStatus httpStatus;
     private final String message;
-}
+    }

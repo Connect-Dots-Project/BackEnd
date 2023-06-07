@@ -10,10 +10,12 @@ import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailRes
 import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardResponseDTO;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoard;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardReply;
+import site.connectdots.connectdotsprj.freeboard.exception.custom.NotFoundMemberException;
 import site.connectdots.connectdotsprj.freeboard.repository.FreeBoardReplyRepository;
 import site.connectdots.connectdotsprj.freeboard.repository.FreeBoardRepository;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.FreeBoardErrorCode;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.NotFoundFreeBoardException;
+import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
 import java.util.List;
@@ -29,24 +31,19 @@ public class FreeBoardService {
 
     @Transactional(readOnly = true)
     public List<FreeBoardResponseDTO> findAll() {
-        List<FreeBoard> freeBoardList = freeBoardRepository.findAll();
-
-        return freeBoardList.stream()
+        return freeBoardRepository.findAll()
+                .stream()
                 .map(FreeBoardResponseDTO::new)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public FreeBoardDetailResponseDTO findById(Long freeBoardIdx) {
-        FreeBoard freeBoard = freeBoardRepository.findById(freeBoardIdx).orElseThrow(() -> {
-            throw new NotFoundFreeBoardException(FreeBoardErrorCode.FREE_BOARD_NOT_FOUND, freeBoardIdx);
-        });
+        FreeBoard freeBoard = getFreeBoard(freeBoardIdx);
+        updateViewCount(freeBoard);
 
-        List<FreeBoardDetailReplyDTO> replyList = findAllByFreeBoardIdx(freeBoardIdx);
-
-        return new FreeBoardDetailResponseDTO(freeBoard, replyList);
+        return getFreeBoardDetailResponseDTO(freeBoardIdx, freeBoard);
     }
-
 
     public List<FreeBoardResponseDTO> writeFreeBoard(FreeBoardWriteRequestDTO dto) {
         freeBoardRepository.save(
@@ -56,25 +53,49 @@ public class FreeBoardService {
                         .freeBoardImg(dto.getFreeBoardImg())
                         .freeBoardLocation(dto.getFreeBoardLocation())
                         .freeBoardCategory(dto.getFreeBoardCategory())
-                        .member(memberRepository.findById(dto.getMemberIdx()).orElseThrow())
+                        .member(memberRepository.findById(dto.getMemberIdx()).orElseThrow(
+                                () -> new NotFoundMemberException(FreeBoardErrorCode.MEMBER_NOT_FOUND, dto.getMemberIdx())
+                        ))
                         .build()
         );
 
         return findAll();
     }
 
-
     public List<FreeBoardDetailReplyDTO> writeReplyByFreeBoard(FreeBoardReplyWriteRequestDTO dto) {
+
         freeBoardReplyRepository.save(
                 dto.toEntity(
-                        freeBoardRepository.findById(dto.getFreeBoardIdx()).orElseThrow(),
-                        memberRepository.findById(dto.getMemberIdx()).orElseThrow()
-                )
+                        getFreeBoard(dto.getFreeBoardIdx()),
+                        getMember(dto.getMemberIdx()))
         );
 
         return findAllByFreeBoardIdx(dto.getFreeBoardIdx());
     }
 
+    public FreeBoardDetailResponseDTO updateLikeCount(Long freeBoardIdx, int likeCountDelta) {
+        FreeBoard freeBoard = getFreeBoard(freeBoardIdx);
+        freeBoard.setFreeBoardLikeCount(freeBoard.getFreeBoardLikeCount() + likeCountDelta);
+
+        return getFreeBoardDetailResponseDTO(freeBoardIdx, freeBoard);
+    }
+
+    private FreeBoardDetailResponseDTO getFreeBoardDetailResponseDTO(Long freeBoardIdx, FreeBoard freeBoard) {
+        List<FreeBoardDetailReplyDTO> replyList = findAllByFreeBoardIdx(freeBoardIdx);
+        return new FreeBoardDetailResponseDTO(freeBoard, replyList);
+    }
+
+    private Member getMember(Long memberIdx) {
+        return memberRepository.findById(memberIdx).orElseThrow(() -> {
+            throw new NotFoundMemberException(FreeBoardErrorCode.MEMBER_NOT_FOUND, memberIdx);
+        });
+    }
+
+    private FreeBoard getFreeBoard(Long freeBoardIdx) {
+        return freeBoardRepository.findById(freeBoardIdx).orElseThrow(() -> {
+            throw new NotFoundFreeBoardException(FreeBoardErrorCode.FREE_BOARD_NOT_FOUND, freeBoardIdx);
+        });
+    }
 
     private List<FreeBoardDetailReplyDTO> findAllByFreeBoardIdx(Long freeBoardIdx) {
         List<FreeBoardReply> freeBoardReplyList = freeBoardReplyRepository.findAllByFreeBoardFreeBoardIdx(freeBoardIdx);
@@ -83,4 +104,10 @@ public class FreeBoardService {
                 .map(FreeBoardDetailReplyDTO::new)
                 .collect(Collectors.toList());
     }
+
+    private void updateViewCount(FreeBoard freeBoard) {
+        freeBoard.setFreeBoardViewCount(freeBoard.getFreeBoardViewCount() + 1);
+        freeBoardRepository.save(freeBoard);
+    }
+
 }

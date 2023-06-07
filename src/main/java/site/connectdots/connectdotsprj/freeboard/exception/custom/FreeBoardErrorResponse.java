@@ -23,4 +23,9 @@ public class FreeBoardErrorResponse<T> {
         this.payload = (T) e.getFreeBoardIdx();
     }
 
+    public FreeBoardErrorResponse(NotFoundMemberException e) {
+        this.errorCode = e.getErrorCode();
+        this.message = e.getMessage();
+        this.payload = null;
+    }
 }
