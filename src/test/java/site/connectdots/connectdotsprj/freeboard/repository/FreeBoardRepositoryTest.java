@@ -1,17 +1,16 @@
 package site.connectdots.connectdotsprj.freeboard.repository;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardWriteRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardResponseDTO;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoard;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardCategory;
-import site.connectdots.connectdotsprj.member.entity.Member;
+import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +24,8 @@ class FreeBoardRepositoryTest {
     @Autowired
     FreeBoardRepository freeBoardRepository;
 
+    @Autowired
+    MemberRepository memberRepository;
 
 
     @Test
@@ -72,6 +73,37 @@ class FreeBoardRepositoryTest {
 
         //then
         assertEquals("친목", findAllByMemberIdx.get(0).getFreeBoardCategory().toString());
+
+    }
+
+    @Test
+    @DisplayName("자유게시판 작성에 성공할 것이다.")
+    void writeFreeBoardTest() {
+
+
+        FreeBoardWriteRequestDTO dto = FreeBoardWriteRequestDTO.builder()
+                .freeBoardTitle("jjj제목!!!TEST")
+                .freeBoardContent("hhh내용!!!TEST")
+                .freeBoardCategory(FreeBoardCategory.잡담)
+                .freeBoardLocation("강북구")
+                .freeBoardImg("null")
+                .memberIdx(15L)
+                .build();
+
+        //given
+
+        //when
+        freeBoardRepository.save(
+                FreeBoard.builder()
+                        .freeBoardTitle(dto.getFreeBoardTitle())
+                        .freeBoardContent(dto.getFreeBoardContent())
+                        .freeBoardImg(dto.getFreeBoardImg())
+                        .freeBoardLocation(dto.getFreeBoardLocation())
+                        .freeBoardCategory(dto.getFreeBoardCategory())
+                        .member(memberRepository.findById(dto.getMemberIdx()).orElseThrow())
+                        .build()
+        );
+        //then
 
     }
 

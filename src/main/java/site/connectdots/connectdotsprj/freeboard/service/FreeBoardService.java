@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardReplyWriteRequestDTO;
+import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardWriteRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailReplyDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailResponseDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardResponseDTO;
@@ -45,6 +46,23 @@ public class FreeBoardService {
 
         return new FreeBoardDetailResponseDTO(freeBoard, replyList);
     }
+
+
+    public List<FreeBoardResponseDTO> writeFreeBoard(FreeBoardWriteRequestDTO dto) {
+        freeBoardRepository.save(
+                FreeBoard.builder()
+                        .freeBoardTitle(dto.getFreeBoardTitle())
+                        .freeBoardContent(dto.getFreeBoardContent())
+                        .freeBoardImg(dto.getFreeBoardImg())
+                        .freeBoardLocation(dto.getFreeBoardLocation())
+                        .freeBoardCategory(dto.getFreeBoardCategory())
+                        .member(memberRepository.findById(dto.getMemberIdx()).orElseThrow())
+                        .build()
+        );
+
+        return findAll();
+    }
+
 
     public List<FreeBoardDetailReplyDTO> writeReplyByFreeBoard(FreeBoardReplyWriteRequestDTO dto) {
         freeBoardReplyRepository.save(
