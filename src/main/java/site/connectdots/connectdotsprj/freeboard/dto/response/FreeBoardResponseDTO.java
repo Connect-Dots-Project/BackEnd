@@ -41,7 +41,7 @@ public class FreeBoardResponseDTO {
     }
 
     private String dateFormat(final LocalDateTime date) {
-        return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return date == null ? null : date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
 }
