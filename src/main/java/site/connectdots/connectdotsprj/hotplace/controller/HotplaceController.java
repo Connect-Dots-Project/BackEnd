@@ -3,10 +3,12 @@ package site.connectdots.connectdotsprj.hotplace.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetilResponseDTO;
@@ -15,6 +17,7 @@ import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.hotplace.entity.HotplaceLocation;
 import site.connectdots.connectdotsprj.hotplace.service.HotplaceService;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
