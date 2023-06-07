@@ -18,6 +18,7 @@ public class FreeBoardResponseDTO {
     private String freeBoardTitle;
     private String freeBoardContent;
     private String freeBoardImg;
+    private String freeBoardCategory;
     private String freeBoardWriteDate;
     private String freeBoardUpdateDate;
     private Long freeBoardViewCount;
@@ -32,6 +33,7 @@ public class FreeBoardResponseDTO {
         this.freeBoardImg = freeBoard.getFreeBoardImg();
         this.freeBoardWriteDate = dateFormat(freeBoard.getFreeBoardWriteDate());
         this.freeBoardUpdateDate = dateFormat(freeBoard.getFreeBoardUpdateDate());
+        this.freeBoardCategory = freeBoard.getFreeBoardCategory().toString();
         this.freeBoardViewCount = freeBoard.getFreeBoardViewCount();
         this.freeBoardReplyCount = freeBoard.getFreeBoardReplyCount();
         this.freeBoardLikeCount = freeBoard.getFreeBoardLikeCount();

@@ -25,46 +25,6 @@ class MemberRepositoryTest {
     MemberRepository memberRepository;
 
     @Test
-    @DisplayName("insert bulk")
-    @Rollback()
-    void insertBulk() {
-
-        for (int i = 1; i <= 50; i++) {
-            int number1 = (int) (Math.random() * 9000) + 1000;
-            int number2 = (int) (Math.random() * 9000) + 1000;
-
-            Gender gender = Gender.M;
-            if (i % 2 == 0) {
-                gender = Gender.F;
-            }
-
-            LocalDateTime startDate = LocalDateTime.of(1983, 1, 1, 0, 0);
-            LocalDateTime endDate = LocalDateTime.of(2003, 12, 31, 0, 0);
-
-            long days = startDate.until(endDate, ChronoUnit.DAYS);
-            long randomDays = (long) (Math.random() * days);
-
-            LocalDateTime randomDate = startDate.plusDays(randomDays);
-
-            memberRepository.save(
-                    Member.builder()
-                            .memberAccount("account" + i + "@google.com")
-                            .memberPassword("password" + i)
-                            .memberName("name" + i)
-                            .memberNickname("nickName" + i)
-                            .memberGender(gender)
-                            .memberBirth(randomDate)
-                            .memberPhone("010-" + number1 + "-" + number2)
-                            .memberLocation("강남구")
-                            .memberComment("hello world" + i)
-                            .build()
-            );
-
-        }
-
-    }
-
-    @Test
     @DisplayName("전체 조회에 성공할 것이며 사이즈는 50이다")
     void findAllTest() {
         //given
