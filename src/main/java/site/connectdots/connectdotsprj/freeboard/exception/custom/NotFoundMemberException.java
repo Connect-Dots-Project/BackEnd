@@ -1,7 +1,7 @@
 package site.connectdots.connectdotsprj.freeboard.exception.custom;
 
 import lombok.Getter;
-import site.connectdots.connectdotsprj.global.exception.CustomException;
+import site.connectdots.connectdotsprj.global.exception.custom.CustomException;
 
 public class NotFoundMemberException extends CustomException {
     @Getter
