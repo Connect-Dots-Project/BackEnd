@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
-import site.connectdots.connectdotsprj.hotplace.entity.HotplaceLocation;
 import site.connectdots.connectdotsprj.member.entity.Member;
 
 import java.util.List;
@@ -29,7 +29,7 @@ class HotplaceRepositoryTest {
         hotplaceRepository.save(
                 Hotplace.builder()
                         .hotplaceContent("ASDFADSFDSFSF내용")
-                        .hotplaceLocation(HotplaceLocation.강남구)
+                        .location(Location.강남구)
                         .member(Member.builder()
                                 .memberIdx(1L)
                                 .build())
@@ -43,21 +43,21 @@ class HotplaceRepositoryTest {
 //    void insertBulkTest() {
 //
 //        String[] contents = {"치킨맛집", "맛도리", "꿀잼", "데이트코스"};
-//        HotplaceLocation[] hotplaceLocations = {
-//                HotplaceLocation.강남구, HotplaceLocation.강북구, HotplaceLocation.강동구, HotplaceLocation.강서구,
-//                HotplaceLocation.관악구, HotplaceLocation.광진구, HotplaceLocation.구로구, HotplaceLocation.금천구,
-//                HotplaceLocation.노원구, HotplaceLocation.도봉구, HotplaceLocation.동대문구, HotplaceLocation.동작구,
-//                HotplaceLocation.마포구, HotplaceLocation.서대문구, HotplaceLocation.서초구, HotplaceLocation.성동구,
-//                HotplaceLocation.성북구, HotplaceLocation.송파구, HotplaceLocation.양천구, HotplaceLocation.영등포구,
-//                HotplaceLocation.용산구, HotplaceLocation.은평구, HotplaceLocation.종로구, HotplaceLocation.중구,
-//                HotplaceLocation.중랑구
+//        Location[] locations = {
+//                Location.강남구, Location.강북구, Location.강동구, Location.강서구,
+//                Location.관악구, Location.광진구, Location.구로구, Location.금천구,
+//                Location.노원구, Location.도봉구, Location.동대문구, Location.동작구,
+//                Location.마포구, Location.서대문구, Location.서초구, Location.성동구,
+//                Location.성북구, Location.송파구, Location.양천구, Location.영등포구,
+//                Location.용산구, Location.은평구, Location.종로구, Location.중구,
+//                Location.중랑구
 //        };
 //
 //        for (int i = 1; i <= 50; i++) {
 //            hotplaceRepository.save(
 //                    Hotplace.builder()
 //                            .hotplaceContent(contents[i % 4])
-//                            .hotplaceLocation(hotplaceLocations[i % 25])
+//                            .location(locations[i % 25])
 //                            .member(Member.builder()
 //                                    .memberIdx((long) i)
 //                                    .build())
@@ -90,7 +90,7 @@ class HotplaceRepositoryTest {
         Hotplace hotplace = hotplaceRepository.findById(hotplaceIdx)
                 .orElseThrow();
         //then
-        assertEquals("강서구", hotplace.getHotplaceLocation().name());
+        assertEquals("강서구", hotplace.getLocation().name());
     }
 
     @Test
@@ -107,7 +107,7 @@ class HotplaceRepositoryTest {
                 );
 
         //then
-        assertEquals("금천구", hotplace.getHotplaceLocation().toString());
+        assertEquals("금천구", hotplace.getLocation().toString());
 
         assertNotNull(hotplace);
 
@@ -138,13 +138,13 @@ class HotplaceRepositoryTest {
     void modifyTest() {
         //given
         Long hotplaceIdx = 10L;
-        HotplaceLocation location = HotplaceLocation.강남구;
+        Location location = Location.강남구;
         String content = "내용 수정수정~~~~";
 
         //when
         Optional<Hotplace> hotplace = hotplaceRepository.findById(hotplaceIdx);
         hotplace.ifPresent(hp -> {
-            hp.setHotplaceLocation(location);
+            hp.setLocation(location);
             hp.setHotplaceContent(content);
 
             hotplaceRepository.save(hp);
@@ -154,7 +154,7 @@ class HotplaceRepositoryTest {
         assertTrue(hotplace.isPresent());
 
         Hotplace place = hotplace.get();
-        assertEquals("강남구", place.getHotplaceLocation().name());
+        assertEquals("강남구", place.getLocation().name());
     }
 
 
@@ -183,9 +183,9 @@ class HotplaceRepositoryTest {
     @DisplayName("위치정보를 서대문구로 조회시, 2개가 조회되어야 한다.")
     void testFindByHotplaceLocation() {
         //given
-        HotplaceLocation hotplaceLocation = HotplaceLocation.서대문구;
+        Location location = Location.서대문구;
         //when
-        List<Hotplace> foundLocationList = hotplaceRepository.findByHotplaceLocation(hotplaceLocation);
+        List<Hotplace> foundLocationList = hotplaceRepository.findByLocation(location);
         //then
         assertEquals(2, foundLocationList.size());
 

@@ -1,11 +1,9 @@
 package site.connectdots.connectdotsprj.hotplace.dto.requestDTO;
 
 import lombok.*;
+import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
-import site.connectdots.connectdotsprj.hotplace.entity.HotplaceLocation;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -18,24 +16,30 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class HotplaceWriteRequestDTO {
 
-    @NotNull
+//    @NotNull
 //    @Enumerated(EnumType.STRING)
-    private HotplaceLocation hotplaceLocation;
-
-    @NotBlank
+    private Location location;
+//    @NotBlank
     private String hotplaceImg;
-
-    @NotBlank
+//    @NotBlank
     private String hotplaceContent;
-    private Long memberIdx;
-    //위도경도
+    private String hotplaceLatitude;
+    private String hotplaceLongitude;
+    private String hotplaceName;
+    private String hotplaceFullAddress;
+
+//    private Long memberIdx;
 
 
     public Hotplace toEntity() {
         return Hotplace.builder()
-                .hotplaceLocation(this.hotplaceLocation)
+                .location(this.location)
                 .hotplaceImg(this.hotplaceImg)
                 .hotplaceContent(this.hotplaceContent)
+                .hotplaceLatitude(this.hotplaceLatitude)
+                .hotplaceLongitude(this.hotplaceLongitude)
+                .hotplaceName(this.hotplaceName)
+                .hotplaceFullAddress(this.hotplaceFullAddress)
                 .build();
     }
 }
