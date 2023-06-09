@@ -7,7 +7,7 @@ import lombok.*;
 @Getter @Setter
 @EqualsAndHashCode @ToString
 @NoArgsConstructor @AllArgsConstructor
-public class JsonData {
+public class CsvData {
     private String img;
     private String title;
     private String price;
