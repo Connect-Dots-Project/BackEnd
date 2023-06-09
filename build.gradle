@@ -37,7 +37,11 @@ dependencies {
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 //	testImplementation 'org.springframework.security:spring-security-test'
 
-     implementation 'se.michaelthelin.spotify:spotify-web-api-java:6.5.2'
+    // https://mvnrepository.com/artifact/se.michaelthelin.spotify/spotify-web-api-java
+    implementation 'se.michaelthelin.spotify:spotify-web-api-java:8.0.0'
+
+
+
 }
 
 tasks.named('test') {
