@@ -38,7 +38,7 @@ public class Music {
 
     @CreationTimestamp
     @Column(updatable = false)
-    @JsonFormat(pattern = "yyyy/MM/dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime createDate;
 
     @ColumnDefault("0")
