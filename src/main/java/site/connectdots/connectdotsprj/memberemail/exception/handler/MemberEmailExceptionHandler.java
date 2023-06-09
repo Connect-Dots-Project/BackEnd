@@ -1,18 +1,25 @@
 package site.connectdots.connectdotsprj.memberemail.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 
-@RestControllerAdvice
 @Slf4j
+@RestControllerAdvice
 public class MemberEmailExceptionHandler {
+
     @ExceptionHandler({MessagingException.class, UnsupportedEncodingException.class})
     public String memberEmailExceptionHandler() {
-        return "email 전송에 실패했습니다.";
+        return "회원가입 인증 코드 전송에 실패했습니다.";
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class) // @Valid
+    public String methodArgumentNotValidException() {
+        return "회원가입 인증 코드를 받을 이메일 양식이 다릅니다.";
     }
 
 }
