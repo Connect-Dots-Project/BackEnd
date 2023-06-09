@@ -3,24 +3,25 @@ package site.connectdots.connectdotsprj.freeboard.exception.handler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import site.connectdots.connectdotsprj.freeboard.exception.custom.FreeBoardErrorResponse;
+import site.connectdots.connectdotsprj.global.exception.custom.ExceptionResponse;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.NotFoundFreeBoardException;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.NotFoundMemberException;
+import site.connectdots.connectdotsprj.global.exception.custom.CustomException;
 
 @Slf4j
 @RestControllerAdvice
 public class FreeBoardExceptionHandler {
 
     @ExceptionHandler(NotFoundFreeBoardException.class)
-    public FreeBoardErrorResponse<?> notFoundFreeBoardException(NotFoundFreeBoardException e) {
+    public ExceptionResponse<? extends CustomException, Long> notFoundFreeBoardException(NotFoundFreeBoardException e) {
         log.error("NotFoundFreeBoardException : \terrorCode : {}\tmessage : {}\tfreeBoardIdx : {}", e.getErrorCode(), e.getErrorCode().getMessage(), e.getFreeBoardIdx());
-        return new FreeBoardErrorResponse<>(e);
+        return new ExceptionResponse<>(e, e.getFreeBoardIdx());
     }
 
     @ExceptionHandler(NotFoundMemberException.class)
-    public FreeBoardErrorResponse<?> notFoundMemberException(NotFoundMemberException e) {
+    public ExceptionResponse<? extends CustomException, Long> notFoundMemberException(NotFoundMemberException e) {
         log.error("NotFoundMemberException : \terrorCode : {}\tmessage : {}\tfreeBoardIdx : {}", e.getErrorCode(), e.getErrorCode().getMessage(), e.getMemberIdx());
-        return new FreeBoardErrorResponse<>(e);
+        return new ExceptionResponse<>(e, e.getMemberIdx());
     }
 
 }
