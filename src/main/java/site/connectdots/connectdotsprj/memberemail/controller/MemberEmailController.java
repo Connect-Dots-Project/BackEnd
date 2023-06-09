@@ -20,6 +20,6 @@ public class MemberEmailController {
     @PostMapping("/mail")        // 이 부분은 각자 바꿔주시면 됩니다.
     public ResponseEntity<String> EmailCheck(@RequestBody MemberEmailCheckRequest emailCheckReq) throws MessagingException, UnsupportedEncodingException {
         String authCode = emailService.sendEmail(emailCheckReq.getEmail());
-        return ResponseEntity.ok().body(authCode);    // Response body에 값을 반환해줄게요~
+        return ResponseEntity.ok().body/**/(authCode);    // Response body에 값을 반환해줄게요~
     }
 }

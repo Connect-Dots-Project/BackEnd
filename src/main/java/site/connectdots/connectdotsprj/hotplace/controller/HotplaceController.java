@@ -3,7 +3,6 @@ package site.connectdots.connectdotsprj.hotplace.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -13,11 +12,8 @@ import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyReq
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetilResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceListResponseDTO;
-import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
-import site.connectdots.connectdotsprj.hotplace.entity.HotplaceLocation;
 import site.connectdots.connectdotsprj.hotplace.service.HotplaceService;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -62,6 +58,12 @@ public class HotplaceController {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
+    }
+
+    // 테스트용 - 웹페이지에서 지도 검색
+    @GetMapping("/maptest")
+    public ModelAndView showMapPage() {
+        return new ModelAndView("map");
     }
 
 
