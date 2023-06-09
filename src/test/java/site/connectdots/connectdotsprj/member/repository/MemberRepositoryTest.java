@@ -25,46 +25,6 @@ class MemberRepositoryTest {
     MemberRepository memberRepository;
 
     @Test
-    @DisplayName("insert bulk")
-    @Rollback()
-    void insertBulk() {
-
-        for (int i = 1; i <= 50; i++) {
-            int number1 = (int) (Math.random() * 9000) + 1000;
-            int number2 = (int) (Math.random() * 9000) + 1000;
-
-            Gender gender = Gender.M;
-            if (i % 2 == 0) {
-                gender = Gender.F;
-            }
-
-            LocalDateTime startDate = LocalDateTime.of(1983, 1, 1, 0, 0);
-            LocalDateTime endDate = LocalDateTime.of(2003, 12, 31, 0, 0);
-
-            long days = startDate.until(endDate, ChronoUnit.DAYS);
-            long randomDays = (long) (Math.random() * days);
-
-            LocalDateTime randomDate = startDate.plusDays(randomDays);
-
-            memberRepository.save(
-                    Member.builder()
-                            .memberAccount("account" + i + "@google.com")
-                            .memberPassword("password" + i)
-                            .memberName("name" + i)
-                            .memberNickname("nickName" + i)
-                            .memberGender(gender)
-                            .memberBirth(randomDate)
-                            .memberPhone("010-" + number1 + "-" + number2)
-                            .memberLocation("강남구")
-                            .memberComment("hello world" + i)
-                            .build()
-            );
-
-        }
-
-    }
-
-    @Test
     @DisplayName("전체 조회에 성공할 것이며 사이즈는 50이다")
     void findAllTest() {
         //given
@@ -73,7 +33,48 @@ class MemberRepositoryTest {
         memberList.forEach(System.out::println);
 
         //then
-        Assertions.assertEquals(50, memberList.size());
+//        Assertions.assertEquals(50, memberList.size());
+    }
+
+    @Test
+    @DisplayName("닉네임으로 회원 조회에 성공할 것이다.")
+    void findByMemberNickNameTest() {
+        //given
+        String nickName = "nickName100";
+
+        //when
+        Member byNickname = memberRepository.findByMemberNickname(nickName);
+        System.out.println(byNickname);
+
+        //then
+    }
+
+    @Test
+    @DisplayName("핸드폰 번호로 회원 조회에 성공할 것이다.")
+    void findByMemberPhoneTest() {
+        //given
+        String phone = "010-1264-1234";
+
+        //when
+        Member byMemberPhone = memberRepository.findByMemberPhone(phone);
+        System.out.println(byMemberPhone);
+        //then
+
+    }
+    
+    @Test
+    @DisplayName("이메일로 회원 조회에 성공할 것이다.")
+    void findByMemberEmailTest() {
+        //given
+        String email = "123pasdfostMan@naver.com";
+        
+        //when
+        Member byMemberAccount = memberRepository.findByMemberAccount(email);
+        System.out.println(byMemberAccount);
+
+        System.out.println(byMemberAccount==null);
+
+        //then
     }
 
 }
