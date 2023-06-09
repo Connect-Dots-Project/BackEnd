@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetilResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceListResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
-import site.connectdots.connectdotsprj.hotplace.entity.HotplaceLocation;
 import site.connectdots.connectdotsprj.hotplace.repository.HotplaceRepository;
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
@@ -42,15 +42,15 @@ public class HotplaceService {
     }
 
     // 글 작성
-    public HotplaceDetilResponseDTO write(final HotplaceWriteRequestDTO dto)throws RuntimeException {
+    public HotplaceDetilResponseDTO write(final HotplaceWriteRequestDTO dto) throws RuntimeException {
 
-        Member member = memberRepository.findById(dto.getMemberIdx())
-                        .orElseThrow();
+//        Member member = memberRepository.findById(dto.getMemberIdx())
+//                .orElseThrow();
 
         Hotplace hotplace = dto.toEntity();
-        hotplace.setMember(member);
+//        hotplace.setMember(member);
 
-        log.info("hotplaceService.write.info {}", member);
+//        log.info("hotplaceService.write.info {}", member);
 
         Hotplace save = hotplaceRepository.save(hotplace);
 
@@ -103,7 +103,7 @@ public class HotplaceService {
 //        return listResponseDTO;
 //    }
 
-    public List<Hotplace> findByHotplaceLocation(HotplaceLocation hotplaceLocation) {
-        return hotplaceRepository.findByHotplaceLocation(hotplaceLocation);
+    public List<Hotplace> findByLocation(Location location) {
+        return hotplaceRepository.findByLocation(location);
     }
 }

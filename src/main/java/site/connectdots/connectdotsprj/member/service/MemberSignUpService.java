@@ -2,7 +2,7 @@ package site.connectdots.connectdotsprj.member.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.connectdots.connectdotsprj.hotplace.entity.HotplaceLocation;
+import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.member.dto.request.MemberSignUpRequestDTO;
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.exception.custom.SignUpFailException;
@@ -60,8 +60,16 @@ public class MemberSignUpService {
     }
 
 
+//    private boolean checkLocation(String location) {
+//        for (HotplaceLocation value : HotplaceLocation.values()) {
+//            if (value.name().equals(location)) return true;
+//        }
+//        return false;
+//    }
+
+    // HotplaceLocation -> Location 으로 변경했어용! (수민)
     private boolean checkLocation(String location) {
-        for (HotplaceLocation value : HotplaceLocation.values()) {
+        for (Location value : Location.values()) {
             if (value.name().equals(location)) return true;
         }
         return false;
