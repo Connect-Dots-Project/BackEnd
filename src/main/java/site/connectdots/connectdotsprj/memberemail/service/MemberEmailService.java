@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
 @Service
@@ -72,8 +71,7 @@ public class MemberEmailService {
     }
 
     //실제 메일 전송
-    public String sendEmail(String email) throws MessagingException, UnsupportedEncodingException {
-
+    public String sendEmail(String email) throws MessagingException {
         //메일전송에 필요한 정보 설정
         MimeMessage emailForm = createEmailForm(email);
         //실제 메일 전송
@@ -81,4 +79,9 @@ public class MemberEmailService {
 
         return authNum; //인증 코드 반환
     }
+
+    public boolean checkCode(String code) {
+        return authNum.equals(code);
+    }
+
 }
