@@ -1,4 +1,5 @@
 package site.connectdots.connectdotsprj.naverlogin.entity;
 
-public class NaverLoginMember {
+public enum OAuthProvider {
+    NAVER
 }
