@@ -2,7 +2,8 @@ package site.connectdots.connectdotsprj.member.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.connectdots.connectdotsprj.hotplace.entity.HotplaceLocation;
+import site.connectdots.connectdotsprj.global.enums.Location;
+import site.connectdots.connectdotsprj.member.dto.request.MemberLoginRequestDTO;
 import site.connectdots.connectdotsprj.member.dto.request.MemberSignUpRequestDTO;
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.exception.custom.SignUpFailException;
@@ -37,6 +38,7 @@ public class MemberSignUpService {
     }
 
 
+    // private method
     private void validateDTO(MemberSignUpRequestDTO dto) {
         if (!dto.getFirstPassword().equals(dto.getSecondPassword())) {
             throw new SignUpFailException(VALIDATE_PASSWORD_EXCEPTION, dto.getFirstPassword());
@@ -59,9 +61,8 @@ public class MemberSignUpService {
         }
     }
 
-
     private boolean checkLocation(String location) {
-        for (HotplaceLocation value : HotplaceLocation.values()) {
+        for (Location value : Location.values()) {
             if (value.name().equals(location)) return true;
         }
         return false;
