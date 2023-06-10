@@ -38,7 +38,7 @@ dependencies {
 
 
 
-}
+
 
     // jsp 설정
     implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
@@ -66,5 +66,11 @@ dependencies {
     implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     // -------------- 메일 인증
+
+    // -------------- jwt
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    // -------------- jwt
 
 }
