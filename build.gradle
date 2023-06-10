@@ -30,15 +30,11 @@ dependencies {
     // swagger api 문서화
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
-//	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test'
 
     // https://mvnrepository.com/artifact/se.michaelthelin.spotify/spotify-web-api-java
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:8.0.0'
-
-
-
-
 
     // jsp 설정
     implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'

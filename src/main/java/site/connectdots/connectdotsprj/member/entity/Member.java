@@ -47,7 +47,10 @@ public class Member {
     private String memberLocation;
     @Column(nullable = false, length = 50)
     private String memberComment;
-
+    @Column(length = 200)
+    private String memberSessionId;
+    @JsonFormat(pattern = "yyyy-HH-dd hh:MM:ss")
+    private LocalDateTime memberCookieDate;
 
     @OneToMany(mappedBy = "member")
     @Builder.Default
