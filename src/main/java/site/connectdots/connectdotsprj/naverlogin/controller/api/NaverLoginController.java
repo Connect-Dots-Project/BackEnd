@@ -14,10 +14,10 @@ import site.connectdots.connectdotsprj.util.jwt.AuthTokens;
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class NaverLoginController {
-    private final NaverLoginService oAuthLoginService;
-
-    @PostMapping("/naver")
-    public ResponseEntity<AuthTokens> loginNaver(@RequestBody NaverLoginParams params) {
-        return ResponseEntity.ok(oAuthLoginService.login(params));
-    }
+//    private final NaverLoginService oAuthLoginService;
+//
+//    @PostMapping("/naver")
+//    public ResponseEntity<AuthTokens> loginNaver(@RequestBody NaverLoginParams params) {
+//        return ResponseEntity.ok(oAuthLoginService.login(params));
+//    }
 }
