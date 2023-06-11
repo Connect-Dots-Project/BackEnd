@@ -60,11 +60,18 @@ public class HotplaceController {
         }
     }
 
-    // 테스트용 - 웹페이지에서 지도 검색
-    @GetMapping("/maptest")
+    // 테스트용 - 웹페이지에서 지도 검색 (JSP)
+    @GetMapping("/mapjsp")
     public ModelAndView showMapPage() {
-        return new ModelAndView("map");
+        return new ModelAndView("/WEB-INF/map.jsp");
     }
+
+    // 테스트용 - 웹페이지에서 지도 검색 (html)
+//    @GetMapping("/maphtml")
+//    public ModelAndView showMap() {
+//        log.info("===============================================");
+//        return new ModelAndView("/kakao_map/kakomap.html");
+//    }
 
 
     // 글 삭제

@@ -9,6 +9,14 @@
 
 </head>
 <body>
+
+<button id="kakao-login">
+    <a id="custom-login-btn" href="/kakao/login">
+        <img src="//mud-kage.kakao.com/14/dn/btqbjxsO6vP/KPiGpdnsubSq3a0PHEGUK1/o.jpg" width="300"/>
+    </a>
+</button>
+
+
 <div id="map" style="width:100%;height:350px;"></div>
 
 <script type="text/javascript"
