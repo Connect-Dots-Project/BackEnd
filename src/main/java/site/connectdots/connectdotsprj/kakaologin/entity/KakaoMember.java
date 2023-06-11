@@ -15,13 +15,13 @@ public class KakaoMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long kakaoIdx;
-    private String KakaoEmail;
+    private String kakaoEmail;
     private String kakaoNickname;
     private String kakaoProfileImage;
 
     @Builder
     public KakaoMember(String kakaoEmail, String kakaoNickname, String kakaoProfileImage) {
-        this.KakaoEmail = kakaoEmail;
+        this.kakaoEmail = kakaoEmail;
         this.kakaoNickname = kakaoNickname;
         this.kakaoProfileImage = kakaoProfileImage;
     }

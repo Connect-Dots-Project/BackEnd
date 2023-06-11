@@ -31,15 +31,23 @@ public class KakaoLoginService {
         log.info("발급받은 토큰 : {}", accessToken);
 
         KaKaoLoginResponseDTO kakaoUserInfo = getKakaoUserInfo(accessToken);
+        KaKaoLoginResponseDTO.KakaoAccount kakaoAccount = kakaoUserInfo.getKakaoAccount();
 
-        KakaoMember kakaoMember = KakaoMember.builder()
-                .kakaoEmail(kakaoUserInfo.getKakaoAccount().getEmail())
-                .kakaoNickname(kakaoUserInfo.getKakaoAccount().getProfile().getNickname())
-                .kakaoProfileImage(kakaoUserInfo.getKakaoAccount().getProfile().getProfileImageUrl())
-                .build();
+        // 이메일 중복 검사
+        // 만약, 나중에 회원테이블에 카카오가입자도 들어가게 되면 &&로 조건 걸어줘야함!!!!
+        if (kakaoLoginRepository.findByKakaoEmail(kakaoAccount.getEmail()) == null) {
 
-        kakaoLoginRepository.save(kakaoMember);
+            // 데이터베이스 저장
+            KakaoMember kakaoMember = KakaoMember.builder()
+                    .kakaoEmail(kakaoAccount.getEmail())
+                    .kakaoNickname(kakaoAccount.getProfile().getNickname())
+                    .kakaoProfileImage(kakaoAccount.getProfile().getProfileImageUrl())
+                    .build();
 
+            kakaoLoginRepository.save(kakaoMember);
+            System.out.println("가입 성공!");
+        }
+        System.out.println("이미 가입한 회원!");
     }
 
     private KaKaoLoginResponseDTO getKakaoUserInfo(String accessToken) {
