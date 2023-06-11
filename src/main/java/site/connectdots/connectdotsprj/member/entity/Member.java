@@ -33,9 +33,11 @@ public class Member {
     @Column(nullable = false, length = 30, unique = true)
     private String memberNickname;
     @Column(nullable = false, length = 1)
+    @Enumerated(EnumType.STRING)
     private Gender memberGender;
     @Column(length = 50)
-    private String memberProfile;
+    @Builder.Default
+    private String memberProfile = "profile.png";
     @JsonFormat(pattern = "yyyy-HH-dd")
     private LocalDateTime memberBirth;
     @CreationTimestamp
@@ -51,11 +53,13 @@ public class Member {
     private String memberSessionId;
     @JsonFormat(pattern = "yyyy-HH-dd hh:MM:ss")
     private LocalDateTime memberCookieDate;
+    @Column(nullable = false, length = 10)
+    @Enumerated(EnumType.STRING)
+    private MemberLoginMethod memberLoginMethod;
 
     @OneToMany(mappedBy = "member")
     @Builder.Default
     private List<FreeBoard> freeBoardList = new ArrayList<>();
-
     @OneToMany(mappedBy = "member")
     @Builder.Default
     private List<FreeBoardReply> freeBoardReplyList = new ArrayList<>();
