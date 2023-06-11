@@ -44,4 +44,12 @@ public class KakaoLoginController {
         return "";
     }
 
+//    @GetMapping("/sns/kakao")
+//    public String snsKakao() {
+//        KakaoLoginRequestDTO dto = new KakaoLoginRequestDTO(kakaoAppKey, kakaoRedirectURI, kakoCode);
+//        log.info("인가코드 : {}", dto.getKakaoCode());
+//
+//        return "";
+//    }
+
 }

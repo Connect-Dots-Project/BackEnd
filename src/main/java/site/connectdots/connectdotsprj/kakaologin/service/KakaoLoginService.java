@@ -1,5 +1,6 @@
 package site.connectdots.connectdotsprj.kakaologin.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import site.connectdots.connectdotsprj.kakaologin.dto.KaKaoLoginResponseDTO;
 import site.connectdots.connectdotsprj.kakaologin.dto.KakaoLoginRequestDTO;
+import site.connectdots.connectdotsprj.member.service.MemberSignUpService;
 
 import java.util.Map;
 
@@ -21,9 +24,26 @@ public class KakaoLoginService {
         String accessToken = getKakaoAccessToken(requestMap);
         log.info("발급받은 토큰 : {}", accessToken);
 
+      getKakaoUserInfo(accessToken);
+
     }
 
+    private KaKaoLoginResponseDTO getKakaoUserInfo(String accessToken) {
 
+        String requestUri = "https://kapi.kakao.com/v2/user/me";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+
+        RestTemplate template = new RestTemplate();
+        ResponseEntity<KaKaoLoginResponseDTO> responseEntity = template.exchange(requestUri, HttpMethod.GET, new HttpEntity<>(headers), KaKaoLoginResponseDTO.class);
+
+        KaKaoLoginResponseDTO responseData = responseEntity.getBody();
+        log.info("사용자 프로필 정보: {}", responseData);
+
+        return responseData;
+
+    }
 
 
     private String getKakaoAccessToken(Map<String, String> requestMap) {
