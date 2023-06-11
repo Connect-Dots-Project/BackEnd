@@ -3,13 +3,12 @@ package site.connectdots.connectdotsprj.member.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.connectdots.connectdotsprj.global.enums.Location;
-import site.connectdots.connectdotsprj.member.dto.request.MemberLoginRequestDTO;
 import site.connectdots.connectdotsprj.member.dto.request.MemberSignUpRequestDTO;
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.exception.custom.SignUpFailException;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
-import static site.connectdots.connectdotsprj.member.exception.custom.SignUpFailErrorCode.*;
+import static site.connectdots.connectdotsprj.member.exception.custom.enums.SignUpFailErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +30,7 @@ public class MemberSignUpService {
                         .memberLocation(dto.getLocation())
                         .memberGender(dto.getGender())
                         .memberComment(dto.getComment())
+                        .memberLoginMethod(dto.getLoginMethod())
                         .build()
         );
 
