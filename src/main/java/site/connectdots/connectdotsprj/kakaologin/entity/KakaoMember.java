@@ -1,22 +1,29 @@
 package site.connectdots.connectdotsprj.kakaologin.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Table(name = "kakao_member")
 public class KakaoMember {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long kakaoIdx;
+    private String KakaoEmail;
     private String kakaoNickname;
     private String kakaoProfileImage;
-    private String KakaoEmail;
+
+    @Builder
+    public KakaoMember(String kakaoEmail, String kakaoNickname, String kakaoProfileImage) {
+        this.KakaoEmail = kakaoEmail;
+        this.kakaoNickname = kakaoNickname;
+        this.kakaoProfileImage = kakaoProfileImage;
+    }
+
 }

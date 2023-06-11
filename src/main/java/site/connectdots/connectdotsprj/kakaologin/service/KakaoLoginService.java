@@ -12,19 +12,33 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import site.connectdots.connectdotsprj.kakaologin.dto.KaKaoLoginResponseDTO;
 import site.connectdots.connectdotsprj.kakaologin.dto.KakaoLoginRequestDTO;
+import site.connectdots.connectdotsprj.kakaologin.entity.KakaoMember;
+import site.connectdots.connectdotsprj.kakaologin.repository.KakaoLoginRepository;
+import site.connectdots.connectdotsprj.member.dto.request.MemberSignUpRequestDTO;
 import site.connectdots.connectdotsprj.member.service.MemberSignUpService;
 
 import java.util.Map;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class KakaoLoginService {
+
+    private final KakaoLoginRepository kakaoLoginRepository;
 
     public void kakaoService(Map<String, String> requestMap) {
         String accessToken = getKakaoAccessToken(requestMap);
         log.info("발급받은 토큰 : {}", accessToken);
 
-      getKakaoUserInfo(accessToken);
+        KaKaoLoginResponseDTO kakaoUserInfo = getKakaoUserInfo(accessToken);
+
+        KakaoMember kakaoMember = KakaoMember.builder()
+                .kakaoEmail(kakaoUserInfo.getKakaoAccount().getEmail())
+                .kakaoNickname(kakaoUserInfo.getKakaoAccount().getProfile().getNickname())
+                .kakaoProfileImage(kakaoUserInfo.getKakaoAccount().getProfile().getProfileImageUrl())
+                .build();
+
+        kakaoLoginRepository.save(kakaoMember);
 
     }
 
