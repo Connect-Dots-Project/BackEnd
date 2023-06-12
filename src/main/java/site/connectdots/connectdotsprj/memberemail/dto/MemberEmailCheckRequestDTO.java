@@ -11,7 +11,7 @@ import javax.validation.constraints.Email;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberEmailCheckRequest {
+public class MemberEmailCheckRequestDTO {
     @Email
     private String email;
 }
