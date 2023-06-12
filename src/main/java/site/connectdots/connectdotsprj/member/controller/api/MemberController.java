@@ -1,10 +1,12 @@
 package site.connectdots.connectdotsprj.member.controller.api;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.connectdots.connectdotsprj.member.dto.request.MemberLoginRequestDTO;
 import site.connectdots.connectdotsprj.member.dto.request.MemberLogoutRequestDTO;
 import site.connectdots.connectdotsprj.member.dto.request.MemberSignUpRequestDTO;
+import site.connectdots.connectdotsprj.member.dto.response.MemberLoginResponseDTO;
 import site.connectdots.connectdotsprj.member.service.MemberLoginService;
 import site.connectdots.connectdotsprj.member.service.MemberLogoutService;
 import site.connectdots.connectdotsprj.member.service.MemberSignUpService;
@@ -27,10 +29,12 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public boolean login(@RequestBody MemberLoginRequestDTO dto,
-                         HttpServletRequest request,
-                         HttpServletResponse response) {
-        return memberLoginService.login(dto, request.getSession(), response);
+    public ResponseEntity<MemberLoginResponseDTO> login(@RequestBody MemberLoginRequestDTO dto,
+                                                        HttpServletRequest request,
+                                                        HttpServletResponse response) {
+        MemberLoginResponseDTO loginResponse = memberLoginService.login(dto, request.getSession(), response);
+
+        return ResponseEntity.ok().body(loginResponse);
     }
 
     @PostMapping("/logout")
