@@ -132,6 +132,9 @@ public class HotplaceController {
 //        return ResponseEntity.ok().body(hotplacelist);
 //    }
 
+//    @GetMapping("/location/{location}")
+//    public ResponseEntity<?> getHotplacesByLocation(@PathVariable("location"))
+
 
 
     // 위도경도
