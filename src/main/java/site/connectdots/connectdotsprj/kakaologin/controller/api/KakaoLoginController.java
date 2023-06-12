@@ -39,9 +39,14 @@ public class KakaoLoginController {
         map.put("appkey", kakaoAppKey);
         map.put("redirect", kakaoRedirectURI);
         map.put("code", code);
-        kakaoLoginService.kakaoService(map);
+        try {
+            kakaoLoginService.kakaoService(map);
+            return "";
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return "";
+        }
 
-        return "";
     }
 
 //    @GetMapping("/sns/kakao")
