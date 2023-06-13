@@ -35,10 +35,16 @@ public class MemberLoginService {
 
         maintainLoginState(session, foundMember);
 
-        foundMember.setMemberSessionId(session.getId());
         memberRepository.save(foundMember);
 
         String token = tokenProvider.createToken(foundMember);
+
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println(token);
+        System.out.println();
+        System.out.println();
 
         return new MemberLoginResponseDTO(foundMember, token);
     }
@@ -52,7 +58,6 @@ public class MemberLoginService {
         Cookie cookie = setCookie(session);
         response.addCookie(cookie);
 
-        foundMember.setMemberCookieDate(LocalDateTime.now().plusDays(COOKIE_DAY));
         memberRepository.save(foundMember);
     }
 
