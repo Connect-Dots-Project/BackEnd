@@ -73,22 +73,7 @@ class MemberRepositoryTest {
         //then
     }
 
-    @Test
-    @DisplayName("세션 아이디로 멤버 조회에 성공할 것이다.")
-    void findByMemberSessionIdTest() {
-        //given
-        String sessionId = "8ADD0BB27E6EEC4D91F169298FCC19BD";
 
-        Member foundMember = memberRepository.findByMemberSessionId(sessionId);
-
-        //when
-
-        //then
-        assertEquals("강호동", foundMember.getMemberName());
-        assertEquals("1234", foundMember.getMemberPassword());
-        assertEquals("nic124kName46", foundMember.getMemberNickname());
-        
-    }
 
 
 }

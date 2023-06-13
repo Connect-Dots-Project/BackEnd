@@ -12,7 +12,9 @@ public enum FreeBoardErrorCode implements CustomErrorCode {
      * 404 - NOT_FOUND
      */
     FREE_BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 게시물입니다."),
-    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 회원입니다.");
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 회원입니다."),
+    LIKE_AND_HATE_EXCEPTION(HttpStatus.BAD_REQUEST, "본인의 글은 좋아요/싫어요가 불가능합니다.");
+
 
     private final HttpStatus httpStatus;
     private final String message;
