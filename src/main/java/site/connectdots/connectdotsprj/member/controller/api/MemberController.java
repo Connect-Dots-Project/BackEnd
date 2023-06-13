@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import site.connectdots.connectdotsprj.member.dto.request.MemberLoginRequestDTO;
 import site.connectdots.connectdotsprj.member.dto.request.MemberSignUpRequestDTO;
 import site.connectdots.connectdotsprj.member.dto.response.MemberLoginResponseDTO;
+import site.connectdots.connectdotsprj.member.dto.response.MemberSignUpResponseDTO;
 import site.connectdots.connectdotsprj.member.service.MemberLoginService;
 import site.connectdots.connectdotsprj.member.service.MemberSignUpService;
 
@@ -21,8 +22,10 @@ public class MemberController {
     private final MemberLoginService memberLoginService;
 
     @PostMapping("/sign-up")
-    public boolean signUp(@RequestBody MemberSignUpRequestDTO dto) {
-        return memberSignUpService.signUp(dto);
+    public ResponseEntity<MemberSignUpResponseDTO> signUp(@RequestBody MemberSignUpRequestDTO dto) {
+        MemberSignUpResponseDTO memberSignUpResponseDTO = memberSignUpService.signUp(dto);
+        
+        return ResponseEntity.ok().body(memberSignUpResponseDTO);
     }
 
     @PostMapping("/login")
