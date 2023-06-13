@@ -1,6 +1,7 @@
 package site.connectdots.connectdotsprj.freeboard.exception.handler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.LikeAndHateException;
@@ -13,10 +14,16 @@ import site.connectdots.connectdotsprj.global.exception.custom.CustomException;
 @RestControllerAdvice
 public class FreeBoardExceptionHandler {
 
+//    @ExceptionHandler(NotFoundFreeBoardException.class)
+//    public ExceptionResponse<? extends CustomException, Long> notFoundFreeBoardException(NotFoundFreeBoardException e) {
+//        log.error("NotFoundFreeBoardException : \terrorCode : {}\tmessage : {}\tfreeBoardIdx : {}", e.getErrorCode(), e.getErrorCode().getMessage(), e.getFreeBoardIdx());
+//        return new ExceptionResponse<>(e, e.getFreeBoardIdx());
+//    }
+
     @ExceptionHandler(NotFoundFreeBoardException.class)
-    public ExceptionResponse<? extends CustomException, Long> notFoundFreeBoardException(NotFoundFreeBoardException e) {
+    public ResponseEntity<?> notFoundFreeBoardException(NotFoundFreeBoardException e) {
         log.error("NotFoundFreeBoardException : \terrorCode : {}\tmessage : {}\tfreeBoardIdx : {}", e.getErrorCode(), e.getErrorCode().getMessage(), e.getFreeBoardIdx());
-        return new ExceptionResponse<>(e, e.getFreeBoardIdx());
+        return ResponseEntity.badRequest().body(e);
     }
 
     @ExceptionHandler(NotFoundMemberException.class)
