@@ -16,6 +16,8 @@ public interface HotplaceRepository extends JpaRepository<Hotplace, Long> {
      */
     List<Hotplace> findByLocation(Location location);
 
+    List<Hotplace> findByKakaoLocation (String kakaoLocation);
+
     /**
      * 내용에서 키워드로 게시물 목록 조회하기 (내용에서 검색하기)
      *
