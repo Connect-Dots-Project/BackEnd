@@ -14,28 +14,21 @@ import site.connectdots.connectdotsprj.global.exception.custom.CustomException;
 @RestControllerAdvice
 public class FreeBoardExceptionHandler {
 
-//    @ExceptionHandler(NotFoundFreeBoardException.class)
-//    public ExceptionResponse<? extends CustomException, Long> notFoundFreeBoardException(NotFoundFreeBoardException e) {
-//        log.error("NotFoundFreeBoardException : \terrorCode : {}\tmessage : {}\tfreeBoardIdx : {}", e.getErrorCode(), e.getErrorCode().getMessage(), e.getFreeBoardIdx());
-//        return new ExceptionResponse<>(e, e.getFreeBoardIdx());
-//    }
-
     @ExceptionHandler(NotFoundFreeBoardException.class)
-    public ResponseEntity<?> notFoundFreeBoardException(NotFoundFreeBoardException e) {
+    public ResponseEntity<ExceptionResponse<? extends CustomException, Long>> notFoundFreeBoardException(NotFoundFreeBoardException e) {
         log.error("NotFoundFreeBoardException : \terrorCode : {}\tmessage : {}\tfreeBoardIdx : {}", e.getErrorCode(), e.getErrorCode().getMessage(), e.getFreeBoardIdx());
-        return ResponseEntity.badRequest().body(e);
+        return ResponseEntity.badRequest().body(new ExceptionResponse<>(e, e.getFreeBoardIdx()));
     }
 
     @ExceptionHandler(NotFoundMemberException.class)
-    public ExceptionResponse<? extends CustomException, Long> notFoundMemberException(NotFoundMemberException e) {
+    public ResponseEntity<ExceptionResponse<? extends CustomException, Long>> notFoundMemberException(NotFoundMemberException e) {
         log.error("NotFoundMemberException : \terrorCode : {}\tmessage : {}\tfreeBoardIdx : {}", e.getErrorCode(), e.getErrorCode().getMessage(), e.getMemberIdx());
-        return new ExceptionResponse<>(e, e.getMemberIdx());
+        return ResponseEntity.badRequest().body(new ExceptionResponse<>(e, e.getMemberIdx()));
     }
 
-
     @ExceptionHandler(LikeAndHateException.class)
-    public ExceptionResponse<?, ?> likeAndHateException(LikeAndHateException e) {
+    public ResponseEntity<ExceptionResponse<? extends CustomException, String>> likeAndHateException(LikeAndHateException e) {
         log.error("LikeAndHateException : \terrorCode : {}\tmessage : {}", e, e.getMessage());
-        return new ExceptionResponse<>(e, e.getMessage());
+        return ResponseEntity.badRequest().body(new ExceptionResponse<>(e, e.getMessage()));
     }
 }
