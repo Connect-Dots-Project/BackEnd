@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.member.dto.request.MemberSignUpRequestDTO;
+import site.connectdots.connectdotsprj.member.dto.response.MemberSignUpResponseDTO;
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.exception.custom.SignUpFailException;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
@@ -16,7 +17,7 @@ public class MemberSignUpService {
 
     private final MemberRepository memberRepository;
 
-    public boolean signUp(MemberSignUpRequestDTO dto) {
+    public MemberSignUpResponseDTO signUp(MemberSignUpRequestDTO dto) {
         validateDTO(dto);
 
         Member save = memberRepository.save(
@@ -33,8 +34,9 @@ public class MemberSignUpService {
                         .memberLoginMethod(dto.getLoginMethod())
                         .build()
         );
+        boolean isSignUp = save.getMemberAccount() != null;
 
-        return save.getMemberAccount() != null;
+        return new MemberSignUpResponseDTO(isSignUp);
     }
 
 
