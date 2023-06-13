@@ -9,5 +9,7 @@ public interface FreeBoardRepository extends JpaRepository<FreeBoard, Long> {
 
     List<FreeBoard> findAllByMemberMemberIdx(Long memberIdx);
 
+    List<FreeBoard> findAllByMemberMemberAccount(String account);
+
 }
 

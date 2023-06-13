@@ -14,6 +14,7 @@ import site.connectdots.connectdotsprj.freeboard.repository.FreeBoardReplyReposi
 import site.connectdots.connectdotsprj.freeboard.repository.FreeBoardRepository;
 import site.connectdots.connectdotsprj.member.entity.Gender;
 import site.connectdots.connectdotsprj.member.entity.Member;
+import site.connectdots.connectdotsprj.member.entity.MemberLoginMethod;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
 import java.time.LocalDateTime;
@@ -83,8 +84,8 @@ public class InsertBulk {
 
             memberRepository.save(
                     Member.builder()
-                            .memberAccount("account" + i + "@google.com")
-                            .memberPassword("password" + i)
+                            .memberAccount("test" + i + "@google.com")
+                            .memberPassword("1234")
                             .memberName(names[i % 100])
                             .memberNickname("nickName" + i)
                             .memberGender(gender)
@@ -92,6 +93,7 @@ public class InsertBulk {
                             .memberPhone("010-" + number1 + "-" + number2)
                             .memberLocation(location[i % 25])
                             .memberComment("hello world" + i)
+                            .memberLoginMethod(MemberLoginMethod.COMMON)
                             .build()
             );
 
