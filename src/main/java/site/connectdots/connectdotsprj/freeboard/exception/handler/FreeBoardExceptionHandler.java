@@ -3,6 +3,7 @@ package site.connectdots.connectdotsprj.freeboard.exception.handler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import site.connectdots.connectdotsprj.freeboard.exception.custom.LikeAndHateException;
 import site.connectdots.connectdotsprj.global.exception.custom.ExceptionResponse;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.NotFoundFreeBoardException;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.NotFoundMemberException;
@@ -24,4 +25,10 @@ public class FreeBoardExceptionHandler {
         return new ExceptionResponse<>(e, e.getMemberIdx());
     }
 
+
+    @ExceptionHandler(LikeAndHateException.class)
+    public ExceptionResponse<?, ?> likeAndHateException(LikeAndHateException e) {
+        log.error("LikeAndHateException : \terrorCode : {}\tmessage : {}", e, e.getMessage());
+        return new ExceptionResponse<>(e, e.getMessage());
+    }
 }
