@@ -26,17 +26,21 @@ public class KakaoLoginService {
 
     private final KakaoLoginRepository kakaoLoginRepository;
 
-    public void kakaoService(Map<String, String> requestMap) {
+    public void kakaoService(Map<String, String> requestMap) throws RuntimeException {
         String accessToken = getKakaoAccessToken(requestMap);
         log.info("발급받은 토큰 : {}", accessToken);
 
         KaKaoLoginResponseDTO kakaoUserInfo = getKakaoUserInfo(accessToken);
         KaKaoLoginResponseDTO.KakaoAccount kakaoAccount = kakaoUserInfo.getKakaoAccount();
 
-        // 이메일 중복 검사
-        // 만약, 나중에 회원테이블에 카카오가입자도 들어가게 되면 &&로 조건 걸어줘야함!!!!
-        if (kakaoLoginRepository.findByKakaoEmail(kakaoAccount.getEmail()) == null) {
 
+//        // 이메일 중복 검사
+//        // 만약, 나중에 회원테이블에 카카오가입자도 들어가게 되면 &&로 조건 걸어줘야함!!!!
+        if (kakaoLoginRepository.existsByKakaoEmail(kakaoAccount.getEmail())) {
+            log.warn("존재하는 회원입니다 {}", kakaoAccount.getEmail());
+            throw new RuntimeException("이메일이 중복되었습니다.");
+
+        } else {
             // 데이터베이스 저장
             KakaoMember kakaoMember = KakaoMember.builder()
                     .kakaoEmail(kakaoAccount.getEmail())
@@ -45,9 +49,8 @@ public class KakaoLoginService {
                     .build();
 
             kakaoLoginRepository.save(kakaoMember);
-            System.out.println("가입 성공!");
+            log.info("가입 성공 {}", kakaoAccount.getEmail());
         }
-        System.out.println("이미 가입한 회원!");
     }
 
     private KaKaoLoginResponseDTO getKakaoUserInfo(String accessToken) {
