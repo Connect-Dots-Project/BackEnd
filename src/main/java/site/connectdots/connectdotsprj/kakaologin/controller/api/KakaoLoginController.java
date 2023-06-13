@@ -22,10 +22,10 @@ public class KakaoLoginController {
 
     private final KakaoLoginService kakaoLoginService;
 
-//    @Value("${sns.kakao.app-key}")
+    @Value("${sns.kakao.app-key}")
     private String kakaoAppKey;
 
-//    @Value("${sns.kakao.redirect-uri}")
+    @Value("${sns.kakao.redirect-uri}")
     private String kakaoRedirectURI;
 
     @GetMapping("/kakao/login")
