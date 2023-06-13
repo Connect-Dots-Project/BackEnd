@@ -1,4 +1,4 @@
-package site.connectdots.connectdotsprj.member.exception.custom;
+package site.connectdots.connectdotsprj.member.exception.custom.enums;
 
 
 import lombok.Getter;

@@ -14,4 +14,5 @@ public class MemberLoginRequestDTO {
     private String account;
     private String password;
     private Boolean isAutoLogin;
+
 }

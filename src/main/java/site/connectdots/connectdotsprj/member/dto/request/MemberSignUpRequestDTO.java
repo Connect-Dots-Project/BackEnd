@@ -1,12 +1,11 @@
 package site.connectdots.connectdotsprj.member.dto.request;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import site.connectdots.connectdotsprj.member.entity.Gender;
+import site.connectdots.connectdotsprj.member.entity.MemberLoginMethod;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 
 @Setter
@@ -27,5 +26,6 @@ public class MemberSignUpRequestDTO {
     private String phone;
     private String location;
     private String comment;
+    private MemberLoginMethod loginMethod;
 
 }
