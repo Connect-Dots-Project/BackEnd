@@ -12,13 +12,4 @@ public class ConnectdotsprjApplication {
 		SpringApplication.run(ConnectdotsprjApplication.class, args);
 	}
 
-
-//	@Controller
-//	public class MapController {
-//
-//		@GetMapping("/map")
-//		public String showMapPage() {
-//			return "index"; // JSP 파일의 이름을 반환합니다 (확장자 .jsp는 생략합니다).
-//		}
-//	}
 }

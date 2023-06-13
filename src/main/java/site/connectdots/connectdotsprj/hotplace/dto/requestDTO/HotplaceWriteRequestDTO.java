@@ -27,6 +27,7 @@ public class HotplaceWriteRequestDTO {
     private String hotplaceLongitude;
     private String hotplaceName;
     private String hotplaceFullAddress;
+    private String kakaoLocation;
 
 //    private Long memberIdx;
 
@@ -40,6 +41,7 @@ public class HotplaceWriteRequestDTO {
                 .hotplaceLongitude(this.hotplaceLongitude)
                 .hotplaceName(this.hotplaceName)
                 .hotplaceFullAddress(this.hotplaceFullAddress)
+                .kakaoLocation(this.kakaoLocation)
                 .build();
     }
 }
