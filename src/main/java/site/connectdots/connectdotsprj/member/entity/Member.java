@@ -49,10 +49,6 @@ public class Member {
     private String memberLocation;
     @Column(nullable = false, length = 50)
     private String memberComment;
-    @Column(length = 200)
-    private String memberSessionId;
-    @JsonFormat(pattern = "yyyy-HH-dd hh:MM:ss")
-    private LocalDateTime memberCookieDate;
     @Column(nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
     private MemberLoginMethod memberLoginMethod;
