@@ -106,4 +106,20 @@ public class HotplaceService {
     public List<Hotplace> findByLocation(Location location) {
         return hotplaceRepository.findByLocation(location);
     }
+
+
+    // 질문
+    // 맵에 뿌려주는 서비스는 따로 만들까융?
+
+    // 마커 전체보기
+    public List<Hotplace> displayMarkersAll() {
+        return hotplaceRepository.findAll();
+    }
+
+    // 마커 - 행정구역별 보기
+    public List<Hotplace> displayMarkersByLocation(String kakaoLocation) {
+//        Location selectedLocation = Location.of(kakaoLocation);
+        return hotplaceRepository.findByKakaoLocation(kakaoLocation);
+    }
+
 }

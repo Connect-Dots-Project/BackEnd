@@ -2,7 +2,9 @@ package site.connectdots.connectdotsprj.member.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import site.connectdots.connectdotsprj.global.config.TokenProvider;
 import site.connectdots.connectdotsprj.member.dto.request.MemberLoginRequestDTO;
+import site.connectdots.connectdotsprj.member.dto.response.MemberLoginResponseDTO;
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.exception.custom.LoginFailException;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
@@ -19,16 +21,9 @@ import static site.connectdots.connectdotsprj.member.util.LoginUtil.*;
 @RequiredArgsConstructor
 public class MemberLoginService {
     private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
 
-    public boolean login(MemberLoginRequestDTO dto, HttpSession session, HttpServletResponse response) {
-        System.out.println(dto);
-        System.out.println(session);
-        System.out.println(response);
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-
+    public MemberLoginResponseDTO login(MemberLoginRequestDTO dto, HttpSession session, HttpServletResponse response) {
         Member foundMember = memberRepository.findByMemberAccount(dto.getAccount());
         if (foundMember == null || !foundMember.getMemberPassword().equals(dto.getPassword())) {
             throw new LoginFailException(LOGIN_FAIL_EXCEPTION);
@@ -43,7 +38,9 @@ public class MemberLoginService {
         foundMember.setMemberSessionId(session.getId());
         memberRepository.save(foundMember);
 
-        return true;
+        String token = tokenProvider.createToken(foundMember);
+
+        return new MemberLoginResponseDTO(foundMember, token);
     }
 
     public void maintainLoginState(HttpSession session, Member member) {

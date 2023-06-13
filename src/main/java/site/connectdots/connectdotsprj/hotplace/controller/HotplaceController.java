@@ -3,15 +3,19 @@ package site.connectdots.connectdotsprj.hotplace.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetilResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceListResponseDTO;
+import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
+import site.connectdots.connectdotsprj.hotplace.repository.HotplaceRepository;
 import site.connectdots.connectdotsprj.hotplace.service.HotplaceService;
 
 import java.util.List;
@@ -23,6 +27,7 @@ import java.util.List;
 public class HotplaceController {
 
     private final HotplaceService hotplaceService;
+    private final HotplaceRepository hotplaceRepository;
 
     // 글 전체조회
     @GetMapping
@@ -61,9 +66,25 @@ public class HotplaceController {
     }
 
     // 테스트용 - 웹페이지에서 지도 검색 (JSP)
-    @GetMapping("/mapjsp")
+    @GetMapping("/search")
     public ModelAndView showMapPage() {
         return new ModelAndView("/WEB-INF/map.jsp");
+    }
+
+    // 테스트용 - 웹페이지 마커 표시하ㅙ (JSP)
+    @GetMapping("/map")
+    public ModelAndView showHotplaceAll(Model model) {
+        List<Hotplace> hotplaceList = hotplaceService.displayMarkersAll();
+        model.addAttribute("hotplaceList", hotplaceList);
+        return new ModelAndView("/WEB-INF/location.jsp");
+    }
+
+
+    @GetMapping("/map/{kakaolocation}")
+    public ModelAndView showHotplaceByLocation(@PathVariable String kakaolocation, Model model) {
+        List<Hotplace> hotplaceList = hotplaceService.displayMarkersByLocation(kakaolocation);
+        model.addAttribute("hotplaceList", hotplaceList);
+        return new ModelAndView("/WEB-INF/location.jsp");
     }
 
     // 테스트용 - 웹페이지에서 지도 검색 (html)
@@ -110,7 +131,7 @@ public class HotplaceController {
 
     // 입력값 검증
     private ResponseEntity<List<FieldError>> getValidatedResult(BindingResult result) {
-        if(result.hasErrors()) {
+        if (result.hasErrors()) {
             List<FieldError> fieldErrors = result.getFieldErrors();
             fieldErrors.forEach(err -> {
                 log.warn("입력값 검증에 걸림!!!!!!!!!!!! invalid client data - {}", err.toString());
@@ -136,12 +157,10 @@ public class HotplaceController {
 //    public ResponseEntity<?> getHotplacesByLocation(@PathVariable("location"))
 
 
-
     // 위도경도
     // 좋아요
     // 글 조회시 구분해서 - 행정구역별, 지도형태별, 게시글형태별
     // 사진 저장 경로설정
-
 
 
 }
