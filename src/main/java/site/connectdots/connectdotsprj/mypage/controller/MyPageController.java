@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.connectdots.connectdotsprj.mypage.dto.response.MemberDetailDTO;
+import site.connectdots.connectdotsprj.mypage.dto.response.MyPageWriteDTO;
 import site.connectdots.connectdotsprj.mypage.service.MyPageService;
 
 import java.util.List;
@@ -19,13 +21,12 @@ public class MyPageController {
 
     private final MyPageService myPageService;
 
-    // 회원목록(findAll)
-    @GetMapping("/mypage")
-    public ResponseEntity<List<MemberDetailDTO>> findAll() {
-        List<MemberDetailDTO> memberList = myPageService.findAll();
-        return ResponseEntity.ok().body(memberList);
+    // 마이페이지 - 내가 작성한 글/댓글
+    @GetMapping("/mypage/{memberIdx}")
+    public ResponseEntity<MyPageWriteDTO> findByIdx(@PathVariable Long memberIdx) {
+        MyPageWriteDTO myPageWriteDTO = myPageService.findById(memberIdx);
+        return ResponseEntity.ok(myPageWriteDTO);
     }
-
     //회원 상세조회 - findByIdx(Long memberIdx)
     //회원삭제 - @Delete deleteByIdx
     //회원수정 get, post 둘다

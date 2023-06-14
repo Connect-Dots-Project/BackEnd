@@ -68,3 +68,6 @@ dependencies {
     // -------------- 메일 인증
 
 }
+tasks.named('test'){
+    useJUnitPlatform()
+}

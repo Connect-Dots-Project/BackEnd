@@ -42,7 +42,7 @@ class FreeBoardReplyRepositoryTest {
                 .collect(Collectors.toList());
 
         //then
-        assertEquals(12, collect.size());
+        assertEquals(13, collect.size());
     }
 
     @Test
