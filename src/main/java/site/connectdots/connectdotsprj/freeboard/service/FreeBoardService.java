@@ -3,6 +3,7 @@ package site.connectdots.connectdotsprj.freeboard.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardModifyRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardReplyWriteRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardWriteRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailReplyDTO;
@@ -11,7 +12,10 @@ import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardResponseD
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoard;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardReply;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.LikeAndHateException;
-import site.connectdots.connectdotsprj.freeboard.exception.custom.NotFoundMemberException;
+import site.connectdots.connectdotsprj.freeboard.exception.custom.UnauthorizedModificationException;
+import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
+import site.connectdots.connectdotsprj.member.exception.custom.NotFoundMemberByAccountException;
+import site.connectdots.connectdotsprj.member.exception.custom.NotFoundMemberByIdxException;
 import site.connectdots.connectdotsprj.freeboard.repository.FreeBoardReplyRepository;
 import site.connectdots.connectdotsprj.freeboard.repository.FreeBoardRepository;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.NotFoundFreeBoardException;
@@ -19,9 +23,11 @@ import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static site.connectdots.connectdotsprj.freeboard.exception.custom.FreeBoardErrorCode.*;
+import static site.connectdots.connectdotsprj.member.exception.custom.enums.MemberErrorCode.NOT_FOUND_MEMBER;
 
 @Service
 @Transactional
@@ -73,7 +79,7 @@ public class FreeBoardService {
                         .freeBoardLocation(dto.getFreeBoardLocation())
                         .freeBoardCategory(dto.getFreeBoardCategory())
                         .member(memberRepository.findById(dto.getMemberIdx()).orElseThrow(
-                                () -> new NotFoundMemberException(MEMBER_NOT_FOUND, dto.getMemberIdx())
+                                () -> new NotFoundMemberByIdxException(NOT_FOUND_MEMBER, dto.getMemberIdx())
                         ))
                         .build()
         );
@@ -110,11 +116,56 @@ public class FreeBoardService {
     public FreeBoardDetailResponseDTO updateLikeCount(Long freeBoardIdx, int likeCountDelta, String userAccount) {
         FreeBoard freeBoard = getFreeBoard(freeBoardIdx);
         if (freeBoard.getMember().getMemberAccount().equals(userAccount)) {
-            throw new LikeAndHateException(LIKE_AND_HATE_EXCEPTION);
+            throw new LikeAndHateException(UNAUTHORIZED_LIKE_AND_HATE_EXCEPTION);
         }
         freeBoard.setFreeBoardLikeCount(freeBoard.getFreeBoardLikeCount() + likeCountDelta);
 
         return getFreeBoardDetailResponseDTO(freeBoardIdx, freeBoard);
+    }
+
+
+    public List<FreeBoardResponseDTO> myPageFindAll(String account) {
+
+        return freeBoardRepository.findAllByMemberMemberAccount(account)
+                .stream().map(FreeBoardResponseDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public FreeBoardDetailResponseDTO modifyFreeBoard(FreeBoardModifyRequestDTO dto, TokenUserInfo tokenUserInfo) {
+        validateDTO(dto, tokenUserInfo);
+        Member byId = memberRepository.findById(dto.getMemberIdx()).orElseThrow();
+
+        FreeBoard savedFreeBoard = freeBoardRepository.save(
+                FreeBoard.builder()
+                        .freeBoardIdx(dto.getFreeBoardIdx())
+                        .freeBoardImg(dto.getFreeBoardImg())
+                        .freeBoardTitle(dto.getFreeBoardTitle())
+                        .freeBoardContent(dto.getFreeBoardContent())
+                        .freeBoardLocation(dto.getFreeBoardLocation())
+                        .freeBoardCategory(dto.getFreeBoardCategory())
+                        .member(byId)
+                        .build()
+        );
+
+        return getFreeBoardDetailResponseDTO(savedFreeBoard.getFreeBoardIdx(), savedFreeBoard);
+    }
+
+    private void validateDTO(FreeBoardModifyRequestDTO dto, TokenUserInfo tokenUserInfo) {
+        if (tokenUserInfo == null) {
+            throw new NotFoundMemberByAccountException(NOT_FOUND_MEMBER, "token이 없습니다.");
+        }
+
+        Member foundMember = memberRepository.findByMemberAccount(tokenUserInfo.getAccount());
+
+        if (foundMember == null) {
+            // 멤버 조회 실패
+            throw new NotFoundMemberByAccountException(NOT_FOUND_MEMBER, tokenUserInfo.getAccount());
+        }
+
+        if (foundMember.getMemberIdx() != dto.getMemberIdx()) {
+            // 작성자가 아님.
+            throw new UnauthorizedModificationException(UNAUTHORIZED_MODIFICATION_EXCEPTION, tokenUserInfo.getAccount());
+        }
     }
 
     /**
@@ -131,13 +182,13 @@ public class FreeBoardService {
 
     private Member getMember(Long memberIdx) {
         return memberRepository.findById(memberIdx).orElseThrow(() -> {
-            throw new NotFoundMemberException(MEMBER_NOT_FOUND, memberIdx);
+            throw new NotFoundMemberByIdxException(NOT_FOUND_MEMBER, memberIdx);
         });
     }
 
     private FreeBoard getFreeBoard(Long freeBoardIdx) {
         return freeBoardRepository.findById(freeBoardIdx).orElseThrow(() -> {
-            throw new NotFoundFreeBoardException(FREE_BOARD_NOT_FOUND, freeBoardIdx);
+            throw new NotFoundFreeBoardException(NOT_FOUND_FREE_BOARD, freeBoardIdx);
         });
     }
 
@@ -154,11 +205,5 @@ public class FreeBoardService {
         freeBoardRepository.save(freeBoard);
     }
 
-    public List<FreeBoardResponseDTO> myPageFindAll(String account) {
-
-        return freeBoardRepository.findAllByMemberMemberAccount(account)
-                .stream().map(FreeBoardResponseDTO::new)
-                .collect(Collectors.toList());
-    }
 
 }

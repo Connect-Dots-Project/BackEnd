@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardModifyRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardReplyWriteRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardWriteRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailReplyDTO;
@@ -80,8 +81,24 @@ public class FreeBoardController {
      * @return
      */
     @PatchMapping("/free-board")
-    public ResponseEntity<?> modifyFreeBoard() {
-        return null;
+    public ResponseEntity<FreeBoardDetailResponseDTO> modifyFreeBoard(
+            @AuthenticationPrincipal TokenUserInfo userInfo
+            ,@RequestBody FreeBoardModifyRequestDTO dto
+    ) {
+        System.out.println(userInfo);
+        System.out.println(dto);
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println(dto.getMemberIdx());
+        System.out.println(dto.getFreeBoardIdx());
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        FreeBoardDetailResponseDTO responseDTO = freeBoardService.modifyFreeBoard(dto, userInfo);
+
+        return ResponseEntity.ok().body(responseDTO);
     }
 
 
