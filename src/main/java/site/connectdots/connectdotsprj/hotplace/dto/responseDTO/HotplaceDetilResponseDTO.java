@@ -24,6 +24,7 @@ public class HotplaceDetilResponseDTO {
     private String hotplaceLongitude;
     private String hotplaceName;
     private String hotplaceFullAddress;
+    private String kakaoLocation;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime hotplaceWriteDate;

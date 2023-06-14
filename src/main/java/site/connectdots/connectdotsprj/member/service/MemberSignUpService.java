@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.member.dto.request.MemberSignUpRequestDTO;
+import site.connectdots.connectdotsprj.member.dto.response.MemberSignUpResponseDTO;
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.exception.custom.SignUpFailException;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
-import static site.connectdots.connectdotsprj.member.exception.custom.SignUpFailErrorCode.*;
+import static site.connectdots.connectdotsprj.member.exception.custom.enums.SignUpFailErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -16,7 +17,7 @@ public class MemberSignUpService {
 
     private final MemberRepository memberRepository;
 
-    public boolean signUp(MemberSignUpRequestDTO dto) {
+    public MemberSignUpResponseDTO signUp(MemberSignUpRequestDTO dto) {
         validateDTO(dto);
 
         Member save = memberRepository.save(
@@ -30,13 +31,16 @@ public class MemberSignUpService {
                         .memberLocation(dto.getLocation())
                         .memberGender(dto.getGender())
                         .memberComment(dto.getComment())
+                        .memberLoginMethod(dto.getLoginMethod())
                         .build()
         );
+        boolean isSignUp = save.getMemberAccount() != null;
 
-        return save.getMemberAccount() != null;
+        return new MemberSignUpResponseDTO(isSignUp);
     }
 
 
+    // private method
     private void validateDTO(MemberSignUpRequestDTO dto) {
         if (!dto.getFirstPassword().equals(dto.getSecondPassword())) {
             throw new SignUpFailException(VALIDATE_PASSWORD_EXCEPTION, dto.getFirstPassword());
@@ -59,15 +63,6 @@ public class MemberSignUpService {
         }
     }
 
-
-//    private boolean checkLocation(String location) {
-//        for (HotplaceLocation value : HotplaceLocation.values()) {
-//            if (value.name().equals(location)) return true;
-//        }
-//        return false;
-//    }
-
-    // HotplaceLocation -> Location 으로 변경했어용! (수민)
     private boolean checkLocation(String location) {
         for (Location value : Location.values()) {
             if (value.name().equals(location)) return true;
