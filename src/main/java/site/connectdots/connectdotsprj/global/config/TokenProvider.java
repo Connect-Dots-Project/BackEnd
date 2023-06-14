@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import site.connectdots.connectdotsprj.member.entity.Member;
+import site.connectdots.connectdotsprj.member.entity.MemberLoginMethod;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -44,6 +45,7 @@ public class TokenProvider {
         // 추가 클레임 정의
         Map<String, Object> claims = new HashMap<>();
         claims.put("account", memberEntity.getMemberAccount());
+        claims.put("loginMethod", String.valueOf(memberEntity.getMemberLoginMethod()));
 //        claims.put("role", memberEntity.getRole().toString());
 
         return Jwts.builder()
@@ -76,6 +78,7 @@ public class TokenProvider {
 
         return TokenUserInfo.builder()
                 .account(claims.get("account", String.class))
+                .memberLoginMethod(claims.get("loginMethod", String.class))
                 .build();
     }
 }
