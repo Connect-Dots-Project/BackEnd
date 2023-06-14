@@ -36,6 +36,7 @@ dependencies {
     // https://mvnrepository.com/artifact/se.michaelthelin.spotify/spotify-web-api-java
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:8.0.0'
 
+
     // jsp 설정
     implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
     implementation 'javax.servlet:jstl:1.2'
@@ -69,4 +70,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     // -------------- jwt
 
+}
+tasks.named('test'){
+    useJUnitPlatform()
 }
