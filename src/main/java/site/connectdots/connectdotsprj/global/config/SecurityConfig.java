@@ -9,6 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.filter.CorsFilter;
 import site.connectdots.connectdotsprj.global.token.filter.JwtAuthFilter;
 
 @EnableWebSecurity
@@ -47,10 +48,10 @@ public class SecurityConfig {
         ;
 
         // 토큰 인증 필터 연결
-//        http.addFilterAfter(
-//                jwtAuthFilter
-//                , CorsFilter.class // import 주의: 스프링꺼
-//        );
+        http.addFilterAfter(
+                jwtAuthFilter
+                , CorsFilter.class // import 주의: 스프링꺼
+        );
 
         return http.build();
     }

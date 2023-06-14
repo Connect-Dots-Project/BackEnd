@@ -2,6 +2,7 @@ package site.connectdots.connectdotsprj.global.config;
 
 
 import lombok.*;
+import site.connectdots.connectdotsprj.member.entity.MemberLoginMethod;
 
 @Getter
 @ToString
@@ -12,5 +13,6 @@ import lombok.*;
 public class TokenUserInfo {
 
     private String account;
+    private String memberLoginMethod;
 
 }
