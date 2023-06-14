@@ -1,42 +1,45 @@
 package site.connectdots.connectdotsprj.naverlogin.service;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import site.connectdots.connectdotsprj.member.repository.MemberRepository;
-import site.connectdots.connectdotsprj.naverlogin.dto.response.OAuthInfoResponse;
-import site.connectdots.connectdotsprj.naverlogin.entity.NaverMember;
-import site.connectdots.connectdotsprj.naverlogin.entity.OAuthLoginParams;
-import site.connectdots.connectdotsprj.naverlogin.repository.NaverLoginRepository;
-import site.connectdots.connectdotsprj.util.jwt.AuthTokens;
-import site.connectdots.connectdotsprj.util.jwt.AuthTokensGenerator;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
-@RequiredArgsConstructor
 public class NaverLoginService {
-    private final NaverLoginRepository memberRepository;
-    private final AuthTokensGenerator authTokensGenerator;
-    private final RequestOAuthInfoService requestOAuthInfoService;
 
-    public AuthTokens login(OAuthLoginParams params) {
-        OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(params);
-        Long memberId = findOrCreateMember(oAuthInfoResponse);
-        return authTokensGenerator.generate(memberId);
-    }
 
-    private Long findOrCreateMember(OAuthInfoResponse oAuthInfoResponse) {
-        return memberRepository.findByEmail(oAuthInfoResponse.getEmail())
-                .getNaverId();
-//                .map(NaverMember::getNaverId)
-//                .orElseGet(() -> newMember(oAuthInfoResponse));
-    }
+    public void getProfile(String accessToken, String refreshToken, String tokenType, String expiresIn) {
+        String requestURI = "https://openapi.naver.com/v1/nid/me";
 
-    private Long newMember(OAuthInfoResponse oAuthInfoResponse) {
-        NaverMember member = NaverMember.builder()
-                .email(oAuthInfoResponse.getEmail())
-                .nickname(oAuthInfoResponse.getNickname())
-                .oAuthProvider(oAuthInfoResponse.getOAuthProvider())
-                .build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
 
-        return memberRepository.save(member).getNaverId();
+        RestTemplate template = new RestTemplate();
+        ResponseEntity<Object> responseEntity = template.exchange(requestURI, HttpMethod.GET, new HttpEntity<>(headers), Object.class);
+
+        System.out.println("----------------------------");
+        System.out.println("----------------------------");
+        System.out.println(responseEntity);
+        System.out.println("----------------------------");
+        System.out.println("----------------------------");
+
+        //profile_image=https://ssl.pstatic.net/static/pwe/address/img_profile.png,
+        // gender=M,
+        // mobile=010-3779-0201,
+        // mobile_e164=+821037790201,
+        // name=이기덕,
+        // birthday=05-11,
+        // birthyear=1992
+
+
     }
 }

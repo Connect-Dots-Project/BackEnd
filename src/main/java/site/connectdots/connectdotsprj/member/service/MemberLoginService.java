@@ -23,22 +23,30 @@ public class MemberLoginService {
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
 
-    public MemberLoginResponseDTO login(MemberLoginRequestDTO dto, HttpSession session, HttpServletResponse response) {
+    public MemberLoginResponseDTO login(MemberLoginRequestDTO dto
+//            , HttpSession session, HttpServletResponse response
+    ) {
         Member foundMember = memberRepository.findByMemberAccount(dto.getAccount());
         if (foundMember == null || !foundMember.getMemberPassword().equals(dto.getPassword())) {
             throw new LoginFailException(LOGIN_FAIL_EXCEPTION);
         }
 
-        if (dto.getIsAutoLogin()) {
-            setAutoLogin(session, response, foundMember);
-        }
+//        if (dto.getIsAutoLogin()) {
+//            setAutoLogin(session, response, foundMember);
+//        }
+//
+//        maintainLoginState(session, foundMember);
 
-        maintainLoginState(session, foundMember);
-
-        foundMember.setMemberSessionId(session.getId());
         memberRepository.save(foundMember);
 
         String token = tokenProvider.createToken(foundMember);
+
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println(token);
+        System.out.println();
+        System.out.println();
 
         return new MemberLoginResponseDTO(foundMember, token);
     }
@@ -52,7 +60,6 @@ public class MemberLoginService {
         Cookie cookie = setCookie(session);
         response.addCookie(cookie);
 
-        foundMember.setMemberCookieDate(LocalDateTime.now().plusDays(COOKIE_DAY));
         memberRepository.save(foundMember);
     }
 
