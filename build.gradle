@@ -38,7 +38,7 @@ dependencies {
 
 
 
-}
+
 
     // jsp 설정
     implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
@@ -67,4 +67,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     // -------------- 메일 인증
 
+}
+tasks.named('test'){
+    useJUnitPlatform()
 }

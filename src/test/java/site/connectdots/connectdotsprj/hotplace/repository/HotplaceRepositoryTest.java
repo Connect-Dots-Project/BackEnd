@@ -30,9 +30,9 @@ class HotplaceRepositoryTest {
                 Hotplace.builder()
                         .hotplaceContent("ASDFADSFDSFSF내용")
                         .location(Location.강남구)
-                        .member(Member.builder()
-                                .memberIdx(1L)
-                                .build())
+//                        .member(Member.builder()
+//                                .memberIdx(1L)
+//                                .build())
                         .build()
         );
     }
