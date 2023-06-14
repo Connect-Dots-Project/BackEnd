@@ -3,12 +3,14 @@ package site.connectdots.connectdotsprj.hotplace.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
@@ -27,15 +29,14 @@ import java.util.List;
 public class HotplaceController {
 
     private final HotplaceService hotplaceService;
-    private final HotplaceRepository hotplaceRepository;
 
     // 글 전체조회
     @GetMapping
-    public ResponseEntity<?> list() {
+    public ResponseEntity<?> list(@AuthenticationPrincipal TokenUserInfo userInfo) {
         log.info("전체조회!");
         HotplaceListResponseDTO hotplaceList = null;
         try {
-            hotplaceList = hotplaceService.findAll();
+            hotplaceList = hotplaceService.findAll(userInfo.getAccount());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -45,7 +46,9 @@ public class HotplaceController {
 
     // 글 작성
     @PostMapping
-    public ResponseEntity<?> write(@Validated @RequestBody HotplaceWriteRequestDTO dto, BindingResult result) {
+    public ResponseEntity<?> write(
+            @AuthenticationPrincipal TokenUserInfo userInfo
+            ,@Validated @RequestBody HotplaceWriteRequestDTO dto, BindingResult result) {
 
         log.info("HotplaceController.write.info 글 작성 {}, {}", dto, result);
 
@@ -57,7 +60,7 @@ public class HotplaceController {
         if (fieldErrors != null) return fieldErrors;
 
         try {
-            HotplaceDetilResponseDTO hotplaceDetilResponseDTO = hotplaceService.write(dto);
+            HotplaceDetilResponseDTO hotplaceDetilResponseDTO = hotplaceService.write(dto, userInfo);
             return ResponseEntity.ok().body(hotplaceDetilResponseDTO);
         } catch (RuntimeException e) {
             e.printStackTrace();

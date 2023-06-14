@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
@@ -27,9 +28,10 @@ public class HotplaceService {
     private final MemberRepository memberRepository;
 
     // 글 전체조회
-    public HotplaceListResponseDTO findAll() {
+    public HotplaceListResponseDTO findAll(String account) {
 
-        List<Hotplace> hotplaceList = hotplaceRepository.findAll();
+        Member member = getMember(account);
+        List<Hotplace> hotplaceList = hotplaceRepository.findAllByMember(member);
 
         List<HotplaceDetilResponseDTO> list = hotplaceList.stream()
                 .map(HotplaceDetilResponseDTO::new)
@@ -41,13 +43,21 @@ public class HotplaceService {
         return listResponseDTO;
     }
 
+    private Member getMember(String account) {
+        return memberRepository.findByMemberAccount(account);
+    }
+
     // 글 작성
-    public HotplaceDetilResponseDTO write(final HotplaceWriteRequestDTO dto) throws RuntimeException {
+    public HotplaceDetilResponseDTO write(
+            final HotplaceWriteRequestDTO dto
+            , final TokenUserInfo userInfo) throws RuntimeException {
 
 //        Member member = memberRepository.findById(dto.getMemberIdx())
 //                .orElseThrow();
 
-        Hotplace hotplace = dto.toEntity();
+        Member member = getMember(userInfo.getAccount());
+
+        Hotplace hotplace = dto.toEntity(member);
 //        hotplace.setMember(member);
 
 //        log.info("hotplaceService.write.info {}", member);

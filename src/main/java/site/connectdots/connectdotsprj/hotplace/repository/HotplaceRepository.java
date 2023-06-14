@@ -1,8 +1,10 @@
 package site.connectdots.connectdotsprj.hotplace.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
+import site.connectdots.connectdotsprj.member.entity.Member;
 
 import java.util.List;
 
@@ -29,4 +31,8 @@ public interface HotplaceRepository extends JpaRepository<Hotplace, Long> {
 
     //작성자로 조회하기
     //List<Member> findByNickname(String nickname);
+
+    @Query("SELECT h FROM Hotplace h WHERE h.member =:member")
+    List<Hotplace> findAllByMember(Member member);
+
 }
