@@ -210,4 +210,16 @@ class HotplaceRepositoryTest {
     }
 
 
+    @Test
+    @DisplayName("kakaoLocation으로 찾기")
+    void findByKakaoLocationTest() {
+        //given
+        String kakaoLocation = "강남구";
+        //when
+        List<Hotplace> byKakaoLocation = hotplaceRepository.findByKakaoLocation(kakaoLocation);
+        System.out.println("--------------byKakaoLocation = " + byKakaoLocation);
+        //then
+        assertEquals(2, byKakaoLocation.size());
+    }
+
 }
