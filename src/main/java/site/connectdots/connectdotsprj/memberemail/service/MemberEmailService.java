@@ -3,6 +3,8 @@ package site.connectdots.connectdotsprj.memberemail.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import site.connectdots.connectdotsprj.memberemail.dto.request.MemberCodeResponseDTO;
+import site.connectdots.connectdotsprj.memberemail.dto.response.MemberCodeCheckResponseDTO;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -71,17 +73,21 @@ public class MemberEmailService {
     }
 
     //실제 메일 전송
-    public String sendEmail(String email) throws MessagingException {
+    public MemberCodeResponseDTO sendEmail(String email) throws MessagingException {
         //메일전송에 필요한 정보 설정
         MimeMessage emailForm = createEmailForm(email);
         //실제 메일 전송
         emailSender.send(emailForm);
 
-        return authNum; //인증 코드 반환
+        return MemberCodeResponseDTO.builder()
+                .code(authNum)
+                .build(); //인증 코드 반환
     }
 
-    public boolean checkCode(String code) {
-        return authNum.equals(code);
+    public MemberCodeCheckResponseDTO checkCode(String code) {
+        return MemberCodeCheckResponseDTO.builder()
+                .checkResult(authNum.equals(code))
+                .build();
     }
 
 }
