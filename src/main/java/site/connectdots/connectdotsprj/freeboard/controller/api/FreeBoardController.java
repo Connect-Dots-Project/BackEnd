@@ -44,7 +44,7 @@ public class FreeBoardController {
      */
     @GetMapping("/free-board/{freeBoardIdx}")
     public ResponseEntity<FreeBoardDetailResponseDTO> detailViewById(@PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {
-        FreeBoardDetailResponseDTO foundFreeBoardDetail = freeBoardService.findById(freeBoardIdx);
+        FreeBoardDetailResponseDTO foundFreeBoardDetail = freeBoardService.detailView(freeBoardIdx);
 
         return ResponseEntity.ok().body(foundFreeBoardDetail);
     }
@@ -83,19 +83,8 @@ public class FreeBoardController {
     @PatchMapping("/free-board")
     public ResponseEntity<FreeBoardDetailResponseDTO> modifyFreeBoard(
             @AuthenticationPrincipal TokenUserInfo userInfo
-            ,@RequestBody FreeBoardModifyRequestDTO dto
+            , @RequestBody FreeBoardModifyRequestDTO dto
     ) {
-        System.out.println(userInfo);
-        System.out.println(dto);
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println(dto.getMemberIdx());
-        System.out.println(dto.getFreeBoardIdx());
-        System.out.println();
-        System.out.println();
-        System.out.println();
         FreeBoardDetailResponseDTO responseDTO = freeBoardService.modifyFreeBoard(dto, userInfo);
 
         return ResponseEntity.ok().body(responseDTO);
