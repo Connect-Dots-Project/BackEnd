@@ -23,7 +23,6 @@ import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static site.connectdots.connectdotsprj.freeboard.exception.custom.FreeBoardErrorCode.*;
@@ -57,7 +56,7 @@ public class FreeBoardService {
      * @return
      */
     @Transactional(readOnly = true)
-    public FreeBoardDetailResponseDTO findById(Long freeBoardIdx) {
+    public FreeBoardDetailResponseDTO detailView(Long freeBoardIdx) {
         FreeBoard freeBoard = getFreeBoard(freeBoardIdx);
         updateViewCount(freeBoard);
 

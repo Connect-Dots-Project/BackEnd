@@ -24,7 +24,7 @@ public class FreeBoardDetailResponseDTO {
         this.memberNickname = freeBoard.getMember().getMemberNickname();
         this.memberProfile = freeBoard.getMember().getMemberProfile();
         this.freeBoardListResponseDTO.setFreeBoardLikeCount(freeBoard.getFreeBoardLikeCount());
-        this.freeBoardListResponseDTO.setFreeBoardViewCount(freeBoardListResponseDTO.getFreeBoardViewCount());
+//        this.freeBoardListResponseDTO.setFreeBoardViewCount(freeBoardListResponseDTO.getFreeBoardViewCount());
         this.freeBoardListResponseDTO.setFreeBoardReplyCount((long) replyList.size());
         this.replyList = replyList;
     }
