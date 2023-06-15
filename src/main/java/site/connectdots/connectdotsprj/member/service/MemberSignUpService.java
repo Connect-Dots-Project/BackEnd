@@ -50,15 +50,15 @@ public class MemberSignUpService {
             throw new SignUpFailException(VALIDATE_LOCATION_EXCEPTION, dto.getLocation());
         }
 
-        if (duplicateAccount(dto.getAccount())) {
+        if (isDuplicateAccount(dto.getAccount())) {
             throw new SignUpFailException(DUPLICATE_ACCOUNT, dto.getAccount());
         }
 
-        if (duplicatePhone(dto.getPhone())) {
+        if (isDuplicatePhone(dto.getPhone())) {
             throw new SignUpFailException(DUPLICATE_PHONE_EXCEPTION, dto.getPhone());
         }
 
-        if (duplicateNickName(dto.getNickName())) {
+        if (isDuplicateNickName(dto.getNickName())) {
             throw new SignUpFailException(DUPLICATE_NICK_NAME_EXCEPTION, dto.getNickName());
         }
     }
@@ -70,15 +70,15 @@ public class MemberSignUpService {
         return false;
     }
 
-    private boolean duplicateNickName(String nickname) {
+    private boolean isDuplicateNickName(String nickname) {
         return memberRepository.findByMemberNickname(nickname) != null;
     }
 
-    private boolean duplicateAccount(String account) {
+    private boolean isDuplicateAccount(String account) {
         return memberRepository.findByMemberAccount(account) != null;
     }
 
-    private boolean duplicatePhone(String phone) {
+    private boolean isDuplicatePhone(String phone) {
         return memberRepository.findByMemberPhone(phone) != null;
     }
 
