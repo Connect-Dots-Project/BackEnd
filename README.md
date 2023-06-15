@@ -68,6 +68,14 @@ erDiagram
     INT(2) item_amount  "NOT NULL"
     INT(10) member_idx "NOT NULL"
     }
-    
-    
+
+    TB_CVS{
+    INT(10) cvs_idx PK "AUTO_INCREMENT"
+    VARCHAR(200) cvs_img "NOT NULL"
+    VARCHAR(50) cvs_title "NOT NULL"
+    VARCHAR(10) cvs_price "NOT NULL"
+    VARCHAR(5) cvs_sale "NOT NULL"
+    VARCHAR(10) cvs_type "NOT NULL"
+    DATE cvs_reg_date "DEFAULT CURRENT_TIMESTAMP"
+    }
 ```
