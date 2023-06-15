@@ -30,9 +30,9 @@ class HotplaceRepositoryTest {
                 Hotplace.builder()
                         .hotplaceContent("ASDFADSFDSFSF내용")
                         .location(Location.강남구)
-                        .member(Member.builder()
-                                .memberIdx(1L)
-                                .build())
+//                        .member(Member.builder()
+//                                .memberIdx(1L)
+//                                .build())
                         .build()
         );
     }
@@ -209,5 +209,17 @@ class HotplaceRepositoryTest {
 
     }
 
+
+    @Test
+    @DisplayName("kakaoLocation으로 찾기")
+    void findByKakaoLocationTest() {
+        //given
+        String kakaoLocation = "강남구";
+        //when
+        List<Hotplace> byKakaoLocation = hotplaceRepository.findByKakaoLocation(kakaoLocation);
+        System.out.println("--------------byKakaoLocation = " + byKakaoLocation);
+        //then
+        assertEquals(2, byKakaoLocation.size());
+    }
 
 }

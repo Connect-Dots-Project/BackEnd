@@ -9,9 +9,4 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-//    @ExceptionHandler(RuntimeException.class)
-//    public ResponseEntity<?> notFoundFreeBoard() {
-//        return ResponseEntity.badRequest().body("정의하지 않은 익셉션 발생");
-//    }
-
 }

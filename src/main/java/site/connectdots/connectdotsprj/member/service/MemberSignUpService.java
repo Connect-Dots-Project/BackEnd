@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.member.dto.request.MemberSignUpRequestDTO;
+import site.connectdots.connectdotsprj.member.dto.response.MemberSignUpResponseDTO;
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.exception.custom.SignUpFailException;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
-import static site.connectdots.connectdotsprj.member.exception.custom.SignUpFailErrorCode.*;
+import static site.connectdots.connectdotsprj.member.exception.custom.enums.SignUpFailErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -16,7 +17,7 @@ public class MemberSignUpService {
 
     private final MemberRepository memberRepository;
 
-    public boolean signUp(MemberSignUpRequestDTO dto) {
+    public MemberSignUpResponseDTO signUp(MemberSignUpRequestDTO dto) {
         validateDTO(dto);
 
         Member save = memberRepository.save(
@@ -30,13 +31,16 @@ public class MemberSignUpService {
                         .memberLocation(dto.getLocation())
                         .memberGender(dto.getGender())
                         .memberComment(dto.getComment())
+                        .memberLoginMethod(dto.getLoginMethod())
                         .build()
         );
+        boolean isSignUp = save.getMemberAccount() != null;
 
-        return save.getMemberAccount() != null;
+        return new MemberSignUpResponseDTO(isSignUp);
     }
 
 
+    // private method
     private void validateDTO(MemberSignUpRequestDTO dto) {
         if (!dto.getFirstPassword().equals(dto.getSecondPassword())) {
             throw new SignUpFailException(VALIDATE_PASSWORD_EXCEPTION, dto.getFirstPassword());
@@ -46,28 +50,19 @@ public class MemberSignUpService {
             throw new SignUpFailException(VALIDATE_LOCATION_EXCEPTION, dto.getLocation());
         }
 
-        if (duplicateAccount(dto.getAccount())) {
+        if (isDuplicateAccount(dto.getAccount())) {
             throw new SignUpFailException(DUPLICATE_ACCOUNT, dto.getAccount());
         }
 
-        if (duplicatePhone(dto.getPhone())) {
+        if (isDuplicatePhone(dto.getPhone())) {
             throw new SignUpFailException(DUPLICATE_PHONE_EXCEPTION, dto.getPhone());
         }
 
-        if (duplicateNickName(dto.getNickName())) {
+        if (isDuplicateNickName(dto.getNickName())) {
             throw new SignUpFailException(DUPLICATE_NICK_NAME_EXCEPTION, dto.getNickName());
         }
     }
 
-
-//    private boolean checkLocation(String location) {
-//        for (HotplaceLocation value : HotplaceLocation.values()) {
-//            if (value.name().equals(location)) return true;
-//        }
-//        return false;
-//    }
-
-    // HotplaceLocation -> Location 으로 변경했어용! (수민)
     private boolean checkLocation(String location) {
         for (Location value : Location.values()) {
             if (value.name().equals(location)) return true;
@@ -75,15 +70,15 @@ public class MemberSignUpService {
         return false;
     }
 
-    private boolean duplicateNickName(String nickname) {
+    private boolean isDuplicateNickName(String nickname) {
         return memberRepository.findByMemberNickname(nickname) != null;
     }
 
-    private boolean duplicateAccount(String account) {
+    private boolean isDuplicateAccount(String account) {
         return memberRepository.findByMemberAccount(account) != null;
     }
 
-    private boolean duplicatePhone(String phone) {
+    private boolean isDuplicatePhone(String phone) {
         return memberRepository.findByMemberPhone(phone) != null;
     }
 

@@ -25,6 +25,8 @@ erDiagram
         INT(10) hotplace_like_count "DEFAULT 0"
         VARCHAR(20) hotplace_latitude "NOT NULL"
         VARCHAR(20)  hotplace_longitude "NOT NULL"
+        VARCHAR(20) hotplace_name "NOT NULL"
+        VARCHAR(50) hotplace_full_address "NOT NULL"
         INT(10) member_idx "NOT NULL"
     }
     TB_MEMBER||--|{TB_FREEBOARD :""
