@@ -30,7 +30,7 @@ public class HotplaceWriteRequestDTO {
     private String hotplaceFullAddress;
     private String kakaoLocation;
 
-//    private Long memberIdx;
+    private Long memberIdx;
 
 
     public Hotplace toEntity() {
@@ -43,6 +43,9 @@ public class HotplaceWriteRequestDTO {
                 .hotplaceName(this.hotplaceName)
                 .hotplaceFullAddress(this.hotplaceFullAddress)
                 .kakaoLocation(this.kakaoLocation)
+                .member(Member.builder()
+                        .memberIdx(this.memberIdx)
+                        .build())
                 .build();
     }
 

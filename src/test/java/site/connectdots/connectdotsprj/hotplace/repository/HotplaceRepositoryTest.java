@@ -1,5 +1,6 @@
 package site.connectdots.connectdotsprj.hotplace.repository;
 
+import org.hibernate.boot.TempTableDdlTransactionHandling;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -220,6 +221,21 @@ class HotplaceRepositoryTest {
         System.out.println("--------------byKakaoLocation = " + byKakaoLocation);
         //then
         assertEquals(2, byKakaoLocation.size());
+    }
+
+    @Test
+    @DisplayName("글 작성 시간을 기준으로 내림차순 정렬 조회에 성공할 것이다.")
+    void findAllByOrsjfdklsdfTEst() throws Exception {
+        //given
+
+        //when
+        List<Hotplace> allByOrderByHotplaceWriteDateDesc = hotplaceRepository.findAllByOrderByHotplaceWriteDateDesc();
+        allByOrderByHotplaceWriteDateDesc.forEach(System.out::println);
+
+
+
+        //then
+
     }
 
 }
