@@ -1,6 +1,8 @@
 package site.connectdots.connectdotsprj.freeboard.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardModifyRequestDTO;
@@ -22,7 +24,6 @@ import site.connectdots.connectdotsprj.freeboard.exception.custom.NotFoundFreeBo
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,26 +37,30 @@ public class FreeBoardService {
     private final FreeBoardRepository freeBoardRepository;
     private final FreeBoardReplyRepository freeBoardReplyRepository;
     private final MemberRepository memberRepository;
+    private final Integer START_PAGE = 0;
+    private final Integer SIZE = 10;
+    private final String KEY = "freeBoardIdx";
 
     /**
-     * 자유게시판의 모든 목록을 리턴해주는 메서드
+     * 페이징 처리하여 게시판의 글을 가져온다
      *
-     * @return
+     * @return : 1 페이지당 10개의 글
      */
-    @Transactional(readOnly = true)
-    public List<FreeBoardResponseDTO> findAll() {
-        return freeBoardRepository
-                .findAllByOrderByFreeBoardIdxDesc()
-                .stream()
-                .map(FreeBoardResponseDTO::new)
+    @Transactional(readOnly = true) // 읽기 전용으로 가져온다면 조회할 때 성능이 좋다.
+    public List<FreeBoardResponseDTO> findAll(Integer page) {
+        Sort freeBoardIdx = Sort.by(KEY);
+        PageRequest pageRequest = PageRequest.of(page, SIZE, freeBoardIdx.descending());
+
+        return freeBoardRepository.findAll(pageRequest)
+                .stream().map(FreeBoardResponseDTO::new)
                 .collect(Collectors.toList());
     }
 
     /**
      * 자유게시판의 인덱스로 찾는 메서드
      *
-     * @param freeBoardIdx
-     * @return
+     * @param freeBoardIdx : 매개변수로 받은 인덱스
+     * @return : 해당 글의 리플을 포함시켜 리턴
      */
     public FreeBoardDetailResponseDTO detailView(Long freeBoardIdx) {
         FreeBoard freeBoard = getFreeBoard(freeBoardIdx);
@@ -84,7 +89,7 @@ public class FreeBoardService {
                         .build()
         );
 
-        return findAll();
+        return findAll(START_PAGE);
     }
 
     /**
