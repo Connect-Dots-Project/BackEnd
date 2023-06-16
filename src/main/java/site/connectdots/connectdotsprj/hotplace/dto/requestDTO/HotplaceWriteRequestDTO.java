@@ -30,7 +30,8 @@ public class HotplaceWriteRequestDTO {
     private String hotplaceFullAddress;
     private String kakaoLocation;
 
-    private Long memberIdx;
+    // 수정필요
+    private Long memberIdx= 1L;
 
 
     public Hotplace toEntity() {

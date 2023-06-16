@@ -49,8 +49,10 @@ public class HotplaceService {
 
         Hotplace saved = hotplaceRepository.save(dto.toEntity());
 
+        HotplaceDetailResponseDTO hotplaceDetailResponseDTO = new HotplaceDetailResponseDTO(saved);
+
         return HotplaceWriteResponseDTO.builder()
-                .isWrite(saved.getHotplaceContent() != null)
+                .isWrite(hotplaceDetailResponseDTO.getHotplaceFullAddress() != null)
                 .build();
     }
 
