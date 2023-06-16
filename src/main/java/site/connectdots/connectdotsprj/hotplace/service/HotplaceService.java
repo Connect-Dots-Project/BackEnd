@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
-import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetilResponseDTO;
+import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetailResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceListResponseDTO;
+import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceWriteResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.hotplace.repository.HotplaceRepository;
 import site.connectdots.connectdotsprj.member.entity.Member;
@@ -28,43 +28,32 @@ public class HotplaceService {
     private final MemberRepository memberRepository;
 
     // 글 전체조회
-    public HotplaceListResponseDTO findAll(String account) {
+    @Transactional(readOnly = true)
+    public HotplaceListResponseDTO findAll() {
+        List<Hotplace> hotplaceList = hotplaceRepository.findAllByOrderByHotplaceWriteDateDesc();
 
-        Member member = getMember(account);
-        List<Hotplace> hotplaceList = hotplaceRepository.findAllByMember(member);
-
-        List<HotplaceDetilResponseDTO> list = hotplaceList.stream()
-                .map(HotplaceDetilResponseDTO::new)
+        List<HotplaceDetailResponseDTO> list = hotplaceList.stream()
+                .map(HotplaceDetailResponseDTO::new)
                 .collect(Collectors.toList());
 
-        HotplaceListResponseDTO listResponseDTO = new HotplaceListResponseDTO();
-        listResponseDTO.setHotplaceList(list);
-
-        return listResponseDTO;
+        return HotplaceListResponseDTO.builder()
+                .hotplaceList(list)
+                .build();
     }
 
-    private Member getMember(String account) {
-        return memberRepository.findByMemberAccount(account);
-    }
 
     // 글 작성
-    public HotplaceDetilResponseDTO write(
+    public HotplaceWriteResponseDTO write(
             final HotplaceWriteRequestDTO dto
-            , final TokenUserInfo userInfo) throws RuntimeException {
+            /*, final TokenUserInfo userInfo */) throws RuntimeException {
 
-//        Member member = memberRepository.findById(dto.getMemberIdx())
-//                .orElseThrow();
+        Hotplace saved = hotplaceRepository.save(dto.toEntity());
 
-        Member member = getMember(userInfo.getAccount());
+        HotplaceDetailResponseDTO hotplaceDetailResponseDTO = new HotplaceDetailResponseDTO(saved);
 
-        Hotplace hotplace = dto.toEntity(member);
-//        hotplace.setMember(member);
-
-//        log.info("hotplaceService.write.info {}", member);
-
-        Hotplace save = hotplaceRepository.save(hotplace);
-
-        return new HotplaceDetilResponseDTO(save);
+        return HotplaceWriteResponseDTO.builder()
+                .isWrite(hotplaceDetailResponseDTO.getHotplaceFullAddress() != null)
+                .build();
     }
 
     // 글 삭제
@@ -77,7 +66,7 @@ public class HotplaceService {
 
 
     // 글 수정
-    public HotplaceDetilResponseDTO modify(final HotplaceModifyRequestDTO dto) {
+    public HotplaceDetailResponseDTO modify(final HotplaceModifyRequestDTO dto) {
         // 조회
         final Hotplace hotplaceEntity = findOne(dto.getHotplaceIdx());
 
@@ -87,7 +76,7 @@ public class HotplaceService {
         // 저장
         Hotplace modified = hotplaceRepository.save(hotplaceEntity);
 
-        return new HotplaceDetilResponseDTO(modified);
+        return new HotplaceDetailResponseDTO(modified);
     }
 
 
@@ -99,22 +88,19 @@ public class HotplaceService {
 
 
     // 행정구역으로 핫플레이스 게시물 목록 조회하기
-//    public HotplaceListResponseDTO findByHotplaceLocation(HotplaceLocation hotplaceLocation) {
-//
-//        List<Hotplace> byHotplaceLocation = hotplaceRepository.findByHotplaceLocation(hotplaceLocation);
-//
-//        List<HotplaceDetilResponseDTO> dtoList = byHotplaceLocation.stream()
-//                .map(HotplaceDetilResponseDTO::new)
-//                .collect(Collectors.toList());
-//
-//        HotplaceListResponseDTO listResponseDTO = new HotplaceListResponseDTO();
-//        listResponseDTO.setHotplaceList(dtoList);
-//
-//        return listResponseDTO;
-//    }
+    @Transactional(readOnly = true)
+    public HotplaceListResponseDTO findByLocation(Location location) {
 
-    public List<Hotplace> findByLocation(Location location) {
-        return hotplaceRepository.findByLocation(location);
+        List<Hotplace> hotplaceList = hotplaceRepository.findByLocation(location);
+
+        List<HotplaceDetailResponseDTO> list = hotplaceList.stream()
+                .map(HotplaceDetailResponseDTO::new)
+                .collect(Collectors.toList());
+
+        return HotplaceListResponseDTO.builder()
+                .hotplaceList(list)
+                .build();
+
     }
 
 
