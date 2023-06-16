@@ -107,4 +107,20 @@ class FreeBoardRepositoryTest {
 
     }
 
+
+    @Test
+    @DisplayName("정렬 기준 테스트")
+    void tetst() {
+        //given
+
+        List<FreeBoard> allByOrderByFreeBoardIdx = freeBoardRepository.findAllByOrderByFreeBoardIdxDesc();
+        for (FreeBoard byOrderByFreeBoardIdx : allByOrderByFreeBoardIdx) {
+            System.out.println(byOrderByFreeBoardIdx);
+        }
+        //when
+
+
+        //then
+    }
+
 }
