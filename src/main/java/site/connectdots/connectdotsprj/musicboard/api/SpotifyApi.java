@@ -1,24 +1,28 @@
 package site.connectdots.connectdotsprj.musicboard.api;
 
 
+import net.bytebuddy.matcher.StringMatcher;
 import org.apache.hc.core5.http.ParseException;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import se.michaelthelin.spotify.SpotifyHttpManager;
-import se.michaelthelin.spotify.enums.ModelObjectType;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.IPlaylistItem;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.*;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
-import se.michaelthelin.spotify.requests.data.artists.GetArtistsTopTracksRequest;
 import se.michaelthelin.spotify.requests.data.browse.GetCategorysPlaylistsRequest;
-import se.michaelthelin.spotify.requests.data.playlists.GetPlaylistRequest;
+import se.michaelthelin.spotify.requests.data.tracks.GetTrackRequest;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 
 @RestController
@@ -26,7 +30,7 @@ public class SpotifyApi {
 
     private static final String clientId = "e665029ca3b34c27b937c214233fd932";
     private static final String clientSecret = "932abc3385b44159996813d0f82b1284";
-    private static final URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:8183/spotify-redirect");
+    private static final URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:8190/contents/music-board");
 
     private static final se.michaelthelin.spotify.SpotifyApi spotifyApi = new se.michaelthelin.spotify.SpotifyApi.Builder()
             .setClientId(clientId)
@@ -34,7 +38,15 @@ public class SpotifyApi {
             .setRedirectUri(redirectUri)
             .build();
 
-    @GetMapping("/spotify-redirect")
+
+    @GetMapping("/spotify-login")
+    public ModelAndView spotifyLogin() {
+        String s = "redirect:https://accounts.spotify.com/authorize?response_type=code&client_id=" + clientId + "&redirect_uri=" + redirectUri;
+
+        return new ModelAndView(s);
+    }
+
+    @GetMapping("/contents/music-board")
     public void oauth(@RequestParam String code) throws IOException, ParseException, SpotifyWebApiException {
 
 //        System.out.println("code = [" + code + "]");
@@ -50,31 +62,21 @@ public class SpotifyApi {
 
         final Paging<Category> categoryPaging = spotifyApi.getListOfCategories().build().execute();
 
-        for (Category category : categoryPaging.getItems()) {
-//            System.out.println("category = [" + category + "]");
 
-            GetCategorysPlaylistsRequest getCategoryPlaylistsRequest = spotifyApi
-                    .getCategorysPlaylists(category.getId())
-                    .build();
-
-            Paging<PlaylistSimplified> playlistPaging = getCategoryPlaylistsRequest.execute();
-            for (PlaylistSimplified playlist : playlistPaging.getItems()) {
-                if (playlist.getImages() != null && playlist.getImages().length > 0) {
-                    for (Image image : playlist.getImages()) {
-                        String imageUrl = image.getUrl();
-                        System.out.println("Image URL: " + imageUrl);
-                    }
-                }
-            }
-        }
-
-        final Playlist playlist = spotifyApi.getPlaylist("37i9dQZF1DX7L8tfJz5HGb").build().execute();
+        final Playlist playlist = spotifyApi.getPlaylist("37i9dQZEVXbNxXF4SkHj9F").build().execute();
 
         // 플레이리스트 ID 값을 저장할 리스트
         List<String> playlistIds = new ArrayList<>();
 
         Paging<PlaylistTrack> tracks = playlist.getTracks();
         PlaylistTrack[] playlistTracks = tracks.getItems();
+        Image[] images = playlist.getImages();
+
+        for (Image image : images) {
+            String url = image.getUrl();
+            System.out.println("url = " + url);
+        }
+
 
         // 플레이리스트 ID 값을 변수에 저장
         for (PlaylistTrack playlistTrack : playlistTracks) {
@@ -98,7 +100,7 @@ public class SpotifyApi {
 
 //        Paging<PlaylistTrack> tracks = playlist.getTracks();
 //        PlaylistTrack[] playlistTracks = tracks.getItems();
-        Image[] images = playlist.getImages();
+
 
 
         for (PlaylistTrack playlistTrack : playlistTracks) {
@@ -113,10 +115,7 @@ public class SpotifyApi {
 
         }
 
-        for (Image image : images) {
-            String url = image.getUrl();
-            System.out.println("url = " + url);
-        }
 
     }
 }
+
