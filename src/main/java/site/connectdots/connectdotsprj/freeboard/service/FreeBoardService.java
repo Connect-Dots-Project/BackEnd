@@ -22,6 +22,7 @@ import site.connectdots.connectdotsprj.freeboard.exception.custom.NotFoundFreeBo
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,8 @@ public class FreeBoardService {
      */
     @Transactional(readOnly = true)
     public List<FreeBoardResponseDTO> findAll() {
-        return freeBoardRepository.findAll()
+        return freeBoardRepository
+                .findAllByOrderByFreeBoardIdxDesc()
                 .stream()
                 .map(FreeBoardResponseDTO::new)
                 .collect(Collectors.toList());
@@ -55,7 +57,6 @@ public class FreeBoardService {
      * @param freeBoardIdx
      * @return
      */
-    @Transactional(readOnly = true)
     public FreeBoardDetailResponseDTO detailView(Long freeBoardIdx) {
         FreeBoard freeBoard = getFreeBoard(freeBoardIdx);
         updateViewCount(freeBoard);

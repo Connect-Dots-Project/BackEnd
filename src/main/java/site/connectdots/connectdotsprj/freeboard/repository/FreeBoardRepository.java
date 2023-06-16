@@ -6,6 +6,7 @@ import site.connectdots.connectdotsprj.freeboard.entity.FreeBoard;
 import java.util.List;
 
 public interface FreeBoardRepository extends JpaRepository<FreeBoard, Long> {
+    List<FreeBoard> findAllByOrderByFreeBoardIdxDesc();
 
     List<FreeBoard> findAllByMemberMemberIdx(Long memberIdx);
 
