@@ -11,15 +11,8 @@ import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCrede
 import se.michaelthelin.spotify.model_objects.specification.*;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
-import site.connectdots.connectdotsprj.musicboard.dto.response.SpotifyPlaylistDTO;
-import site.connectdots.connectdotsprj.musicboard.service.MusicService;
 
-import javax.sound.midi.Track;
 import java.net.URI;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class SpotifyTests {
 

@@ -6,15 +6,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.connectdots.connectdotsprj.musicboard.dto.response.MusicListResponseDTO;
-import site.connectdots.connectdotsprj.musicboard.dto.response.SpotifyPlaylistDTO;
+import site.connectdots.connectdotsprj.musicboard.AccessToken;
+import site.connectdots.connectdotsprj.musicboard.dto.response.MusicDTO;
+import site.connectdots.connectdotsprj.musicboard.dto.response.TrackListResponseDTO;
+import site.connectdots.connectdotsprj.musicboard.dto.response.LoginSpotifyDTO;
 import site.connectdots.connectdotsprj.musicboard.entity.Music;
 import site.connectdots.connectdotsprj.musicboard.repository.MusicRepository;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -25,14 +24,25 @@ import static java.util.stream.Collectors.toList;
 public class MusicService {
 
     private final MusicRepository musicRepository;
+    private final AccessToken accessToken;
 
+    public void loginSpotify(LoginSpotifyDTO loginSpotifyDTO) {
+        Music music = new Music();
+        //여기서부터..
+//        music.setClientId(loginSpotifyDTO.);
+//        music.setTitle(musicDTO.getTitle());
+//        music.setArtist(musicDTO.getArtist());
+        // Set other fields as needed
 
-    public MusicListResponseDTO findAll(MusicListResponseDTO musicListResponseDTO) {
+        musicRepository.save(music);
+    }
+
+    public TrackListResponseDTO findAll(TrackListResponseDTO musicListResponseDTO) {
         List<Music> musicList = musicRepository.findAll();
 
-        List<MusicListResponseDTO> dto = musicList.stream()
+        List<TrackListResponseDTO> dto = musicList.stream()
                 .map(list -> {
-                    return new MusicListResponseDTO(list);
+                    return new TrackListResponseDTO(list);
                 })
                 .collect(toList());
 
