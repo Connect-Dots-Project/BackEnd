@@ -14,4 +14,5 @@ public interface LivechatRepository extends JpaRepository<Livechat, Long> {
     List<String> findHashtagsOrderByCount();
 
     List<Livechat> findAllByLivechatHashtag(String hashtag);
+
 }

@@ -40,7 +40,6 @@ class LivechatRepositoryTest {
 //        //then
 //    }
 
-
     @Test
     @DisplayName("글 작성에 성공할 것이다.")
     @Rollback(value = true)
@@ -61,6 +60,18 @@ class LivechatRepositoryTest {
         assertEquals("해시태그", saved.getLivechatHashtag());
         assertEquals(5, saved.getMemberIdx());
 
+    }
+
+    @Test
+    @DisplayName("글 전체 조회에 성공할 것이다.")
+    void findAllTest() {
+        //given
+
+        //when
+        List<Livechat> all = livechatRepository.findAll();
+        all.forEach(System.out::println);
+
+        //then
     }
 
     @Test
