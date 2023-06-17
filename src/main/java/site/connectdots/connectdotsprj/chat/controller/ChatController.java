@@ -16,7 +16,6 @@ import java.util.List;
 public class ChatController {
     private final ChatService chatService;
 
-
     @GetMapping("/room")
     public String rooms(Model model) {
         return "/chat/room";

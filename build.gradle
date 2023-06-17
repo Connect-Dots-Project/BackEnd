@@ -30,8 +30,8 @@ dependencies {
     // swagger api 문서화
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	testImplementation 'org.springframework.security:spring-security-test'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
 
     // https://mvnrepository.com/artifact/se.michaelthelin.spotify/spotify-web-api-java
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:8.0.0'
@@ -44,11 +44,12 @@ dependencies {
 
     // -------------- chatting
     //websocket
-//    implementation 'org.springframework.boot:spring-boot-starter-websocket'
-//    implementation 'org.webjars:sockjs-client:1.1.2'
-//    implementation 'org.webjars:stomp-websocket:2.3.3-1'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.webjars:sockjs-client:1.1.2'
+    implementation 'org.webjars:stomp-websocket:2.3.3-1'
+    // -------------- chatting
 
-    //view
+    // -------------- chatting --- view
 //    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 //    implementation 'org.springframework.boot:spring-boot-starter-freemarker'
 //    implementation 'org.springframework.boot:spring-boot-devtools'
@@ -56,7 +57,7 @@ dependencies {
 //    implementation 'org.webjars.bower:vue:2.5.16'
 //    implementation 'org.webjars.bower:axios:0.17.1'
 //    implementation 'com.google.code.gson:gson:2.8.0'
-    // -------------- chatting
+    // -------------- chatting --- view
 
 
     // -------------- 메일 인증
@@ -71,6 +72,6 @@ dependencies {
     // -------------- jwt
 
 }
-tasks.named('test'){
+tasks.named('test') {
     useJUnitPlatform()
 }
