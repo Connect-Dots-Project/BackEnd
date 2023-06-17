@@ -20,18 +20,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FreeBoardController {
     private final FreeBoardService freeBoardService;
-
     private final int LIKE = 1;
     private final int HATE = -1;
 
+
     /**
-     * 자유게시판을 눌렀을 때 모든 글을 보여주는 메서드
+     * 전체 조회
      *
-     * @return
+     * @param page : 가져올 페이지
+     * @return : 1페이지 당 10개의 게시글을 가장 최신 작서된 순으로 리턴
      */
-    @GetMapping()
-    public ResponseEntity<List<FreeBoardResponseDTO>> findAll() {
-        List<FreeBoardResponseDTO> freeBoardList = freeBoardService.findAll();
+    @GetMapping("/{page}")
+    public ResponseEntity<List<FreeBoardResponseDTO>> findAll(@PathVariable(name = "page") Integer page) {
+        List<FreeBoardResponseDTO> freeBoardList = freeBoardService.findAll(page);
 
         return ResponseEntity.ok().body(freeBoardList);
     }
@@ -39,10 +40,10 @@ public class FreeBoardController {
     /**
      * 자유게시판의 글을 클릭했을 때 상세 보기
      *
-     * @param freeBoardIdx
-     * @return
+     * @param freeBoardIdx : 해당 게시글의 인덱스
+     * @return : 해당 글 + 리플을 리턴
      */
-    @GetMapping("/{freeBoardIdx}")
+    @GetMapping("/detail/{freeBoardIdx}")
     public ResponseEntity<FreeBoardDetailResponseDTO> detailViewById(@PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {
         FreeBoardDetailResponseDTO foundFreeBoardDetail = freeBoardService.detailView(freeBoardIdx);
 
