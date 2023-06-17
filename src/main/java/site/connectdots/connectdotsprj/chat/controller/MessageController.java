@@ -18,6 +18,20 @@ public class MessageController {
      */
     @MessageMapping("/chat/message")
     public void enter(ChatMessage message) {
+
+        System.out.println();
+        System.out.println();
+        System.out.println("-------------------------------");
+        System.out.println(message.toString());
+        System.out.println(message.getMessage());
+        System.out.println(message.getType());
+        System.out.println(message.getRoomId());
+        System.out.println(message.getSender());
+        System.out.println("-------------------------------");
+        System.out.println();
+        System.out.println();
+
+
         if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
             message.setMessage(message.getSender() + "님이 입장하였습니다."); // 메시지 타입이 ENTER 면 입장하였다는 메시지를 뿌려줍니다.
         }
