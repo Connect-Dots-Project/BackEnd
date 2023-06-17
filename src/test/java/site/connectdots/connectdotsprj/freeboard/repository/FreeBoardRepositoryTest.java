@@ -4,6 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardWriteRequestDTO;
@@ -121,6 +124,30 @@ class FreeBoardRepositoryTest {
 
 
         //then
+    }
+
+    @Test
+    @DisplayName("페이지 처리로 조회하기")
+    void pageableTest() {
+        //given
+        Integer page = 1;
+        Integer size = 10;
+        Sort freeBoardIdx = Sort.by("freeBoardIdx");
+
+        PageRequest of = PageRequest.of(page - 1, size, freeBoardIdx.descending());
+
+        Page<FreeBoard> all = freeBoardRepository.findAll(of);
+        for (FreeBoard freeBoard : all) {
+            System.out.println(freeBoard);
+        }
+
+
+        //when
+
+
+        //then
+
+
     }
 
 }
