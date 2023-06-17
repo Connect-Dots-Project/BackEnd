@@ -1,6 +1,5 @@
 package site.connectdots.connectdotsprj.chat.repository;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import site.connectdots.connectdotsprj.chat.entity.Livechat;
 
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,7 +45,7 @@ class LivechatRepositoryTest {
         //given
         Long memberIdx = 5L;
         Livechat insertData = Livechat.builder()
-                .livechat_content("안뇽")
+                .livechatContent("안뇽")
                 .livechatHashtag("해시태그")
                 .memberIdx(memberIdx)
                 .build();
@@ -56,19 +54,19 @@ class LivechatRepositoryTest {
         Livechat saved = livechatRepository.save(insertData);
 
         //then
-        assertEquals("안뇽", saved.getLivechat_content());
+        assertEquals("안뇽", saved.getLivechatContent());
         assertEquals("해시태그", saved.getLivechatHashtag());
         assertEquals(5, saved.getMemberIdx());
 
     }
 
     @Test
-    @DisplayName("글 전체 조회에 성공할 것이다.")
+    @DisplayName("글 전체 조회에 성공할 것이며 최신글 순서로 출력될 것이다.")
     void findAllTest() {
         //given
 
         //when
-        List<Livechat> all = livechatRepository.findAll();
+        List<Livechat> all = livechatRepository.findAllByOrderByLivechatIdxDesc();
         all.forEach(System.out::println);
 
         //then
@@ -85,7 +83,7 @@ class LivechatRepositoryTest {
         //then
         assertThrows(RuntimeException.class, () -> {
             livechatRepository.save(Livechat.builder()
-                    .livechat_content("안뇽하하하하")
+                    .livechatContent("안뇽하하하하")
                     .livechatHashtag("해시태그하하하")
                     .memberIdx(memberIdx)
                     .build());
@@ -115,6 +113,18 @@ class LivechatRepositoryTest {
         List<Livechat> byLivechatHashtag = livechatRepository.findAllByLivechatHashtag(hashtag);
         byLivechatHashtag.forEach(System.out::println);
 
+
+        //then
+    }
+
+    @Test
+    @DisplayName("해시태그로 게시글 조회에 성공할 것이며 최신글 순서로 정렬이 된다")
+    void findAllByLivechatHashtagOrderByLivechatIdxDescTest() {
+        //given
+
+        //when
+        List<Livechat> list = livechatRepository.findAllByLivechatHashtagOrderByLivechatIdxDesc("별빛청하");
+        list.forEach(System.out::println);
 
         //then
     }

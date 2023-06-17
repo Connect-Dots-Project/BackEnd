@@ -12,7 +12,11 @@ public interface LivechatRepository extends JpaRepository<Livechat, Long> {
             "GROUP BY lc.livechatHashtag " +
             "ORDER BY COUNT(lc) DESC")
     List<String> findHashtagsOrderByCount();
+    List<Livechat> findAllByOrderByLivechatIdxDesc();
 
     List<Livechat> findAllByLivechatHashtag(String hashtag);
+
+    List<Livechat> findAllByLivechatHashtagOrderByLivechatIdxDesc(String hashtag);
+
 
 }

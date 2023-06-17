@@ -12,17 +12,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@EqualsAndHashCode(of = "livechat_idx")
+@EqualsAndHashCode(of = "livechatIdx")
 @Builder
 @Table(name = "TB_LIVECHAT")
 @Entity
 public class Livechat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long livechat_idx;
+    private Long livechatIdx;
     @Column(nullable = false, length = 500)
 
-    private String livechat_content;
+    private String livechatContent;
     @Column(nullable = false, length = 20)
     private String livechatHashtag;
     @CreationTimestamp
