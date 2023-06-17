@@ -15,9 +15,14 @@ public class ChatRoom {
     private String roomName;
 
     public static ChatRoom create(String name) {
+//        ChatRoom room = new ChatRoom();
+//        room.roomId = UUID.randomUUID().toString();
+//        room.roomName = name;
+//        return room;
+
         ChatRoom room = new ChatRoom();
-        room.roomId = UUID.randomUUID().toString();
-        room.roomName = name;
+        room.roomId = "testRoom" + name;
+        room.roomName = "nameRoom";
         return room;
     }
 }
