@@ -30,6 +30,7 @@ public class ChatController {
     @PostMapping("/room")
     @ResponseBody
     public ChatRoom createRoom(@RequestBody String name) {
+        System.out.println("name");
         return chatService.createRoom(name);
     }
 

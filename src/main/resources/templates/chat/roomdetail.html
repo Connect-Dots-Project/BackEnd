@@ -43,7 +43,7 @@
 <script>
     //alert(document.title);
     // websocket & stomp initialize
-    var sock = new SockJS("/ws/chat");
+    var sock = new SockJS("/contents/chat");
     var ws = Stomp.over(sock);
     var reconnect = 0;
     // vue.js
@@ -66,7 +66,11 @@
                 axios.get('/chat/room/'+this.roomId).then(response => { this.room = response.data; });
             },
             sendMessage: function() {
-                ws.send("/app/chat/message", {}, JSON.stringify({type:'TALK', roomId:this.roomId, sender:this.sender, message:this.message}));
+                ws.send("/app/chat/message", {},
+                JSON.stringify({type:'TALK',
+                roomId:this.roomId,
+                sender:this.sender,
+                message:this.message}));
                 this.message = '';
             },
             recvMessage: function(recv) {
@@ -87,7 +91,7 @@
             if(reconnect++ <= 5) {
                 setTimeout(function() {
                     console.log("connection reconnect");
-                    sock = new SockJS("/ws/chat");
+                    sock = new SockJS("/contents/chat");
                     ws = Stomp.over(sock);
                     connect();
                 },10*1000);
