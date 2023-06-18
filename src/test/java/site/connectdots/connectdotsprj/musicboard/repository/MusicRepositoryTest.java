@@ -8,8 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import site.connectdots.connectdotsprj.musicboard.entity.Genre;
-import site.connectdots.connectdotsprj.musicboard.entity.Music;
+import site.connectdots.connectdotsprj.musicboard.entity.SpotifyMusic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -20,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class MusicRepositoryTest {
 
     @Autowired
-    MusicRepository musicRepository;
+    SpotifyMusicRepository musicRepository;
 
 //    @Test
 //    @DisplayName("bulk insert")
@@ -48,7 +47,7 @@ class MusicRepositoryTest {
     void musicSearch() {
         long music_board_idx = 14L;
 
-        Music music = musicRepository.findById(music_board_idx).orElse(null);
+        SpotifyMusic music = musicRepository.findById(music_board_idx).orElse(null);
 
         if (music != null) {
             String title = music.getMusicBoardTitle();

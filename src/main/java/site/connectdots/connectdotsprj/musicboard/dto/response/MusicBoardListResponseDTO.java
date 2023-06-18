@@ -8,17 +8,15 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MusicListResponseDTO {
+public class MusicBoardListResponseDTO {
 
     private Long id;
 
-    private String spotifyMusicId;
+    private String spotifyPlaylistId;
 
     private String title;
 
-    private String artist;
-
     private String image;
 
-    private String previewUrl;
+    private  Long musicBoardViewCount;
 }
