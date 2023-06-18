@@ -13,7 +13,7 @@ import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCrede
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
-import site.connectdots.connectdotsprj.musicboard.dto.response.MusicBoardListResponseDTO;
+import site.connectdots.connectdotsprj.musicboard.dto.response.TrackBoardListResponseDTO;
 import site.connectdots.connectdotsprj.musicboard.dto.response.MusicListResponseDTO;
 import site.connectdots.connectdotsprj.musicboard.entity.SpotifyMusic;
 import site.connectdots.connectdotsprj.musicboard.entity.SpotifyMusicPlaylist;
@@ -37,25 +37,44 @@ public class SpotifyApiService {
     private final SpotifyPlaylistRepository spotifyPlaylistRepository;
     private final SpotifyMusicRepository spotifyMusicRepository;
     private final SpotifyMusicPlaylistRepository spotifyMusicPlaylistRepository;
-
     private final ModelMapper modelMapper;
 
     private static final String clientId = "e665029ca3b34c27b937c214233fd932";
     private static final String clientSecret = "932abc3385b44159996813d0f82b1284";
     private static final URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:8181/contents/music-board");
 
+    private SpotifyApi getSpotifyApi(final String code) {
+        try {
+            final SpotifyApi spotifyApi = new SpotifyApi.Builder()
+                    .setClientId(clientId)
+                    .setClientSecret(clientSecret)
+                    .setRedirectUri(redirectUri)
+                    .build();
+
+            AuthorizationCodeRequest authorizationCodeRequest = spotifyApi.authorizationCode(code).build();
+            final AuthorizationCodeCredentials credentials = authorizationCodeRequest.execute();
+
+            spotifyApi.setAccessToken(credentials.getAccessToken());
+            spotifyApi.setRefreshToken(credentials.getRefreshToken());
+
+            return spotifyApi;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String spotifyLogin() {
         return "redirect:https://accounts.spotify.com/authorize?response_type=code&client_id=" + clientId + "&redirect_uri=" + redirectUri;
     }
 
-    public List<MusicBoardListResponseDTO> getMusicBoardList() {
+    public List<TrackBoardListResponseDTO> getMusicBoardList() {
         List<SpotifyPlaylist> spotifyPlaylists = spotifyPlaylistRepository.findAll();
 
-        List<MusicBoardListResponseDTO> musicBoardListResponseDTOList = spotifyPlaylists.stream().map(spotifyPlaylist -> {
-            return MusicBoardListResponseDTO.builder().id(spotifyPlaylist.getId())
-                    .spotifyPlaylistId(spotifyPlaylist.getSpotifyPlaylistId())
-                    .title(spotifyPlaylist.getTitle())
-                    .image(spotifyPlaylist.getImage())
+        List<TrackBoardListResponseDTO> musicBoardListResponseDTOList = spotifyPlaylists.stream().map(spotifyPlaylist -> {
+            return TrackBoardListResponseDTO.builder().musicBoardIdx(spotifyPlaylist.getMusicBoardIdx())
+                    .musicBoardPlaylistId(spotifyPlaylist.getMusicBoardPlaylistId())
+                    .musicBoardTrack(spotifyPlaylist.getMusicBoardTrack())
+                    .musicBoardTrackImage(spotifyPlaylist.getMusicBoardTrackImage())
                     .musicBoardViewCount(spotifyPlaylist.getMusicBoardViewCount())
                     .build();
         }).collect(Collectors.toList());
@@ -91,17 +110,17 @@ public class SpotifyApiService {
 
 
         spotifyPlaylists.forEach(spotifyPlaylist -> {
-            Playlist playlist = getPlaylist(spotifyApi, spotifyPlaylist.getSpotifyPlaylistId());
+            Playlist playlist = getPlaylist(spotifyApi, spotifyPlaylist.getMusicBoardPlaylistId());
 
             Arrays.stream(playlist.getTracks().getItems()).forEach(item -> {
                 Track track = getTrack(spotifyApi, item.getTrack().getId());
 
                 SpotifyMusic spotifyMusic = SpotifyMusic.builder()
                         .spotifyMusicId(track.getId())
-                        .artist((track.getArtists())[0].getName())
-                        .previewUrl(track.getPreviewUrl())
-                        .title(track.getName())
-                        .image((track.getAlbum().getImages())[0].getUrl())
+                        .musicBoardArtist((track.getArtists())[0].getName())
+                        .musicBoardPreviewUrl(track.getPreviewUrl())
+                        .musicBoardTitle(track.getName())
+                        .musicBoardTitleImage((track.getAlbum().getImages())[0].getUrl())
                         .build();
                 spotifyMusicRepository.save(spotifyMusic);
 
@@ -119,39 +138,21 @@ public class SpotifyApiService {
 //                playlist -> name 노래명
 //                playlist -> tracks -> album -> images -> 0번째배열
 
-    private SpotifyApi getSpotifyApi(final String code) {
-        try {
-            final SpotifyApi spotifyApi = new SpotifyApi.Builder()
-                    .setClientId(clientId)
-                    .setClientSecret(clientSecret)
-                    .setRedirectUri(redirectUri)
-                    .build();
 
-            AuthorizationCodeRequest authorizationCodeRequest = spotifyApi.authorizationCode(code).build();
-            final AuthorizationCodeCredentials credentials = authorizationCodeRequest.execute();
 
-            spotifyApi.setAccessToken(credentials.getAccessToken());
-            spotifyApi.setRefreshToken(credentials.getRefreshToken());
-
-            return spotifyApi;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public List<MusicListResponseDTO> getMusicList(final long playListId) {
-        SpotifyPlaylist playlist = spotifyPlaylistRepository.findById(playListId).orElseThrow(() -> new NotFoundMusicBoardException());
+    public List<MusicListResponseDTO> getMusicList(final long musicBoardIdx) {
+        SpotifyPlaylist playlist = spotifyPlaylistRepository.findById(musicBoardIdx).orElseThrow(() -> new NotFoundMusicBoardException());
 
         List<MusicListResponseDTO> response = playlist.getSpotifyMusicPlaylists().stream().map(musicPlaylist -> {
             SpotifyMusic music = musicPlaylist.getSpotifyMusic();
 
             return MusicListResponseDTO.builder()
-                    .id(music.getId())
-                    .previewUrl(music.getPreviewUrl())
+                    .musicBoardIdx(music.getMusicBoardIdx())
+                    .musicBoardPreviewUrl(music.getMusicBoardPreviewUrl())
                     .spotifyMusicId(music.getSpotifyMusicId())
-                    .image(music.getImage())
-                    .artist(music.getArtist())
-                    .title(music.getTitle()).build();
+                    .musicBoardTitleImage(music.getMusicBoardTitleImage())
+                    .musicBoardArtist(music.getMusicBoardArtist())
+                    .musicBoardTitle(music.getMusicBoardTitle()).build();
 
         }).collect(Collectors.toList());
 

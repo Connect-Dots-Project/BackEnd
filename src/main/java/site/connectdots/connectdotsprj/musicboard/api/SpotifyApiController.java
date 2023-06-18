@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import site.connectdots.connectdotsprj.musicboard.dto.response.MusicBoardListResponseDTO;
+import site.connectdots.connectdotsprj.musicboard.dto.response.TrackBoardListResponseDTO;
 import site.connectdots.connectdotsprj.musicboard.dto.response.MusicListResponseDTO;
 import site.connectdots.connectdotsprj.musicboard.service.SpotifyApiService;
 
@@ -50,8 +50,8 @@ public class SpotifyApiController {
      * @return
      */
     @GetMapping("/contents/music-board")
-    public HttpEntity<List<MusicBoardListResponseDTO>> getMusicBoardList() {
-        List<MusicBoardListResponseDTO> response = spotifyApiService.getMusicBoardList();
+    public HttpEntity<List<TrackBoardListResponseDTO>> getMusicBoardList() {
+        List<TrackBoardListResponseDTO> response = spotifyApiService.getMusicBoardList();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

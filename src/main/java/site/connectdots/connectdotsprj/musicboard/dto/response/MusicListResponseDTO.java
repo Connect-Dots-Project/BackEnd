@@ -10,15 +10,15 @@ import lombok.*;
 @Builder
 public class MusicListResponseDTO {
 
-    private Long id;
+    private Long musicBoardIdx;
 
     private String spotifyMusicId;
 
-    private String title;
+    private String musicBoardTitle;
 
-    private String artist;
+    private String musicBoardArtist;
 
-    private String image;
+    private String musicBoardTitleImage;
 
-    private String previewUrl;
+    private String musicBoardPreviewUrl;
 }

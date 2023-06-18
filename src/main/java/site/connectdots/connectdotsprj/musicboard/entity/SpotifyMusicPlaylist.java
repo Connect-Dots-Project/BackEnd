@@ -18,7 +18,7 @@ public class SpotifyMusicPlaylist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long musicBoardIdx;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "spotify_playlist_id")

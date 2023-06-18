@@ -19,16 +19,17 @@ public class SpotifyPlaylist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long musicBoardIdx;
+
+    //api 명시되어있는 playlist key값
+    @Column(nullable = false, length = 50)
+    private String musicBoardPlaylistId;
 
     @Column(nullable = false, length = 50)
-    private String spotifyPlaylistId;
-
-    @Column(nullable = false, length = 50)
-    private String title;
+    private String musicBoardTrack;
 
     @Column(nullable = false, length = 2000)
-    private String image;
+    private String musicBoardTrackImage;
 
     @Builder.Default
     private Long musicBoardViewCount = 0L;

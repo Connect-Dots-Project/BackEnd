@@ -10,27 +10,27 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-
+@EqualsAndHashCode(of = "musicBoardIdx")
 @Entity
 @Table(name = "TB_SPOTIFY_MUSIC")
 public class SpotifyMusic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long musicBoardIdx;
 
     @Column(nullable = false, length = 50)
     private String spotifyMusicId;
 
     @Column(nullable = false, length = 1000)
-    private String title;
+    private String musicBoardTitle;
 
     @Column(nullable = false, length = 50)
-    private String artist;
+    private String musicBoardArtist;
 
     @Column(nullable = false, length = 2000)
-    private String image;
+    private String musicBoardTitleImage;
 
     @Column(nullable = true, length = 2000)
-    private String previewUrl;
+    private String musicBoardPreviewUrl;
 }
