@@ -5,9 +5,6 @@ import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.member.entity.Member;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,10 +31,10 @@ public class HotplaceWriteRequestDTO {
     private Long memberIdx= 1L;
 
 
-    public Hotplace toEntity() {
+    public Hotplace toEntity(String uploadFilePath) {
         return Hotplace.builder()
                 .location(this.location)
-                .hotplaceImg(this.hotplaceImg)
+                .hotplaceImg(uploadFilePath)
                 .hotplaceContent(this.hotplaceContent)
                 .hotplaceLatitude(this.hotplaceLatitude)
                 .hotplaceLongitude(this.hotplaceLongitude)

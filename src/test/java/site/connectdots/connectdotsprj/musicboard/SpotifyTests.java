@@ -25,7 +25,7 @@ public class SpotifyTests {
 
     private static final String clientId = "e665029ca3b34c27b937c214233fd932";
     private static final String clientSecret = "932abc3385b44159996813d0f82b1284";
-    private static final URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:8183/spotify-redirect");
+    private static final URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:8190/spotify-redirect");
 
     private static final SpotifyApi spotifyApi = new SpotifyApi.Builder()
             .setClientId(clientId)

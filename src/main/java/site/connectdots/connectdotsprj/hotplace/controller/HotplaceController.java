@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
@@ -18,6 +19,7 @@ import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceWriteRes
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.hotplace.service.HotplaceService;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -48,19 +50,33 @@ public class HotplaceController {
     @PostMapping
     public ResponseEntity<?> write(
             /* @AuthenticationPrincipal TokenUserInfo userInfo */
-            @Validated @RequestBody HotplaceWriteRequestDTO dto, BindingResult result) {
+            @Validated @RequestPart("hotplace") HotplaceWriteRequestDTO dto
+            , @RequestPart("hotplaceImg") MultipartFile hotplaceImg
+            , BindingResult result) {
 
         log.info("HotplaceController.write.info 글 작성 {}, {}", dto, result);
-
         if (dto == null) {
             return ResponseEntity.badRequest().body("핫플레이스 게시물 정보를 전달해주세요!");
+        }
+
+
+        String uploadFilePath = null;
+        if (hotplaceImg != null) {
+            log.info("attached file name ======================================: {}", hotplaceImg.getOriginalFilename());
+            try {
+                uploadFilePath = hotplaceService.uploadHotplaceImg(hotplaceImg);
+            } catch (Exception e) {
+                log.warn("파일처리 예외가 발생했습니다.");
+                e.printStackTrace();
+                return ResponseEntity.internalServerError().build();
+            }
         }
 
         ResponseEntity<List<FieldError>> fieldErrors = getValidatedResult(result);
         if (fieldErrors != null) return fieldErrors;
 
         try {
-            HotplaceWriteResponseDTO hotplaceWriteResponseDTO = hotplaceService.write(dto);
+            HotplaceWriteResponseDTO hotplaceWriteResponseDTO = hotplaceService.write(dto, uploadFilePath);
             return ResponseEntity.ok().body(hotplaceWriteResponseDTO);
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -154,7 +170,6 @@ public class HotplaceController {
         log.info("HotplaceController.locationList.info 행정구역별 글 전체조회 {} ", hotplaceList);
         return ResponseEntity.ok().body(hotplaceList);
     }
-
 
 
 }

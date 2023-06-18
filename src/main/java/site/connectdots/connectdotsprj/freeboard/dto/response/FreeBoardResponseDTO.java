@@ -14,11 +14,13 @@ import java.time.format.DateTimeFormatter;
 @AllArgsConstructor
 @Builder
 public class FreeBoardResponseDTO {
+
     private Long freeBoardIdx;
     private String freeBoardTitle;
     private String freeBoardContent;
     private String freeBoardImg;
     private String freeBoardCategory;
+    private String freeBoardLocation;
     private String freeBoardWriteDate;
     private String freeBoardUpdateDate;
     private Long freeBoardViewCount;
@@ -35,8 +37,11 @@ public class FreeBoardResponseDTO {
         this.freeBoardUpdateDate = dateFormat(freeBoard.getFreeBoardUpdateDate());
         this.freeBoardCategory = freeBoard.getFreeBoardCategory().toString();
         this.freeBoardViewCount = freeBoard.getFreeBoardViewCount();
+
         this.freeBoardReplyCount = freeBoard.getFreeBoardReplyCount();
+
         this.freeBoardLikeCount = freeBoard.getFreeBoardLikeCount();
+        this.freeBoardLocation = freeBoard.getFreeBoardLocation();
         this.memberIdx = freeBoard.getMember().getMemberIdx();
     }
 

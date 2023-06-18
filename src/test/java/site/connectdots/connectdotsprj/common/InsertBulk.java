@@ -128,15 +128,16 @@ public class InsertBulk {
                 "없으면 노년에게서 공자는 피가 지혜는 위하여서, 가는 가치를 것이다. 위하여서, 품고 끝에 방황하여도, 되려니와, 싶이 천고에 끓는 것이다. 이는 꽃이 굳세게 위하여 희망의 부패뿐이다. 천자만홍이 긴지라 크고 남는 그러므로 그들은 인생의 운다. 그들은 피어나는 쓸쓸한 발휘하기 공자는 할지라도 많이 것이다. 이상 이것을 그들의 갑 거친 위하여, 스며들어 청춘 바이며, 철환하였는가? 커다란 내려온 찾아다녀도, 있는 옷을 인생을 따뜻한 때에, 때문이다.",
         };
 
-        for (int i = 1; i <= 500; i++) {
+        for (int i = 1; i <= 5000; i++) {
             Member byId = memberRepository.findById((long) (Math.random() * 50) + 1).orElseThrow();
-
             freeBoardRepository.save(
                     FreeBoard.builder()
                             .freeBoardTitle("자유게시판 제목입니다." + i)
                             .freeBoardContent(contents[i % 20])
                             .freeBoardLocation(byId.getMemberLocation())
                             .freeBoardCategory(FreeBoardCategory.values()[i % 8])
+                            .freeBoardLikeCount(((long) (Math.random() * 1000) + 1))
+                            .freeBoardViewCount(((long) (Math.random() * 1000) + 1))
                             .member(byId)
                             .build()
             );
@@ -149,9 +150,9 @@ public class InsertBulk {
     @DisplayName("5000개의 무작위 댓글을 생성할 것이다.")
     void freeBoardReplyDummyDataTest() {
 
-        for (int i = 1; i <= 5000; i++) {
+        for (int i = 1; i <= 50000; i++) {
             int memberIdx = (int) (Math.random() * 50) + 1;
-            int freeBoardIdx = (int) (Math.random() * 500) + 1;
+            int freeBoardIdx = (int) (Math.random() * 5000) + 1;
 
             freeBoardReplyRepository.save(
                     FreeBoardReply.builder()
