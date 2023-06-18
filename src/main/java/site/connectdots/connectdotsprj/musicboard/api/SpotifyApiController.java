@@ -5,17 +5,18 @@ import lombok.RequiredArgsConstructor;
 import org.apache.hc.core5.http.ParseException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import se.michaelthelin.spotify.SpotifyHttpManager;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.IPlaylistItem;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.*;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
-import site.connectdots.connectdotsprj.musicboard.AccessToken;
 import site.connectdots.connectdotsprj.musicboard.entity.Music;
 import site.connectdots.connectdotsprj.musicboard.repository.MusicRepository;
 import se.michaelthelin.spotify.SpotifyApi;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 
 
@@ -25,23 +26,26 @@ import java.util.*;
 public class SpotifyApiController {
 
     private final MusicRepository musicRepository;
-    private final AccessToken accessToken;
+    private static final String clientId = "e665029ca3b34c27b937c214233fd932";
+    private static final String clientSecret = "932abc3385b44159996813d0f82b1284";
+    private static final URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:8181/contents/music-board");
+
+    private static final SpotifyApi spotifyApi = new SpotifyApi.Builder()
+            .setClientId(clientId)
+            .setClientSecret(clientSecret)
+            .setRedirectUri(redirectUri)
+            .build();
 
 
-    @PostMapping("/spotify-login")
-    public ModelAndView spotifyLogin(@RequestBody String authorizationCode) {
-
-        SpotifyApi spotifyApi = AccessToken.getSpotifyApi();
-
-        String s = "redirect:https://accounts.spotify.com/authorize?response_type=code&client_id=" + spotifyApi.getClientId() + "&redirect_uri=" + spotifyApi.getRedirectURI();
+    @GetMapping("/spotify-login")
+    public ModelAndView spotifyLogin() {
+        String s = "redirect:https://accounts.spotify.com/authorize?response_type=code&client_id=" + clientId + "&redirect_uri=" + redirectUri;
 
         return new ModelAndView(s);
     }
 
     @GetMapping("/contents/music-board")
     public void TrackList(@RequestParam String code) throws IOException, ParseException, SpotifyWebApiException {
-        SpotifyApi spotifyApi = AccessToken.getSpotifyApi();
-
 
         AuthorizationCodeRequest authorizationCodeRequest = spotifyApi.authorizationCode(code).build();
         final AuthorizationCodeCredentials credentials = authorizationCodeRequest.execute();
@@ -58,9 +62,9 @@ public class SpotifyApiController {
         playlistIds.put(5L, "6OlqhvuJE4cdphMx610BtM");
         playlistIds.put(6L, "37i9dQZF1DWTY99d0AYptp");
         playlistIds.put(7L, "37i9dQZF1EIUCUQCE4UP0F");
-        playlistIds.put(8L, "0WOCvglRdeDmMnt8zFV0vc");
-        playlistIds.put(9L, "37i9dQZF1DXbhErEye1cVu");
-        playlistIds.put(10L, "37i9dQZF1DXbhErEye1cVu");
+        playlistIds.put(8L, "37i9dQZF1DXbSWYCNwaARB");
+        playlistIds.put(9L, "37i9dQZF1DWVuUd3Ffrcx8");
+        playlistIds.put(10L, "37i9dQZF1EVHGWrwldPRtj");
 
 // 노래 트랙, 이미지 사진 가져오기
         for (Map.Entry<Long, String> entry : playlistIds.entrySet()) {
@@ -82,7 +86,16 @@ public class SpotifyApiController {
     @GetMapping("/contents/music-board/{musicBoardIdx}")
     public void MusicList(@RequestParam String code) throws IOException, ParseException, SpotifyWebApiException {
         Map<Long, String> playlistIds = new HashMap<>();
-        SpotifyApi spotifyApi = AccessToken.getSpotifyApi();
+        playlistIds.put(1L, "37i9dQZF1DWT9uTRZAYj0c");
+        playlistIds.put(2L, "37i9dQZEVXbMDoHDwVN2tF");
+        playlistIds.put(3L, "37i9dQZF1DWWwaxRea1LWS");
+        playlistIds.put(4L, "5wBovveXvw0woKL72NqA0P");
+        playlistIds.put(5L, "6OlqhvuJE4cdphMx610BtM");
+        playlistIds.put(6L, "37i9dQZF1DWTY99d0AYptp");
+        playlistIds.put(7L, "37i9dQZF1EIUCUQCE4UP0F");
+        playlistIds.put(8L, "0WOCvglRdeDmMnt8zFV0vc");
+        playlistIds.put(9L, "37i9dQZF1DWVuUd3Ffrcx8");
+        playlistIds.put(10L, "37i9dQZF1EVHGWrwldPRtj");
 
         //트랙 클릭시 노래리스트 가져오기 (노래제목, 앨범이미지, 가수, 미리듣기)
         for (Map.Entry<Long, String> entry : playlistIds.entrySet()) {
