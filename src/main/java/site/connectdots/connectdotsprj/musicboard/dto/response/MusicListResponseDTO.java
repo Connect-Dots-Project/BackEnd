@@ -21,4 +21,5 @@ public class MusicListResponseDTO {
     private String musicBoardTitleImage;
 
     private String musicBoardPreviewUrl;
+
 }

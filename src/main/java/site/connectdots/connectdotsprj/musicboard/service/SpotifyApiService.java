@@ -152,7 +152,8 @@ public class SpotifyApiService {
                     .spotifyMusicId(music.getSpotifyMusicId())
                     .musicBoardTitleImage(music.getMusicBoardTitleImage())
                     .musicBoardArtist(music.getMusicBoardArtist())
-                    .musicBoardTitle(music.getMusicBoardTitle()).build();
+                    .musicBoardTitle(music.getMusicBoardTitle())
+                    .build();
 
         }).collect(Collectors.toList());
 
