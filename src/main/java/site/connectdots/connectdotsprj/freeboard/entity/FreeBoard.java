@@ -2,6 +2,7 @@ package site.connectdots.connectdotsprj.freeboard.entity;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.UpdateTimestamp;
 import site.connectdots.connectdotsprj.member.entity.Member;
 
@@ -41,8 +42,7 @@ public class FreeBoard {
     private LocalDateTime freeBoardUpdateDate;
     @Builder.Default
     private Long freeBoardViewCount = 0L;
-    @Builder.Default
-    private Long freeBoardReplyCount = 0L;
+
     @Builder.Default
     private Long freeBoardLikeCount = 0L;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,4 +52,7 @@ public class FreeBoard {
     @OneToMany(mappedBy = "freeBoard")
     @Builder.Default
     private List<FreeBoardReply> freeBoardReplyList = new ArrayList<>();
+
+    @Formula("(SELECT COUNT(1) FROM TB_FREEBOARDREPLY tb WHERE tb.free_board_idx = free_board_idx)")
+    private Long freeBoardReplyCount;
 }

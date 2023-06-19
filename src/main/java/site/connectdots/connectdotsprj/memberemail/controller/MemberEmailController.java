@@ -2,6 +2,7 @@ package site.connectdots.connectdotsprj.memberemail.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import site.connectdots.connectdotsprj.memberemail.dto.request.MemberCodeResponseDTO;
 import site.connectdots.connectdotsprj.memberemail.dto.response.MemberCodeCheckResponseDTO;
