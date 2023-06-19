@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
@@ -14,6 +15,7 @@ import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceListResp
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceWriteResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.hotplace.repository.HotplaceRepository;
+import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
 import java.io.File;
@@ -52,10 +54,16 @@ public class HotplaceService {
     // 글 작성
     public HotplaceWriteResponseDTO write(
             final HotplaceWriteRequestDTO dto,
-            String uploadFilePath
+            String uploadFilePath,
+            TokenUserInfo tokenUserInfo
             /*, final TokenUserInfo userInfo */) throws RuntimeException {
 
-        Hotplace saved = hotplaceRepository.save(dto.toEntity(uploadFilePath));
+//        Hotplace saved = hotplaceRepository.save(dto.toEntity(uploadFilePath));
+        Member member = memberRepository.findByMemberAccount(tokenUserInfo.getAccount());
+        //예외처리
+
+
+        Hotplace saved = hotplaceRepository.save(dto.toEntity(uploadFilePath, member));
 
         HotplaceDetailResponseDTO hotplaceDetailResponseDTO = new HotplaceDetailResponseDTO(saved);
 
@@ -65,26 +73,33 @@ public class HotplaceService {
     }
 
     // 글 삭제
-    public void delete(Long hotplaceIdx) {
+    public void delete(Long hotplaceIdx, TokenUserInfo userInfo) {
         Hotplace hotplace = hotplaceRepository.findById(hotplaceIdx)
                 .orElseThrow(() -> new RuntimeException(hotplaceIdx + "의 글을 찾을 수 없습니다."));
 
-        hotplaceRepository.delete(hotplace);
+        if (hotplace.getMember().getMemberAccount().equals(userInfo.getAccount())) {
+            hotplaceRepository.delete(hotplace);
+        } else {
+            throw new RuntimeException("현재 사용자는 해당글을 삭제할 수 없습니다.");
+        }
     }
 
 
     // 글 수정
-    public HotplaceDetailResponseDTO modify(final HotplaceModifyRequestDTO dto) {
-        // 조회
+    public HotplaceDetailResponseDTO modify(final HotplaceModifyRequestDTO dto, TokenUserInfo userInfo) {
+
         final Hotplace hotplaceEntity = findOne(dto.getHotplaceIdx());
 
-        //세터
-        dto.updateHotplace(hotplaceEntity);
+        // 작성자가 동일인인 경우만 수정 가능
+        if (hotplaceEntity.getMember().getMemberAccount().equals(userInfo.getAccount())) {
 
-        // 저장
-        Hotplace modified = hotplaceRepository.save(hotplaceEntity);
+            dto.updateHotplace(hotplaceEntity);
+            Hotplace modified = hotplaceRepository.save(hotplaceEntity);
 
-        return new HotplaceDetailResponseDTO(modified);
+            return new HotplaceDetailResponseDTO(modified);
+        } else {
+            throw new RuntimeException("현재 사용자는 해당글을 수정할 수 없습니다.");
+        }
     }
 
 
