@@ -28,17 +28,6 @@ public class CvsController {
 }
 
 
-//    @GetMapping("/{cvsType}/{cvsSale}")
-//    public ResponseEntity<List<CvsResponseDTO>> getFilteredCvsData(@PathVariable String cvsType, @PathVariable String cvsSale) {
-//        try {
-//            List<CvsResponseDTO> filteredData = service.filterCvs(cvsType, cvsSale);
-//            return ResponseEntity.ok().body(filteredData);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return ResponseEntity.internalServerError().build();
-//        }
-//    }
-
 //    @PostMapping("/data")
 //    public ResponseEntity<String> saveCvsData() {
 //        try {
