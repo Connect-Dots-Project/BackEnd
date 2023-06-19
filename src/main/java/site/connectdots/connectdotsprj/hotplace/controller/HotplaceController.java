@@ -2,8 +2,14 @@ package site.connectdots.connectdotsprj.hotplace.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +25,7 @@ import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceWriteRes
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.hotplace.service.HotplaceService;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -29,6 +36,9 @@ import java.util.List;
 public class HotplaceController {
 
     private final HotplaceService hotplaceService;
+
+    @Value("${upload.path}")
+    private String uploadRootPath;
 
     // 글 전체조회
     @GetMapping
@@ -106,13 +116,6 @@ public class HotplaceController {
         return new ModelAndView("/WEB-INF/location.jsp");
     }
 
-    // 테스트용 - 웹페이지에서 지도 검색 (html)
-//    @GetMapping("/maphtml")
-//    public ModelAndView showMap() {
-//        log.info("===============================================");
-//        return new ModelAndView("/kakao_map/kakomap.html");
-//    }
-
 
     // 글 삭제
     @DeleteMapping("/{hotplaceIdx}")
@@ -172,4 +175,60 @@ public class HotplaceController {
     }
 
 
+    // 이미지 파일 클라이언트에게 제공
+    @GetMapping("/img/{fileName}")
+    public ResponseEntity<?> getImg(@PathVariable String fileName) throws IOException {
+
+        log.info("hotplaceController.getImg - GET : {}", fileName);
+
+        try {
+            // 클라이언트 요청 사진 응답
+            // 1. 클라이언트 요청 파일명 앞에 업로드디렉토리를 붙여서 해당파일이 존재한 풀 경로를 만들고
+            String filePath = uploadRootPath + '/' + fileName;
+
+            // 2. 풀경로를 통해 파일 객체 생성
+            File hotplaceFile = new File(filePath);
+
+            if (!hotplaceFile.exists()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            byte[] fileData = FileCopyUtils.copyToByteArray(hotplaceFile);
+
+            HttpHeaders headers = new HttpHeaders();
+            MediaType contentType = findExtendsionAndFetMediaType(filePath);
+
+            if (contentType == null) {
+                return ResponseEntity.internalServerError()
+                        .body("발견된 파일은 이미지가 아닙니다!");
+            }
+
+            headers.setContentType(contentType);
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(fileData);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError()
+                    .body("파일을 찾을 수가 없습니다.");
+        }
+
+
+    }
+
+    // 파일경로에서 확장자 추출하기
+    private MediaType findExtendsionAndFetMediaType(String filePath) {
+        String ext = filePath.substring(filePath.lastIndexOf(".") + 1);
+        switch (ext.toUpperCase()) {
+            case "JPEG" :
+            case "JPG" :
+                return MediaType.IMAGE_JPEG;
+            case "PNG" :
+                return MediaType.IMAGE_PNG;
+            case "GIF" :
+                return MediaType.IMAGE_GIF;
+            default:
+                return null;
+        }
+    }
 }
