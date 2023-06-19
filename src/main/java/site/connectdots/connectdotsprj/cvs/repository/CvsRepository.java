@@ -3,6 +3,7 @@ package site.connectdots.connectdotsprj.cvs.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.w3c.dom.css.CSSValue;
+import site.connectdots.connectdotsprj.cvs.dto.CvsResponseDTO;
 import site.connectdots.connectdotsprj.cvs.entity.Cvs;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public interface CvsRepository extends JpaRepository<Cvs, Long> {
     List<Cvs> findAllByCvsSale(String sale);
 
     // 편의점 구분해서 조회
-    List<Cvs> findAllByCvsType(String cvs);
+    List<Cvs> findAllByCvsType(String type);
 
+    List<CvsResponseDTO> findByCvsTypeAndCvsSale(String cvsType, String cvsSale);
 }

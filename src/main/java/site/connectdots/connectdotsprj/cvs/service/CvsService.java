@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.connectdots.connectdotsprj.cvs.dto.CvsResponseDTO;
@@ -13,7 +12,6 @@ import site.connectdots.connectdotsprj.cvs.entity.Cvs;
 import site.connectdots.connectdotsprj.cvs.repository.CvsRepository;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +53,21 @@ public class CvsService {
         }
     }
 
+    //전체 데이터 조회
+    public List<CvsResponseDTO> findAll(){
+        return repository.findAll().stream().map(CvsResponseDTO::new).collect(Collectors.toList());
+    }
 
+    //편의점별로 분류 조회
+    public List<CvsResponseDTO> findAllByCvsType(String cvsType){
+        return repository.findAllByCvsType(cvsType).stream().map(CvsResponseDTO::new).collect(Collectors.toList());
+    }
+
+
+    public List<CvsResponseDTO> filterCvs(String cvsType, String cvsSale) throws IOException {
+//        List<CvsResponseDTO> cvs = readJsonFile(filePath);
+        return repository.findByCvsTypeAndCvsSale(cvsType, cvsSale);
+    }
 }
 
 //
