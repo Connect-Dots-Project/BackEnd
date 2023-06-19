@@ -2,7 +2,6 @@ package site.connectdots.connectdotsprj.chat.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import site.connectdots.connectdotsprj.chat.entity.ChatRoom;
 
 import javax.annotation.PostConstruct;

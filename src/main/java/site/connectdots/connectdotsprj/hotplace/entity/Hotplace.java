@@ -50,10 +50,10 @@ public class Hotplace {
     @Builder.Default
     private String hotplaceLongitude = "0.0000";
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String hotplaceName;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String hotplaceFullAddress;
 
     private String kakaoLocation;

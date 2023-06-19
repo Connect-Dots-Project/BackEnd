@@ -13,5 +13,5 @@ import java.util.List;
 @Builder
 public class HotplaceListResponseDTO {
 
-    private List<HotplaceDetilResponseDTO> hotplaceList;
+    private List<HotplaceDetailResponseDTO> hotplaceList;
 }

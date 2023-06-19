@@ -16,7 +16,6 @@ import java.util.List;
 public class ChatController {
     private final ChatService chatService;
 
-
     @GetMapping("/room")
     public String rooms(Model model) {
         return "/chat/room";
@@ -31,6 +30,7 @@ public class ChatController {
     @PostMapping("/room")
     @ResponseBody
     public ChatRoom createRoom(@RequestBody String name) {
+        System.out.println("name");
         return chatService.createRoom(name);
     }
 

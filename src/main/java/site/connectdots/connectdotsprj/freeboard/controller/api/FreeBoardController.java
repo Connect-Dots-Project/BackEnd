@@ -16,22 +16,23 @@ import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
 import java.util.List;
 
 @RestController
-@RequestMapping("/contents")
+@RequestMapping("/contents/free-board")
 @RequiredArgsConstructor
 public class FreeBoardController {
     private final FreeBoardService freeBoardService;
-
     private final int LIKE = 1;
     private final int HATE = -1;
 
+
     /**
-     * 자유게시판을 눌렀을 때 모든 글을 보여주는 메서드
+     * 전체 조회
      *
-     * @return
+     * @param page : 가져올 페이지
+     * @return : 1페이지 당 10개의 게시글을 가장 최신 작서된 순으로 리턴
      */
-    @GetMapping("/free-board")
-    public ResponseEntity<List<FreeBoardResponseDTO>> findAll() {
-        List<FreeBoardResponseDTO> freeBoardList = freeBoardService.findAll();
+    @GetMapping("/{page}")
+    public ResponseEntity<List<FreeBoardResponseDTO>> findAll(@PathVariable(name = "page") Integer page) {
+        List<FreeBoardResponseDTO> freeBoardList = freeBoardService.findAll(page);
 
         return ResponseEntity.ok().body(freeBoardList);
     }
@@ -39,10 +40,10 @@ public class FreeBoardController {
     /**
      * 자유게시판의 글을 클릭했을 때 상세 보기
      *
-     * @param freeBoardIdx
-     * @return
+     * @param freeBoardIdx : 해당 게시글의 인덱스
+     * @return : 해당 글 + 리플을 리턴
      */
-    @GetMapping("/free-board/{freeBoardIdx}")
+    @GetMapping("/detail/{freeBoardIdx}")
     public ResponseEntity<FreeBoardDetailResponseDTO> detailViewById(@PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {
         FreeBoardDetailResponseDTO foundFreeBoardDetail = freeBoardService.detailView(freeBoardIdx);
 
@@ -55,7 +56,7 @@ public class FreeBoardController {
      * @param dto
      * @return
      */
-    @PostMapping("/free-board")
+    @PostMapping()
     public ResponseEntity<List<FreeBoardResponseDTO>> writeFreeBoard(@RequestBody FreeBoardWriteRequestDTO dto) {
         List<FreeBoardResponseDTO> freeBoardResponseDTO = freeBoardService.writeFreeBoard(dto);
 
@@ -68,7 +69,7 @@ public class FreeBoardController {
      * @param dto
      * @return
      */
-    @PostMapping("/free-board/replies")
+    @PostMapping("/replies")
     public ResponseEntity<List<FreeBoardDetailReplyDTO>> writeReplyByFreeBoard(@RequestBody FreeBoardReplyWriteRequestDTO dto) {
         List<FreeBoardDetailReplyDTO> freeBoardDetailReplyDTO = freeBoardService.writeReplyByFreeBoard(dto);
 
@@ -80,7 +81,7 @@ public class FreeBoardController {
      *
      * @return
      */
-    @PatchMapping("/free-board")
+    @PatchMapping()
     public ResponseEntity<FreeBoardDetailResponseDTO> modifyFreeBoard(
             @AuthenticationPrincipal TokenUserInfo userInfo
             , @RequestBody FreeBoardModifyRequestDTO dto
@@ -90,6 +91,15 @@ public class FreeBoardController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @DeleteMapping("/{freeBoardIdx}")
+    public ResponseEntity<?> deleteFreeBoard(
+            @AuthenticationPrincipal TokenUserInfo userInfo
+            , @PathVariable(name = "freeBoardIdx") Long freeBoardIdx
+    ) {
+
+        return null;
+    }
+
 
     /**
      * 자유게시판의 좋아요 기능
@@ -97,7 +107,7 @@ public class FreeBoardController {
      * @param freeBoardIdx
      * @return
      */
-    @PostMapping("/free-board/like/{freeBoardIdx}")
+    @PostMapping("/like/{freeBoardIdx}")
     public ResponseEntity<FreeBoardDetailResponseDTO> likeCount(
             @AuthenticationPrincipal TokenUserInfo userInfo
             , @PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {
@@ -112,7 +122,7 @@ public class FreeBoardController {
      * @param freeBoardIdx
      * @return
      */
-    @PostMapping("/free-board/hate/{freeBoardIdx}")
+    @PostMapping("/hate/{freeBoardIdx}")
     public ResponseEntity<FreeBoardDetailResponseDTO> hateCount(
             @AuthenticationPrincipal TokenUserInfo userInfo
             , @PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {

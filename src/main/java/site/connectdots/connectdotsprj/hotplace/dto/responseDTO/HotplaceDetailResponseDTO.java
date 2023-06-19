@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 @EqualsAndHashCode
 @Builder
-public class HotplaceDetilResponseDTO {
+public class HotplaceDetailResponseDTO {
 
     private Location location;
     private String hotplaceImg;
@@ -30,7 +30,7 @@ public class HotplaceDetilResponseDTO {
     private LocalDateTime hotplaceWriteDate;
 
 
-    public HotplaceDetilResponseDTO(Hotplace hotplace) {
+    public HotplaceDetailResponseDTO(Hotplace hotplace) {
         this.location = hotplace.getLocation();
         this.hotplaceImg = hotplace.getHotplaceImg();
         this.hotplaceContent = hotplace.getHotplaceContent();
