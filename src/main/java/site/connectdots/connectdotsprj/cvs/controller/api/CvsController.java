@@ -21,24 +21,12 @@ public class CvsController {
     private final CvsService service;
 
     @GetMapping()
-    public ResponseEntity<List<CvsResponseDTO>> getCvsData(){
+    public ResponseEntity<List<CvsResponseDTO>> getCvsData() {
         List<CvsResponseDTO> cvs = service.findAll();
         return ResponseEntity.ok().body(cvs);
     }
-//    @GetMapping("/{cvsType}")
-//    public ResponseEntity<List<CvsResponseDTO>> getDefaultCvsData(@PathVariable(required = false) String cvsType) {
-//        if (cvsType == null || cvsType.isEmpty()) {
-//            cvsType = "GS25"; // 기본 편의점 타입으로 설정합니다.
-//        }
-//
-//        try {
-//            List<CvsResponseDTO> filteredData = service.filterCvs(cvsType, null); // 두 번째 경로 변수인 cvsSale은 null로 전달합니다.
-//            return ResponseEntity.ok().body(filteredData);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return ResponseEntity.internalServerError().build();
-//        }
-//    }
+}
+
 
 //    @GetMapping("/{cvsType}/{cvsSale}")
 //    public ResponseEntity<List<CvsResponseDTO>> getFilteredCvsData(@PathVariable String cvsType, @PathVariable String cvsSale) {
@@ -59,43 +47,6 @@ public class CvsController {
 //        } catch (Exception e) {
 //            return ResponseEntity.internalServerError()
 //                    .body(e.getMessage());
-//        }
-//    }
-
-
-//    @GetMapping("/{cvsType}")
-//    public ResponseEntity<List<CvsResponseDTO>> getCvsData(@PathVariable String cvsType){
-//        List<CvsResponseDTO> cvs = service.findAllByCvsType(cvsType);
-//        return ResponseEntity.ok().body(cvs);
-//    }
-
-
-}
-
-
-//    @GetMapping()
-//    public ResponseEntity<List<Cvs>> getAllProducts() {
-//        try {
-//            // ProductService를 사용하여 상품 데이터를 가져옴
-//            List<Cvs> products = service.readJsonFile();
-//            System.out.println("products = " + products);
-//            // React로 데이터 전송
-//            return ResponseEntity.ok().body(products);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return ResponseEntity.internalServerError().build();
-//        }
-//    }
-
-//    @GetMapping("/{cvsName}")
-//    public ResponseEntity<List<Cvs>> getCsvData(@PathVariable String cvsName) {
-//        try {
-//            List<Cvs> filteredCsv = service.filterCsv(cvsName);
-//
-//            return ResponseEntity.ok().body(filteredCsv);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return ResponseEntity.internalServerError().build();
 //        }
 //    }
 
