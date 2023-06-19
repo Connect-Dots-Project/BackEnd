@@ -6,7 +6,6 @@ import site.connectdots.connectdotsprj.cvs.entity.Cvs;
 
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
