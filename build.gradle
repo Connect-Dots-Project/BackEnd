@@ -74,6 +74,9 @@ dependencies {
     // 파일업로드 라이브러리
     implementation 'commons-io:commons-io:2.8.0'
 
+    // 스프핑 시큐리티 의존성 관리
+//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
 }
 tasks.named('test') {
     useJUnitPlatform()
