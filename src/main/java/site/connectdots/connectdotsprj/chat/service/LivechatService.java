@@ -20,7 +20,6 @@ public class LivechatService {
 
     private final LivechatRepository livechatRepository;
 
-    private final MemberRepository memberRepository;
 
     // 전체 조회
     @Transactional(readOnly = true)
@@ -43,7 +42,7 @@ public class LivechatService {
     private LivechatListAndHashtagListResponseDTO createLivechatListAndHashtagListResponseDTO(List<String> hashtagList, List<Livechat> livechatList) {
         List<LivechatListResponseDTO> responseDTOList = livechatList.stream()
                 .map(e -> {
-                    Member member = memberRepository.findById(e.getMemberIdx()).orElseThrow();
+                    Member member = e.getMember();
 
                     return LivechatListResponseDTO.builder()
                             .content(e.getLivechatContent())

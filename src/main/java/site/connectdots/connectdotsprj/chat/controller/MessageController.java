@@ -13,24 +13,11 @@ public class MessageController {
     private final SimpMessageSendingOperations sendingOperations;
 
     /**
-     * @param message
+     * @param message : 메시지 내용
      * @MessageMapping("/chat/message") : 클라이언트로부터 메시지를 수신하기 위한 메시지 매핑을 처리 해당 경로로 메시지를 전송할 수 있음
      */
     @MessageMapping("/chat/message")
     public void enter(ChatMessage message) {
-
-        System.out.println();
-        System.out.println();
-        System.out.println("-------------------------------");
-        System.out.println(message.toString());
-        System.out.println(message.getMessage());
-        System.out.println(message.getType());
-        System.out.println(message.getRoomId());
-        System.out.println(message.getSender());
-        System.out.println("-------------------------------");
-        System.out.println();
-        System.out.println();
-
 
         if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
             message.setMessage(message.getSender() + "님이 입장하였습니다."); // 메시지 타입이 ENTER 면 입장하였다는 메시지를 뿌려줍니다.

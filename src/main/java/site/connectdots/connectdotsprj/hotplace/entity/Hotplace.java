@@ -24,14 +24,14 @@ public class Hotplace {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hotplaceIdx;
 
-//    @Column(nullable = false, length = 200)
-    @Builder.Default
-    private String hotplaceImg = "사진없음";
+    //    @Column(nullable = false, length = 200)
+//    @Builder.Default
+    private String hotplaceImg;
 
-//    @Column(nullable = false, length = 100)
+    //    @Column(nullable = false, length = 100)
     private String hotplaceContent;
 
-//    @Column(nullable = false, length = 20)
+    //    @Column(nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     private Location location;
 
@@ -50,10 +50,10 @@ public class Hotplace {
     @Builder.Default
     private String hotplaceLongitude = "0.0000";
 
-//    @Column(nullable = false)
+    //    @Column(nullable = false)
     private String hotplaceName;
 
-//    @Column(nullable = false)
+    //    @Column(nullable = false)
     private String hotplaceFullAddress;
 
     private String kakaoLocation;

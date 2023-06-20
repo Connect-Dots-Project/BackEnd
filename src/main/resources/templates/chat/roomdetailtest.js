@@ -10,6 +10,7 @@ const App = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
 
+  
   useEffect(() => {
     setRoomId(localStorage.getItem('wschat.roomId'));
     setSender(localStorage.getItem('wschat.sender'));
@@ -34,17 +35,18 @@ const App = () => {
             {},
             JSON.stringify({ type: 'ENTER', roomId, sender })
           );
-        },
-        (error) => {
-          if (reconnect++ <= 5) {
-            setTimeout(() => {
-              console.log('연결 재시도');
-              sock = new SockJS('/ws/chat');
-              ws = Stomp.over(sock);
-              connect();
-            }, 10 * 1000);
-          }
         }
+        // ,
+        // (error) => {
+        //   if (reconnect++ <= 5) {
+        //     setTimeout(() => {
+        //       console.log('연결 재시도');
+        //       sock = new SockJS('/ws/chat');
+        //       ws = Stomp.over(sock);
+        //       connect();
+        //     }, 10 * 1000);
+        //   }
+        // }
       );
     };
 
