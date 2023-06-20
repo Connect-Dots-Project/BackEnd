@@ -185,7 +185,7 @@ public class InsertBulk {
                     Livechat.builder()
                             .livechatContent("안녕!!! 강남역 다나카 떴다🔥🔥🔥 실시간 채팅하고 놀아요🎊🎊" + i)
                             .livechatHashtag(hash[(int) (Math.random() * 3)])
-                            .memberIdx((long) i)
+//                            .memberIdx((long) i)
                             .build());
         }
 
