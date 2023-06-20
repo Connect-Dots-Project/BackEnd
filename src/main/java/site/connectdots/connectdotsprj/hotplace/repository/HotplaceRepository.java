@@ -35,4 +35,7 @@ public interface HotplaceRepository extends JpaRepository<Hotplace, Long> {
     @Query("SELECT h FROM Hotplace h WHERE h.member =:member")
     List<Hotplace> findAllByMember(Member member);
 
+
+    List<Hotplace> findAllByOrderByHotplaceWriteDateDesc();
+
 }

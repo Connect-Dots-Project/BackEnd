@@ -3,6 +3,7 @@ package site.connectdots.connectdotsprj.chat.entity;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import site.connectdots.connectdotsprj.member.entity.Member;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -21,12 +22,12 @@ public class Livechat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long livechatIdx;
     @Column(nullable = false, length = 500)
-
     private String livechatContent;
     @Column(nullable = false, length = 20)
     private String livechatHashtag;
     @CreationTimestamp
     private LocalDateTime livechatCreateDate;
-    @Column(unique = true)
-    private Long memberIdx;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberIdx", nullable = false, unique = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Member member;
 }
