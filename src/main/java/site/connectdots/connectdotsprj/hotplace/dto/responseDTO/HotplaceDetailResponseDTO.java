@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 public class HotplaceDetailResponseDTO {
 
+    private Long hotplaceIdx;
     private Location location;
     private String hotplaceImg;
     private String hotplaceContent;
@@ -30,6 +31,7 @@ public class HotplaceDetailResponseDTO {
 
 
     public HotplaceDetailResponseDTO(Hotplace hotplace) {
+        this.hotplaceIdx = hotplace.getHotplaceIdx();
         this.location = hotplace.getLocation();
         this.hotplaceImg = hotplace.getHotplaceImg();
         this.hotplaceContent = hotplace.getHotplaceContent();
