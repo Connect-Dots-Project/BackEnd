@@ -19,25 +19,6 @@ class LivechatRepositoryTest {
     @Autowired
     LivechatRepository livechatRepository;
 
-//    @Test
-//    @DisplayName("insert bulk")
-//    void insertBulk() {
-//        //given
-//        String[] hash = {"강남역", "맛집", "별빛청하", "나무"};
-//
-//        for (int i = 2; i <= 20; i++) {
-//            livechatRepository.save(Livechat.builder()
-//                    .livechat_content("안뇽" + i)
-//                    .livechatHashtag(hash[(int) (Math.random()*3)])
-//                    .memberIdx((long) i)
-//                    .build());
-//        }
-//
-//        //when
-//
-//        //then
-//    }
-
     @Test
     @DisplayName("글 작성에 성공할 것이다.")
     @Rollback(value = true)
