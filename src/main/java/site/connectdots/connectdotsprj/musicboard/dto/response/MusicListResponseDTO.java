@@ -1,13 +1,12 @@
 package site.connectdots.connectdotsprj.musicboard.dto.response;
 
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import site.connectdots.connectdotsprj.musicboard.entity.Genre;
+<<<<<<< HEAD
 import site.connectdots.connectdotsprj.musicboard.entity.Music;
+=======
 
-import java.time.LocalDateTime;
-
+import javax.persistence.Column;
+>>>>>>> b4b5e409c0b6a1d7557221fdba145a9c21e6da79
 
 @Getter
 @ToString
@@ -18,24 +17,37 @@ import java.time.LocalDateTime;
 public class MusicListResponseDTO {
 
     private Long musicBoardIdx;
+<<<<<<< HEAD
+    private String musicBoardTrack;
+    private String musicBoardTrackImg;
     private String musicBoardTitle;
+    private String musicBoardTitleImg;
     private String musicBoardSinger;
-    private String musicBoardLyrics;
-    private Genre musicBoardGenre;
-
-    @JsonFormat(pattern = "yyyy/MM/dd")
-    private LocalDateTime createDate;
-    private  Long viewCount;
+    private  Long musicBoardViewCount;
 
     public MusicListResponseDTO(Music music){
-        this.musicBoardIdx=music.getMusicBoardIdx();
+        this.musicBoardIdx = music.getMusicBoardIdx();
+        this.musicBoardTrack=music.getMusicBoardTrack();
+        this.musicBoardTrackImg=music.getMusicBoardTrackImg();
         this.musicBoardTitle=music.getMusicBoardTitle();
+        this.musicBoardTitleImg= music.getMusicBoardTitleImg();
         this.musicBoardSinger=music.getMusicBoardSinger();
-        this.musicBoardLyrics=music.getMusicBoardLyrics();
-        this.musicBoardGenre=music.getMusicBoardGenre();
-        this.createDate=music.getCreateDate();
-        this.viewCount=music.getViewCount();
-
+        this.musicBoardViewCount=music.getMusicBoardViewCount();
     }
+=======
+
+    private String spotifyMusicId;
+
+    private String musicBoardTitle;
+
+    private String musicBoardArtist;
+
+    private String musicBoardTitleImage;
+
+    private String musicBoardPreviewUrl;
+>>>>>>> b4b5e409c0b6a1d7557221fdba145a9c21e6da79
+
+    private String musicBoardTrack;
+    private String musicBoardTrackImage;
 
 }
