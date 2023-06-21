@@ -2,6 +2,8 @@ package site.connectdots.connectdotsprj.musicboard.dto.response;
 
 import lombok.*;
 
+import javax.persistence.Column;
+
 @Getter
 @ToString
 @EqualsAndHashCode
@@ -21,5 +23,8 @@ public class MusicListResponseDTO {
     private String musicBoardTitleImage;
 
     private String musicBoardPreviewUrl;
+
+    private String musicBoardTrack;
+    private String musicBoardTrackImage;
 
 }

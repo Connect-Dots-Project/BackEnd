@@ -11,7 +11,9 @@ import site.connectdots.connectdotsprj.musicboard.dto.response.TrackBoardListRes
 import site.connectdots.connectdotsprj.musicboard.dto.response.MusicListResponseDTO;
 import site.connectdots.connectdotsprj.musicboard.service.SpotifyApiService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -38,11 +40,26 @@ public class SpotifyApiController {
      * @param code
      * @return
      */
+//    @PostMapping("/admin/contents/music-board")
+//    public HttpEntity<?> updateMusicBoard(String code) {
+//        String token = spotifyApiService.updateMusicBoard(code);
+//        return ResponseEntity.status(HttpStatus.OK).body(token);
+//    }
+
     @PostMapping("/admin/contents/music-board")
-    public HttpEntity<Void> updateMusicBoard(String code) {
-        spotifyApiService.updateMusicBoard(code);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<Map<String, String>> updateMusicBoard(@RequestBody Map<String, String> requestBody) {
+        String code = requestBody.get("code");
+
+        String token = spotifyApiService.updateMusicBoard(code);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+
+        return ResponseEntity.ok(response);
     }
+
+
+
 
     /**
      * 플레이리스트 전체 가져오기

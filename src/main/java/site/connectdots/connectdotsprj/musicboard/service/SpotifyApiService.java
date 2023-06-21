@@ -99,11 +99,16 @@ public class SpotifyApiService {
         }
     }
 
-
-    public void updateMusicBoard(final String code) {
+//                playlist -> id 스포티파이 음악 ID
+//                playlist -> tracks -> items -> track -> artiests -> name : 가수명
+//                playlist -> tracks -> items -> track -> previewUrl : url
+//                playlist -> name 노래명
+//                playlist -> tracks -> album -> images -> 0번째배열
+    public String updateMusicBoard(final String code) {
 
         //스포티파티 api 사용을 위한 spotifyApi 객체 생성.
         SpotifyApi spotifyApi = getSpotifyApi(code);
+
 
         //플레이리스트(트랙) 조회
         List<SpotifyPlaylist> spotifyPlaylists = spotifyPlaylistRepository.findAll();
@@ -131,12 +136,9 @@ public class SpotifyApiService {
                 spotifyMusicPlaylistRepository.save(spotifyMusicPlaylist);
             });
         });
+
+        return spotifyApi.getAccessToken();
     }
-//                playlist -> id 스포티파이 음악 ID
-//                playlist -> tracks -> items -> track -> artiests -> name : 가수명
-//                playlist -> tracks -> items -> track -> previewUrl : url
-//                playlist -> name 노래명
-//                playlist -> tracks -> album -> images -> 0번째배열
 
 
 
@@ -145,6 +147,7 @@ public class SpotifyApiService {
 
         List<MusicListResponseDTO> response = playlist.getSpotifyMusicPlaylists().stream().map(musicPlaylist -> {
             SpotifyMusic music = musicPlaylist.getSpotifyMusic();
+            SpotifyPlaylist track = musicPlaylist.getSpotifyPlaylist();
 
             return MusicListResponseDTO.builder()
                     .musicBoardIdx(music.getMusicBoardIdx())
@@ -153,6 +156,8 @@ public class SpotifyApiService {
                     .musicBoardTitleImage(music.getMusicBoardTitleImage())
                     .musicBoardArtist(music.getMusicBoardArtist())
                     .musicBoardTitle(music.getMusicBoardTitle())
+                    .musicBoardTrack(track.getMusicBoardTrack())
+                    .musicBoardTrackImage(track.getMusicBoardTrackImage())
                     .build();
 
         }).collect(Collectors.toList());
