@@ -25,9 +25,6 @@ public class CvsController {
         List<CvsResponseDTO> cvs = service.findAll();
         return ResponseEntity.ok().body(cvs);
     }
-}
-
-
 //    @PostMapping("/data")
 //    public ResponseEntity<String> saveCvsData() {
 //        try {
@@ -38,5 +35,14 @@ public class CvsController {
 //                    .body(e.getMessage());
 //        }
 //    }
+
+//        @GetMapping("/{cvsType}")
+//    public ResponseEntity<List<CvsResponseDTO>> getCvsData(@PathVariable String cvsType){
+//        List<CvsResponseDTO> cvs = service.findAllByCvsType(cvsType);
+//        return ResponseEntity.ok().body(cvs);
+//    }
+}
+
+
 
 
