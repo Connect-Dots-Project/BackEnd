@@ -34,6 +34,9 @@ public class SpotifyPlaylist {
     @Builder.Default
     private Long musicBoardViewCount = 0L;
 
+
     @OneToMany(mappedBy = "spotifyPlaylist")
     private List<SpotifyMusicPlaylist> spotifyMusicPlaylists;
+
+
 }

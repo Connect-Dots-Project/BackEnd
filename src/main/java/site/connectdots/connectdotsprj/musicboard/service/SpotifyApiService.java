@@ -43,7 +43,7 @@ public class SpotifyApiService {
     private static final String clientSecret = "932abc3385b44159996813d0f82b1284";
     private static final URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:8181/contents/music-board");
 
-    private SpotifyApi getSpotifyApi(final String code) {
+    public SpotifyApi getSpotifyApi(final String code) {
         try {
             final SpotifyApi spotifyApi = new SpotifyApi.Builder()
                     .setClientId(clientId)
@@ -67,7 +67,22 @@ public class SpotifyApiService {
         return "redirect:https://accounts.spotify.com/authorize?response_type=code&client_id=" + clientId + "&redirect_uri=" + redirectUri;
     }
 
-    public List<TrackBoardListResponseDTO> getMusicBoardList() {
+//    public List<TrackBoardListResponseDTO> getMusicBoardList(SpotifyApi getSpotifyApi) {
+//        List<SpotifyPlaylist> spotifyPlaylists = spotifyPlaylistRepository.findAllBySpotifyApi(getSpotifyApi);
+//
+//        List<TrackBoardListResponseDTO> musicBoardListResponseDTOList = spotifyPlaylists.stream().map(spotifyPlaylist -> {
+//            return TrackBoardListResponseDTO.builder().musicBoardIdx(spotifyPlaylist.getMusicBoardIdx())
+//                    .musicBoardPlaylistId(spotifyPlaylist.getMusicBoardPlaylistId())
+//                    .musicBoardTrack(spotifyPlaylist.getMusicBoardTrack())
+//                    .musicBoardTrackImage(spotifyPlaylist.getMusicBoardTrackImage())
+//                    .musicBoardViewCount(spotifyPlaylist.getMusicBoardViewCount())
+//                    .build();
+//        }).collect(Collectors.toList());
+//
+//        return musicBoardListResponseDTOList;
+//    }
+public List<TrackBoardListResponseDTO> getMusicBoardList() {
+    try {
         List<SpotifyPlaylist> spotifyPlaylists = spotifyPlaylistRepository.findAll();
 
         List<TrackBoardListResponseDTO> musicBoardListResponseDTOList = spotifyPlaylists.stream().map(spotifyPlaylist -> {
@@ -80,7 +95,10 @@ public class SpotifyApiService {
         }).collect(Collectors.toList());
 
         return musicBoardListResponseDTOList;
+    } catch (Exception e) {
+        throw new RuntimeException(e);
     }
+}
 
 
     public Playlist getPlaylist(final SpotifyApi spotifyApi, final String playListId) {
