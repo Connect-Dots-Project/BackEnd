@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -14,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
+import org.springframework.web.servlet.ModelAndView;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
@@ -37,7 +39,6 @@ public class HotplaceController {
     @Value("${upload.path}")
     private String uploadRootPath;
 
-
     // 글 전체조회
     @GetMapping
     public ResponseEntity<?> list() {
@@ -60,7 +61,6 @@ public class HotplaceController {
             /* @AuthenticationPrincipal TokenUserInfo userInfo */
             @Validated @RequestPart("hotplace") HotplaceWriteRequestDTO dto
             , @RequestPart("hotplaceImg") MultipartFile hotplaceImg
-            , @AuthenticationPrincipal TokenUserInfo userInfo
             , BindingResult result) {
 
         log.info("HotplaceController.write.info 글 작성 {}, {}", dto, result);
@@ -74,7 +74,6 @@ public class HotplaceController {
             log.info("attached file name ======================================: {}", hotplaceImg.getOriginalFilename());
             try {
                 uploadFilePath = hotplaceService.uploadHotplaceImg(hotplaceImg);
-//                uploadFilePath = hotplaceService.uploadHotplaceImg(hotplaceImg, userInfo);
             } catch (Exception e) {
                 log.warn("파일처리 예외가 발생했습니다.");
                 e.printStackTrace();
@@ -86,7 +85,7 @@ public class HotplaceController {
         if (fieldErrors != null) return fieldErrors;
 
         try {
-            HotplaceWriteResponseDTO hotplaceWriteResponseDTO = hotplaceService.write(dto, uploadFilePath, userInfo);
+            HotplaceWriteResponseDTO hotplaceWriteResponseDTO = hotplaceService.write(dto, uploadFilePath);
             return ResponseEntity.ok().body(hotplaceWriteResponseDTO);
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -97,14 +96,12 @@ public class HotplaceController {
 
     // 글 삭제
     @DeleteMapping("/{hotplaceIdx}")
-    public ResponseEntity<?> delete(
-            @PathVariable Long hotplaceIdx
-            , @AuthenticationPrincipal TokenUserInfo userInfo
-    ) {
+    public ResponseEntity<?> delete(@PathVariable Long hotplaceIdx) {
+        log.info("살제============================================");
         log.info("HotplaceController.delete.info 글 삭제 {}", hotplaceIdx);
 
         try {
-            hotplaceService.delete(hotplaceIdx, userInfo);
+            hotplaceService.delete(hotplaceIdx);
             return ResponseEntity.ok("정상적으로 삭제되었습니다!");
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,23 +112,43 @@ public class HotplaceController {
 
     // 글 수정
     @RequestMapping(method = {RequestMethod.PUT, RequestMethod.PATCH})
-    public ResponseEntity<?> modify(
-            @Validated @RequestBody HotplaceModifyRequestDTO dto
-            , @AuthenticationPrincipal TokenUserInfo userInfo
+    public ResponseEntity<?> modify(@Validated @RequestPart("hotplace") HotplaceModifyRequestDTO dto
+            , @RequestPart("hotplaceImg") MultipartFile hotplaceImg
             , BindingResult result) {
         log.info("HotplaceController.modify.info 글 수정 {}", dto);
 
         ResponseEntity<List<FieldError>> fieldErrors = getValidatedResult(result);
         if (fieldErrors != null) return fieldErrors;
 
+
+
+        String uploadFilePath = null;
+        if (hotplaceImg != null) {
+            log.info("attached file name ======================================: {}", hotplaceImg.getOriginalFilename());
+            try {
+                uploadFilePath = hotplaceService.uploadHotplaceImg(hotplaceImg);
+            } catch (Exception e) {
+                log.warn("파일처리 예외가 발생했습니다.");
+                e.printStackTrace();
+                return ResponseEntity.internalServerError().build();
+            }
+        }
+
         try {
-            HotplaceDetailResponseDTO modifiedHotplace = hotplaceService.modify(dto, userInfo);
+            HotplaceDetailResponseDTO modifiedHotplace = hotplaceService.modify(dto, uploadFilePath);
             return ResponseEntity.ok().body(modifiedHotplace);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
+
+
+
+
+
+
     }
+
 
     // 입력값 검증
     private ResponseEntity<List<FieldError>> getValidatedResult(BindingResult result) {
@@ -156,8 +173,8 @@ public class HotplaceController {
         return ResponseEntity.ok().body(hotplaceList);
     }
 
-    // 이미지 파일 클라이언트에게 제공
 
+    // 이미지 파일 클라이언트에게 제공
     @GetMapping("/img/{fileName}")
     public ResponseEntity<?> getImg(@PathVariable String fileName) throws IOException {
 
@@ -197,8 +214,8 @@ public class HotplaceController {
 
 
     }
-    // 파일경로에서 확장자 추출하기
 
+    // 파일경로에서 확장자 추출하기
     private MediaType findExtendsionAndFetMediaType(String filePath) {
         String ext = filePath.substring(filePath.lastIndexOf(".") + 1);
         switch (ext.toUpperCase()) {
@@ -215,26 +232,26 @@ public class HotplaceController {
     }
 
 
-//    // 테스트용 - 웹페이지에서 지도 검색 (JSP)
-//    @GetMapping("/search")
-//    public ModelAndView showMapPage() {
-//        return new ModelAndView("/WEB-INF/map.jsp");
-//    }
-//
-//    // 테스트용 - 웹페이지 마커 표시하기 (JSP)
-//    @GetMapping("/map")
-//    public ModelAndView showHotplaceAll(Model model) {
-//        List<Hotplace> hotplaceList = hotplaceService.displayMarkersAll();
-//        model.addAttribute("hotplaceList", hotplaceList);
-//        return new ModelAndView("/WEB-INF/location.jsp");
-//    }
-//
-//    @GetMapping("/map/{kakaolocation}")
-//    public ModelAndView showHotplaceByLocation(@PathVariable String kakaolocation, Model model) {
-//        List<Hotplace> hotplaceList = hotplaceService.displayMarkersByLocation(kakaolocation);
-//        model.addAttribute("hotplaceList", hotplaceList);
-//        return new ModelAndView("/WEB-INF/location.jsp");
-//    }
+    // 테스트용 - 웹페이지에서 지도 검색 (JSP)
+    @GetMapping("/search")
+    public ModelAndView showMapPage() {
+        return new ModelAndView("/WEB-INF/map.jsp");
+    }
 
+    // 테스트용 - 웹페이지 마커 표시하ㅙ (JSP)
+    @GetMapping("/map")
+    public ModelAndView showHotplaceAll(Model model) {
+        List<Hotplace> hotplaceList = hotplaceService.displayMarkersAll();
+        model.addAttribute("hotplaceList", hotplaceList);
+        return new ModelAndView("/WEB-INF/location.jsp");
+    }
+
+
+    @GetMapping("/map/{kakaolocation}")
+    public ModelAndView showHotplaceByLocation(@PathVariable String kakaolocation, Model model) {
+        List<Hotplace> hotplaceList = hotplaceService.displayMarkersByLocation(kakaolocation);
+        model.addAttribute("hotplaceList", hotplaceList);
+        return new ModelAndView("/WEB-INF/location.jsp");
+    }
 
 }
