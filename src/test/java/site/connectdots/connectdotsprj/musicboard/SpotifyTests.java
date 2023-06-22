@@ -11,10 +11,7 @@ import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCrede
 import se.michaelthelin.spotify.model_objects.specification.*;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
-<<<<<<< HEAD
-=======
-import site.connectdots.connectdotsprj.musicboard.dto.response.SpotifyPlaylistDTO;
->>>>>>> b4b5e409c0b6a1d7557221fdba145a9c21e6da79
+
 
 import java.net.URI;
 
