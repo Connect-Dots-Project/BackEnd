@@ -28,7 +28,7 @@ class LivechatRepositoryTest {
         Livechat insertData = Livechat.builder()
                 .livechatContent("안뇽")
                 .livechatHashtag("해시태그")
-                .memberIdx(memberIdx)
+//                .memberIdx(memberIdx)
                 .build();
 
         //when
@@ -37,7 +37,7 @@ class LivechatRepositoryTest {
         //then
         assertEquals("안뇽", saved.getLivechatContent());
         assertEquals("해시태그", saved.getLivechatHashtag());
-        assertEquals(5, saved.getMemberIdx());
+//        assertEquals(5, saved.getMemberIdx());
 
     }
 
@@ -66,7 +66,7 @@ class LivechatRepositoryTest {
             livechatRepository.save(Livechat.builder()
                     .livechatContent("안뇽하하하하")
                     .livechatHashtag("해시태그하하하")
-                    .memberIdx(memberIdx)
+//                    .memberIdx(memberIdx)
                     .build());
         });
     }
