@@ -81,6 +81,7 @@ HotplaceRepositoryTest {
         System.out.println("--------------------------");
         all.forEach(System.out::println);
         System.out.println("--------------------------");
+
         //then
 //        assertEquals(50, all.size());
 //        System.out.println(all);
