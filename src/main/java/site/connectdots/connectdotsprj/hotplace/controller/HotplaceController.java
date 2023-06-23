@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
@@ -14,7 +13,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
 import org.springframework.web.servlet.ModelAndView;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
@@ -22,6 +20,7 @@ import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequ
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetailResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceListResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceWriteResponseDTO;
+import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.hotplace.service.HotplaceService;
 
 import java.io.File;
@@ -121,7 +120,6 @@ public class HotplaceController {
         if (fieldErrors != null) return fieldErrors;
 
 
-
         String uploadFilePath = null;
         if (hotplaceImg != null) {
             log.info("attached file name ======================================: {}", hotplaceImg.getOriginalFilename());
@@ -141,10 +139,6 @@ public class HotplaceController {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
-
-
-
-
 
 
     }
