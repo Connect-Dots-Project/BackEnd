@@ -19,7 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Transactional
 @Rollback(value = false)
-class HotplaceRepositoryTest {
+class
+HotplaceRepositoryTest {
 
     @Autowired
     HotplaceRepository hotplaceRepository;
@@ -69,12 +70,18 @@ class HotplaceRepositoryTest {
 
     @Test
     @DisplayName("전체 조회시 데이터가 50개여야만 한다.")
+    @Transactional(readOnly = true)
+    @Rollback(value = true)
     void findAllTest() {
         //given
 
         //when
+        System.out.println("--------------------------");
         List<Hotplace> all = hotplaceRepository.findAll();
+        System.out.println("--------------------------");
         all.forEach(System.out::println);
+        System.out.println("--------------------------");
+
         //then
 //        assertEquals(50, all.size());
 //        System.out.println(all);
@@ -231,7 +238,6 @@ class HotplaceRepositoryTest {
         //when
         List<Hotplace> allByOrderByHotplaceWriteDateDesc = hotplaceRepository.findAllByOrderByHotplaceWriteDateDesc();
         allByOrderByHotplaceWriteDateDesc.forEach(System.out::println);
-
 
 
         //then

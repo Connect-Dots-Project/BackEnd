@@ -158,11 +158,11 @@ public class HotplaceController {
     }
 
     // 행정구역으로 핫플레이스 게시물 목록 조회하기
-    @GetMapping("/{location}")
-    public ResponseEntity<?> getHotplaceByLocation(@PathVariable Location location) {
+    @GetMapping("/{kakaoLocation}")
+    public ResponseEntity<?> getHotplaceByLocation(@PathVariable String kakaoLocation) {
 
         log.info("행정구역!");
-        HotplaceListResponseDTO hotplaceList = hotplaceService.findByLocation(location);
+        HotplaceListResponseDTO hotplaceList = hotplaceService.findByLocation(kakaoLocation);
         log.info("HotplaceController.locationList.info 행정구역별 글 전체조회 {} ", hotplaceList);
         return ResponseEntity.ok().body(hotplaceList);
     }
