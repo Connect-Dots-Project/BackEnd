@@ -30,10 +30,9 @@ public class MemberController {
 
     @PostMapping("/login")
     public ResponseEntity<MemberLoginResponseDTO> login(@RequestBody MemberLoginRequestDTO dto
-            , HttpServletRequest request
             , HttpServletResponse response
     ) {
-        MemberLoginResponseDTO loginResponse = memberLoginService.login(dto, response, request);
+        MemberLoginResponseDTO loginResponse = memberLoginService.login(dto, response);
 
         return ResponseEntity.ok().body(loginResponse);
     }
