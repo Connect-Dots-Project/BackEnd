@@ -1,6 +1,7 @@
 package site.connectdots.connectdotsprj.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.member.dto.request.MemberSignUpRequestDTO;
@@ -16,14 +17,17 @@ import static site.connectdots.connectdotsprj.member.exception.custom.enums.Sign
 public class MemberSignUpService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder encoder;
 
     public MemberSignUpResponseDTO signUp(MemberSignUpRequestDTO dto) {
         validateDTO(dto);
 
+        String encodePassword = encoder.encode(dto.getFirstPassword());
+
         Member save = memberRepository.save(
                 Member.builder()
                         .memberAccount(dto.getAccount())
-                        .memberPassword(dto.getFirstPassword())
+                        .memberPassword(encodePassword)
                         .memberBirth(dto.getBirthDay().atStartOfDay())
                         .memberName(dto.getName())
                         .memberNickname(dto.getNickName())
@@ -34,6 +38,7 @@ public class MemberSignUpService {
                         .memberLoginMethod(dto.getLoginMethod())
                         .build()
         );
+
         boolean isSignUp = save.getMemberAccount() != null;
 
         return new MemberSignUpResponseDTO(isSignUp);
