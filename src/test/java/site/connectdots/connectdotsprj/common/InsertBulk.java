@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import site.connectdots.connectdotsprj.chat.entity.Livechat;
+import site.connectdots.connectdotsprj.chat.repository.LivechatRepository;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoard;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardCategory;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardReply;
@@ -33,6 +35,9 @@ public class InsertBulk {
 
     @Autowired
     private FreeBoardReplyRepository freeBoardReplyRepository;
+
+    @Autowired
+    private LivechatRepository livechatRepository;
 
     @Test
     @DisplayName("100명의 무작위 회원을 가입시킬 것이다.")
@@ -167,6 +172,23 @@ public class InsertBulk {
                             .build()
             );
         }
+    }
+
+
+    @Test
+    @DisplayName("20개의 실시간 채팅 게시글을 생성할 것이다.")
+    void livechatDummyDataTest() {
+        String[] hash = {"강남역", "맛집", "별빛청하", "나무"};
+
+        for (int i = 2; i <= 20; i++) {
+            livechatRepository.save(
+                    Livechat.builder()
+                            .livechatContent("안녕!!! 강남역 다나카 떴다🔥🔥🔥 실시간 채팅하고 놀아요🎊🎊" + i)
+                            .livechatHashtag(hash[(int) (Math.random() * 3)])
+//                            .memberIdx((long) i)
+                            .build());
+        }
+
     }
 
 }

@@ -14,12 +14,12 @@ import site.connectdots.connectdotsprj.member.entity.Member;
 @Builder
 public class HotplaceWriteRequestDTO {
 
-//    @NotNull
+    //    @NotNull
 //    @Enumerated(EnumType.STRING)
     private Location location;
-//    @NotBlank
+    //    @NotBlank
     private String hotplaceImg;
-//    @NotBlank
+    //    @NotBlank
     private String hotplaceContent;
     private String hotplaceLatitude;
     private String hotplaceLongitude;

@@ -74,12 +74,12 @@ public class HotplaceService {
 
 
     // 글 수정
-    public HotplaceDetailResponseDTO modify(final HotplaceModifyRequestDTO dto) {
+    public HotplaceDetailResponseDTO modify(final HotplaceModifyRequestDTO dto,  String uploadFilePath) {
         // 조회
         final Hotplace hotplaceEntity = findOne(dto.getHotplaceIdx());
 
         //세터
-        dto.updateHotplace(hotplaceEntity);
+        dto.updateHotplace(hotplaceEntity, uploadFilePath);
 
         // 저장
         Hotplace modified = hotplaceRepository.save(hotplaceEntity);
@@ -97,9 +97,9 @@ public class HotplaceService {
 
     // 행정구역으로 핫플레이스 게시물 목록 조회하기
     @Transactional(readOnly = true)
-    public HotplaceListResponseDTO findByLocation(Location location) {
+    public HotplaceListResponseDTO findByLocation(String kakaoLocation) {
 
-        List<Hotplace> hotplaceList = hotplaceRepository.findByLocation(location);
+        List<Hotplace> hotplaceList = hotplaceRepository.findByKakaoLocation(kakaoLocation);
 
         List<HotplaceDetailResponseDTO> list = hotplaceList.stream()
                 .map(HotplaceDetailResponseDTO::new)
@@ -140,4 +140,7 @@ public class HotplaceService {
         return uniqueFileName;
 
     }
+
+
+
 }

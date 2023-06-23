@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "musicBoardIdx")
 
 @Entity
 @Table(name = "TB_MUSICBOARD")
@@ -20,29 +20,31 @@ public class Music {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
     private Long musicBoardIdx;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
+    private String musicBoardTrack;
+
+    @Column(nullable = false, length = 2000)
+    private String musicBoardTrackImg;
+
+
+    @Column(nullable = false, length = 50)
     private String musicBoardTitle;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length =2000)
+    private String musicBoardTitleImg;
+
+    @Column(nullable = false, length =50)
     private String musicBoardSinger;
 
-    private String musicBoardLyrics;
+    @Builder.Default
+    private  Long musicBoardViewCount = 0L;
 
-
-    @Column(nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private Genre musicBoardGenre;
-
-    @CreationTimestamp
-    @Column(updatable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime createDate;
-
-    @ColumnDefault("0")
-    private  Long viewCount;
-
-
+    @Column(nullable = false, length =2000)
+    private String clientId;
+    @Column(nullable = false, length =2000)
+    private String clientSecret;
+    @Column(nullable = false, length =2000)
+    private String redirectUri;
 }

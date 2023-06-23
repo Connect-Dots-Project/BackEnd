@@ -19,25 +19,6 @@ class LivechatRepositoryTest {
     @Autowired
     LivechatRepository livechatRepository;
 
-//    @Test
-//    @DisplayName("insert bulk")
-//    void insertBulk() {
-//        //given
-//        String[] hash = {"강남역", "맛집", "별빛청하", "나무"};
-//
-//        for (int i = 2; i <= 20; i++) {
-//            livechatRepository.save(Livechat.builder()
-//                    .livechat_content("안뇽" + i)
-//                    .livechatHashtag(hash[(int) (Math.random()*3)])
-//                    .memberIdx((long) i)
-//                    .build());
-//        }
-//
-//        //when
-//
-//        //then
-//    }
-
     @Test
     @DisplayName("글 작성에 성공할 것이다.")
     @Rollback(value = true)
@@ -47,7 +28,7 @@ class LivechatRepositoryTest {
         Livechat insertData = Livechat.builder()
                 .livechatContent("안뇽")
                 .livechatHashtag("해시태그")
-                .memberIdx(memberIdx)
+//                .memberIdx(memberIdx)
                 .build();
 
         //when
@@ -56,7 +37,7 @@ class LivechatRepositoryTest {
         //then
         assertEquals("안뇽", saved.getLivechatContent());
         assertEquals("해시태그", saved.getLivechatHashtag());
-        assertEquals(5, saved.getMemberIdx());
+//        assertEquals(5, saved.getMemberIdx());
 
     }
 
@@ -85,7 +66,7 @@ class LivechatRepositoryTest {
             livechatRepository.save(Livechat.builder()
                     .livechatContent("안뇽하하하하")
                     .livechatHashtag("해시태그하하하")
-                    .memberIdx(memberIdx)
+//                    .memberIdx(memberIdx)
                     .build());
         });
     }

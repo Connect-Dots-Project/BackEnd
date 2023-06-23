@@ -16,10 +16,10 @@ import java.time.LocalDateTime;
 @Builder
 public class HotplaceDetailResponseDTO {
 
+    private Long hotplaceIdx;
     private Location location;
     private String hotplaceImg;
     private String hotplaceContent;
-    private Long hotplaceLikeCount;
     private String hotplaceLatitude;
     private String hotplaceLongitude;
     private String hotplaceName;
@@ -31,15 +31,17 @@ public class HotplaceDetailResponseDTO {
 
 
     public HotplaceDetailResponseDTO(Hotplace hotplace) {
+        this.hotplaceIdx = hotplace.getHotplaceIdx();
         this.location = hotplace.getLocation();
         this.hotplaceImg = hotplace.getHotplaceImg();
         this.hotplaceContent = hotplace.getHotplaceContent();
-        this.hotplaceLikeCount = hotplace.getHotplaceLikeCount();
         this.hotplaceLatitude = hotplace.getHotplaceLatitude();
         this.hotplaceLongitude = hotplace.getHotplaceLongitude();
         this.hotplaceName = hotplace.getHotplaceName();
-        this.hotplaceFullAddress = hotplace.getHotplaceFullAddress(); // 응답 시 필요..?
+        this.hotplaceFullAddress = hotplace.getHotplaceFullAddress();
+        this.kakaoLocation = hotplace.getKakaoLocation();
         this.hotplaceWriteDate = hotplace.getHotplaceWriteDate();
+
     }
 
 
