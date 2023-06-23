@@ -68,6 +68,9 @@ dependencies {
     // 스프핑 시큐리티 의존성 관리
 //    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+    // s3 라이브러리
+    implementation 'software.amazon.awssdk:s3:2.17.52'
+
 }
 tasks.named('test') {
     useJUnitPlatform()
