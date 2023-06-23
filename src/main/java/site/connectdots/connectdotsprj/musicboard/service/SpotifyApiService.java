@@ -160,8 +160,8 @@ public List<TrackBoardListResponseDTO> getMusicBoardList() {
 
 
 
-    public List<MusicListResponseDTO> getMusicList(final long musicBoardIdx) {
-        SpotifyPlaylist playlist = spotifyPlaylistRepository.findById(musicBoardIdx).orElseThrow(() -> new NotFoundMusicBoardException());
+    public List<MusicListResponseDTO> getMusicList(final long playListId) {
+        SpotifyPlaylist playlist = spotifyPlaylistRepository.findById(playListId).orElseThrow(() -> new NotFoundMusicBoardException());
 
         List<MusicListResponseDTO> response = playlist.getSpotifyMusicPlaylists().stream().map(musicPlaylist -> {
             SpotifyMusic music = musicPlaylist.getSpotifyMusic();
