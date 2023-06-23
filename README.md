@@ -122,3 +122,12 @@ erDiagram
         DATE cvs_reg_date "DEFAULT CURRENT_TIMESTAMP"
     }
 ````
+```mermaid
+erDiagram
+    TB_AUTH {
+        INT(10) auth_idx PK "AUTO_INCREMENT"
+        VARCHAR(1500) refreshToken "NOT NULL"
+        DATE auth_date  "DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+        VARCHAR(50) account "UNIQUE"
+    }
+```
