@@ -14,10 +14,8 @@ public class MemberLoginResponseDTO {
 
     private String email;
 
-    private String token;
 
-    public MemberLoginResponseDTO(Member member, String token) {
+    public MemberLoginResponseDTO(Member member) {
         this.email = member.getMemberAccount();
-        this.token = token;
     }
 }

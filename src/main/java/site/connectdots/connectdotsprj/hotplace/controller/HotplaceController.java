@@ -3,8 +3,6 @@ package site.connectdots.connectdotsprj.hotplace.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -122,7 +120,6 @@ public class HotplaceController {
         if (fieldErrors != null) return fieldErrors;
 
 
-
         String uploadFilePath = null;
         if (hotplaceImg != null) {
             log.info("attached file name ======================================: {}", hotplaceImg.getOriginalFilename());
@@ -144,10 +141,6 @@ public class HotplaceController {
         }
 
 
-
-
-
-
     }
 
 
@@ -165,11 +158,11 @@ public class HotplaceController {
     }
 
     // 행정구역으로 핫플레이스 게시물 목록 조회하기
-    @GetMapping("/{location}")
-    public ResponseEntity<?> getHotplaceByLocation(@PathVariable Location location) {
+    @GetMapping("/{kakaoLocation}")
+    public ResponseEntity<?> getHotplaceByLocation(@PathVariable String kakaoLocation) {
 
         log.info("행정구역!");
-        HotplaceListResponseDTO hotplaceList = hotplaceService.findByLocation(location);
+        HotplaceListResponseDTO hotplaceList = hotplaceService.findByLocation(kakaoLocation);
         log.info("HotplaceController.locationList.info 행정구역별 글 전체조회 {} ", hotplaceList);
         return ResponseEntity.ok().body(hotplaceList);
     }
