@@ -25,18 +25,24 @@ public class CvsController {
         List<CvsResponseDTO> cvs = service.findAll();
         return ResponseEntity.ok().body(cvs);
     }
+    @PostMapping("/data")
+    public ResponseEntity<String> saveCvsData() {
+        try {
+            service.saveCvsData();
+            return ResponseEntity.ok().body("db에 저장 성공");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(e.getMessage());
+        }
+    }
+
+//        @GetMapping("/{cvsType}")
+//    public ResponseEntity<List<CvsResponseDTO>> getCvsData(@PathVariable String cvsType){
+//        List<CvsResponseDTO> cvs = service.findAllByCvsType(cvsType);
+//        return ResponseEntity.ok().body(cvs);
+//    }
 }
 
 
-//    @PostMapping("/data")
-//    public ResponseEntity<String> saveCvsData() {
-//        try {
-//            service.saveCvsData();
-//            return ResponseEntity.ok().body("db에 저장 성공");
-//        } catch (Exception e) {
-//            return ResponseEntity.internalServerError()
-//                    .body(e.getMessage());
-//        }
-//    }
 
 

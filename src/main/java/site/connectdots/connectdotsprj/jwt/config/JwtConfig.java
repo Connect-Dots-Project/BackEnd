@@ -9,12 +9,16 @@ import site.connectdots.connectdotsprj.jwt.interceptor.JwtTokenInterceptor;
 @Configuration
 @RequiredArgsConstructor
 public class JwtConfig implements WebMvcConfigurer {
+    
     private final JwtTokenInterceptor jwtTokenInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry
                 .addInterceptor(jwtTokenInterceptor)
-                .addPathPatterns("/jwt/test/auth")
+//                .addPathPatterns("/**")
+//                .excludePathPatterns("/jwt/test/get-token")
+                .excludePathPatterns("/**")
         ;
     }
 }

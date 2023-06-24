@@ -24,18 +24,16 @@ public class MemberController {
     @PostMapping("/sign-up")
     public ResponseEntity<MemberSignUpResponseDTO> signUp(@RequestBody MemberSignUpRequestDTO dto) {
         MemberSignUpResponseDTO memberSignUpResponseDTO = memberSignUpService.signUp(dto);
-        
+
         return ResponseEntity.ok().body(memberSignUpResponseDTO);
     }
 
     @PostMapping("/login")
     public ResponseEntity<MemberLoginResponseDTO> login(@RequestBody MemberLoginRequestDTO dto
-//                                                        ,HttpServletRequest request
-//                                                        ,HttpServletResponse response
+            , HttpServletRequest request
+            , HttpServletResponse response
     ) {
-        MemberLoginResponseDTO loginResponse = memberLoginService.login(dto
-//                , request.getSession(), response
-        );
+        MemberLoginResponseDTO loginResponse = memberLoginService.login(dto, response, request);
 
         return ResponseEntity.ok().body(loginResponse);
     }
