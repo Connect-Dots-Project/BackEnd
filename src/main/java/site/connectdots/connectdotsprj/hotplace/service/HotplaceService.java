@@ -32,8 +32,7 @@ public class HotplaceService {
     private final HotplaceRepository hotplaceRepository;
     private final S3Service s3Service;
 
-
-    // 이미지 로컬 저장 경로
+    // 이미지 로컬 저장 경로 -> 133, 134, 140, 141, 147
 //    @Value("${upload.path}")
 //    private String uploadRootPath;
 
@@ -145,6 +144,7 @@ public class HotplaceService {
         String uploadUrl = s3Service.uploadToS3Bucket(originalFile.getBytes(), uniqueFileName);
 
         return uploadUrl;
+//        return uniqueFileName;
 
     }
 
