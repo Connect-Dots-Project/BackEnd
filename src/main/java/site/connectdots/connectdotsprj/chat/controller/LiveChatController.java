@@ -3,6 +3,8 @@ package site.connectdots.connectdotsprj.chat.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import site.connectdots.connectdotsprj.chat.dto.request.LivechatCreateRequestDTO;
+import site.connectdots.connectdotsprj.chat.dto.response.LivechatCreateResponseDTO;
 import site.connectdots.connectdotsprj.chat.dto.response.LivechatListAndHashtagListResponseDTO;
 import site.connectdots.connectdotsprj.chat.entity.Livechat;
 import site.connectdots.connectdotsprj.chat.service.LivechatService;
@@ -31,8 +33,11 @@ public class LiveChatController {
 
     // 글 작성
     @PostMapping()
-    public ResponseEntity<?> createLivechat() {
-        Livechat livechat = livechatService.createLivechat();
+    public ResponseEntity<LivechatCreateResponseDTO> createLivechat(@RequestBody LivechatCreateRequestDTO dto) {
+        System.out.println("\n\n\n----------------------66666----------------------");
+        System.out.println(dto);
+        System.out.println("----------------------66666----------------------\n\n\n");
+        LivechatCreateResponseDTO livechat = livechatService.createLivechat(dto);
 
         return ResponseEntity.ok().body(livechat);
     }

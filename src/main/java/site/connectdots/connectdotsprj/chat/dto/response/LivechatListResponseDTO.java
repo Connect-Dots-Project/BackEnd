@@ -18,10 +18,10 @@ public class LivechatListResponseDTO {
     private String content;
     private String memberNickname;
 
-    public LivechatListResponseDTO(Livechat livechat, String nickname) {
+    public LivechatListResponseDTO(Livechat livechat) {
         this.hashtag = livechat.getLivechatHashtag();
         this.content = livechat.getLivechatContent();
-        this.memberNickname = nickname;
+        this.memberNickname = livechat.getMemberNickname();
     }
 
 }
