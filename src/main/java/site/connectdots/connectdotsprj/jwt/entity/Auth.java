@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -22,5 +23,4 @@ public class Auth {
     private LocalDateTime authDate;
     @Column(nullable = false, length = 50, unique = true)
     private String account;
-
 }
