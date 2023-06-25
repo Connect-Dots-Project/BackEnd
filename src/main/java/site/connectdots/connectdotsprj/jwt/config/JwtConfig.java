@@ -16,8 +16,9 @@ public class JwtConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry
                 .addInterceptor(jwtTokenInterceptor)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/jwt/test/get-token")
+//                .addPathPatterns("/**")
+                .excludePathPatterns("/**")
+//                .excludePathPatterns("/jwt/test/get-token")
         ;
     }
 }

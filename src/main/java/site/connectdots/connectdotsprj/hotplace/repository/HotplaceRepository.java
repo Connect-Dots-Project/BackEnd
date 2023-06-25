@@ -38,4 +38,7 @@ public interface HotplaceRepository extends JpaRepository<Hotplace, Long> {
 
     List<Hotplace> findAllByOrderByHotplaceWriteDateDesc();
 
+    List<Hotplace> findByHotplaceIdxIn(List<Long> hotplaceIdxList);
+
+    List<Hotplace> findByMember(Member member);
 }
