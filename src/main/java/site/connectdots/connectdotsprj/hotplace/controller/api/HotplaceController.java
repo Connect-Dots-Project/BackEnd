@@ -1,4 +1,4 @@
-package site.connectdots.connectdotsprj.hotplace.controller;
+package site.connectdots.connectdotsprj.hotplace.controller.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +21,7 @@ import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetailRe
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceListResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceWriteResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
+import site.connectdots.connectdotsprj.hotplace.repository.HotplaceRepository;
 import site.connectdots.connectdotsprj.hotplace.service.HotplaceService;
 
 import java.io.File;
@@ -34,6 +35,7 @@ import java.util.List;
 public class HotplaceController {
 
     private final HotplaceService hotplaceService;
+    private final HotplaceRepository hotplaceRepository;
 
     @Value("${upload.path}")
     private String uploadRootPath;
@@ -225,27 +227,44 @@ public class HotplaceController {
         }
     }
 
+    // s3에서 불러온 핫플레이스 이미지 처리
+    @GetMapping("/load-s3/{fileName}")
+    public ResponseEntity<?> loadS3(@PathVariable String fileName) {
 
-    // 테스트용 - 웹페이지에서 지도 검색 (JSP)
-    @GetMapping("/search")
-    public ModelAndView showMapPage() {
-        return new ModelAndView("/WEB-INF/map.jsp");
+        try {
+            String hotplaceImgPath = hotplaceService.getHotplacePath(fileName);
+            return ResponseEntity.ok().body(hotplaceImgPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 
-    // 테스트용 - 웹페이지 마커 표시하ㅙ (JSP)
-    @GetMapping("/map")
-    public ModelAndView showHotplaceAll(Model model) {
-        List<Hotplace> hotplaceList = hotplaceService.displayMarkersAll();
-        model.addAttribute("hotplaceList", hotplaceList);
-        return new ModelAndView("/WEB-INF/location.jsp");
-    }
 
 
-    @GetMapping("/map/{kakaolocation}")
-    public ModelAndView showHotplaceByLocation(@PathVariable String kakaolocation, Model model) {
-        List<Hotplace> hotplaceList = hotplaceService.displayMarkersByLocation(kakaolocation);
-        model.addAttribute("hotplaceList", hotplaceList);
-        return new ModelAndView("/WEB-INF/location.jsp");
-    }
+
+
+//    // 테스트용 - 웹페이지에서 지도 검색 (JSP)
+//    @GetMapping("/search")
+//    public ModelAndView showMapPage() {
+//        return new ModelAndView("/WEB-INF/map.jsp");
+//    }
+//
+//    // 테스트용 - 웹페이지 마커 표시하ㅙ (JSP)
+//    @GetMapping("/map")
+//    public ModelAndView showHotplaceAll(Model model) {
+//        List<Hotplace> hotplaceList = hotplaceService.displayMarkersAll();
+//        model.addAttribute("hotplaceList", hotplaceList);
+//        return new ModelAndView("/WEB-INF/location.jsp");
+//    }
+//
+//
+//    @GetMapping("/map/{kakaolocation}")
+//    public ModelAndView showHotplaceByLocation(@PathVariable String kakaolocation, Model model) {
+//        List<Hotplace> hotplaceList = hotplaceService.displayMarkersByLocation(kakaolocation);
+//        model.addAttribute("hotplaceList", hotplaceList);
+//        return new ModelAndView("/WEB-INF/location.jsp");
+//    }
 
 }
