@@ -9,6 +9,9 @@ import site.connectdots.connectdotsprj.chat.dto.response.LivechatListAndHashtagL
 import site.connectdots.connectdotsprj.chat.entity.Livechat;
 import site.connectdots.connectdotsprj.chat.dto.response.LivechatListResponseDTO;
 import site.connectdots.connectdotsprj.chat.repository.LivechatRepository;
+import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
+import site.connectdots.connectdotsprj.member.entity.Member;
+import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +24,7 @@ import static java.lang.Boolean.*;
 public class LivechatService {
 
     private final LivechatRepository livechatRepository;
+    private final MemberRepository memberRepository;
 
     // 전체 조회
     @Transactional(readOnly = true)
@@ -65,13 +69,18 @@ public class LivechatService {
 
 
     // 글 작성
-    public LivechatCreateResponseDTO createLivechat(LivechatCreateRequestDTO dto) {
-        String nickname = dto.getNickname();
-        Long count = livechatRepository.countByMemberNickname(nickname);
+    public LivechatCreateResponseDTO createLivechat(
+            LivechatCreateRequestDTO dto,
+            JwtUserInfo userInfo) {
+        Member byMemberAccount = memberRepository.findByMemberAccount(userInfo.getAccount());
+        String memberNickname = byMemberAccount.getMemberNickname();
+
+        Long count = livechatRepository.countByMemberNickname(memberNickname);
 
         Boolean isCreate = FALSE;
 
         if (count == 0) {
+            dto.setNickName(memberNickname);
             Livechat saved = livechatRepository.save(dto.toEntity());
             isCreate = TRUE;
         }
