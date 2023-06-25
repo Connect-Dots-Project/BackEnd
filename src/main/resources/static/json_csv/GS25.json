@@ -756,20 +756,6 @@
 		"cvs": "GS25"
 	},
 	{
-		"img": "https://image.woodongs.com/imgsvr/item/GD_8809677722053_001.jpg",
-		"title": "납딱한오다리25G",
-		"price": "4,800원",
-		"sale": "2+1",
-		"cvs": "GS25"
-	},
-	{
-		"img": "https://image.woodongs.com/imgsvr/item/GD_8809677720875_001.jpg",
-		"title": "도톰한오징어25G",
-		"price": "4,800원",
-		"sale": "2+1",
-		"cvs": "GS25"
-	},
-	{
 		"img": "https://image.woodongs.com/imgsvr/item/GD_8801073116009_002.jpg",
 		"title": "삼양)4과비빔면(봉지)",
 		"price": "1,500원",
@@ -1115,6 +1101,20 @@
 	{
 		"img": "https://image.woodongs.com/imgsvr/item/GD_8801382148524_001.JPG",
 		"title": "웅진)티즐유자그린티500ML",
+		"price": "2,200원",
+		"sale": "2+1",
+		"cvs": "GS25"
+	},
+	{
+		"img": "https://image.woodongs.com/imgsvr/item/GD_8801382149743_002.jpg",
+		"title": "웅진)티즐제로자몽블랙티500ML",
+		"price": "2,200원",
+		"sale": "2+1",
+		"cvs": "GS25"
+	},
+	{
+		"img": "https://image.woodongs.com/imgsvr/item/GD_8801382148500_001.JPG",
+		"title": "웅진)티즐피치우롱티500ML",
 		"price": "2,200원",
 		"sale": "2+1",
 		"cvs": "GS25"

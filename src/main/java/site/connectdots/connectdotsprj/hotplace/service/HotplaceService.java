@@ -97,9 +97,9 @@ public class HotplaceService {
 
     // 행정구역으로 핫플레이스 게시물 목록 조회하기
     @Transactional(readOnly = true)
-    public HotplaceListResponseDTO findByLocation(Location location) {
+    public HotplaceListResponseDTO findByLocation(String kakaoLocation) {
 
-        List<Hotplace> hotplaceList = hotplaceRepository.findByLocation(location);
+        List<Hotplace> hotplaceList = hotplaceRepository.findByKakaoLocation(kakaoLocation);
 
         List<HotplaceDetailResponseDTO> list = hotplaceList.stream()
                 .map(HotplaceDetailResponseDTO::new)
