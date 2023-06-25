@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 @EqualsAndHashCode(of = "livechatIdx")
 @Builder
-@Table(name = "TB_LIVECHAT")
+@Table(name = "tb_livechat")
 @Entity
 public class Livechat {
     @Id
@@ -27,7 +27,9 @@ public class Livechat {
     private String livechatHashtag;
     @CreationTimestamp
     private LocalDateTime livechatCreateDate;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberIdx", nullable = false, unique = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private Member member;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "memberIdx", nullable = false, unique = true, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+//    private Member member;
+    @Column(nullable = false, length = 50, unique = true)
+    private String memberNickname;
 }
