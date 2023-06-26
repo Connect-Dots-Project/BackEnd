@@ -11,6 +11,7 @@ import site.connectdots.connectdotsprj.freeboard.repository.FreeBoardRepository;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetailResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.hotplace.repository.HotplaceRepository;
+import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 import site.connectdots.connectdotsprj.mypage.dto.response.MemberModifyRequestDTO;
@@ -34,57 +35,30 @@ public class MyPageService {
     private final LikeRepository likeRepository;
 
 
-     public Member myPage(Long memberIdx) {
-         Member member = memberRepository.findByMemberIdx(memberIdx);
+    public List<HotplaceDetailResponseDTO> myPage(JwtUserInfo jwtUserInfo) {
+        Member member = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
 
-         return member;
-         }
+        List<Hotplace> hotplaceList = hotplaceRepository.findByMember(member);
+        return makeHotplaceDetailResponseDTOList(jwtUserInfo.getAccount());
+    }
 
+    private List<HotplaceDetailResponseDTO> makeHotplaceDetailResponseDTOList(String account) {
+        Member member = memberRepository.findByMemberAccount(account);
 
+        List<Hotplace> hotplaceList = hotplaceRepository.findByMember(member);
+        List<HotplaceDetailResponseDTO> response = hotplaceList.stream().map(HotplaceDetailResponseDTO::new).collect(Collectors.toList());
+        return response;
+    }
 
-    public List<HotplaceDetailResponseDTO> likeHotPlace(Long memberIdx) {
-        Member member = memberRepository.findByMemberIdx(memberIdx);
+    public List<HotplaceDetailResponseDTO> likeHotPlace(JwtUserInfo jwtUserInfo) {
+        Member member = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
         List<Like> likeList = likeRepository.findByMemberAndType(member, LikeType.HOTPLACE);
 
         List<Long> hotplaceIdxList = likeList.stream().map(Like::getItemIdx).collect(Collectors.toList());
 
         List<Hotplace> hotplaceList = hotplaceRepository.findByHotplaceIdxIn(hotplaceIdxList);
 
-       List<HotplaceDetailResponseDTO> response =  hotplaceList.stream().map(hotplace -> HotplaceDetailResponseDTO.builder()
-                .hotplaceImg(hotplace.getHotplaceImg())
-                .hotplaceContent(hotplace.getHotplaceContent())
-                .hotplaceFullAddress(hotplace.getHotplaceFullAddress()).build())
-                .collect(Collectors.toList());
-        return response;
-    }
-
-    public List<FreeBoardResponseDTO> likeFreeBoard(Long memberIdx) {
-
-        Member member = memberRepository.findByMemberIdx(memberIdx);
-        List<Like> likeList = likeRepository.findByMemberAndType(member, LikeType.FREEBOARD);
-
-        List<Long> freeboardIdxList = likeList.stream().map(Like::getItemIdx).collect(Collectors.toList());
-
-        List<FreeBoard> freeboardList = freeBoardRepository.findByFreeBoardIdxIn(freeboardIdxList);
-
-        List<FreeBoardResponseDTO> response =  freeboardList.stream().map(freeboard -> FreeBoardResponseDTO.builder()
-                .freeBoardContent(freeboard.getFreeBoardContent())
-                .freeBoardCategory(freeboard.getFreeBoardCategory().name())
-                .freeBoardTitle(freeboard.getFreeBoardTitle()).build())
-                .collect(Collectors.toList());
-        return response;
-
-
-    }
-
-    public List<HotplaceDetailResponseDTO> myActiveHotPlace(Long memberIdx) {
-
-        Member member = memberRepository.findByMemberIdx(memberIdx);
-
-        List<Hotplace> hotplaceList = hotplaceRepository.findByMember(member);
-
-
-        List<HotplaceDetailResponseDTO> response =  hotplaceList.stream().map(hotplace -> HotplaceDetailResponseDTO.builder()
+        List<HotplaceDetailResponseDTO> response = hotplaceList.stream().map(hotplace -> HotplaceDetailResponseDTO.builder()
                         .hotplaceImg(hotplace.getHotplaceImg())
                         .hotplaceContent(hotplace.getHotplaceContent())
                         .hotplaceFullAddress(hotplace.getHotplaceFullAddress()).build())
@@ -92,33 +66,52 @@ public class MyPageService {
         return response;
     }
 
-    public List<FreeBoardResponseDTO> myActiveFreeBoard(Long memberIdx) {
-        Member member = memberRepository.findByMemberIdx(memberIdx);
-        List<FreeBoard> freeboardList = freeBoardRepository.findByMember(member);
+    public List<FreeBoardResponseDTO> likeFreeBoard(JwtUserInfo jwtUserInfo) {
 
-        List<FreeBoardResponseDTO> response =  freeboardList.stream().map(freeboard -> FreeBoardResponseDTO.builder()
+        Member member = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
+        List<Like> likeList = likeRepository.findByMemberAndType(member, LikeType.FREEBOARD);
+
+        List<Long> freeboardIdxList = likeList.stream().map(Like::getItemIdx).collect(Collectors.toList());
+
+        List<FreeBoard> freeboardList = freeBoardRepository.findByFreeBoardIdxIn(freeboardIdxList);
+
+        List<FreeBoardResponseDTO> response = freeboardList.stream().map(freeboard -> FreeBoardResponseDTO.builder()
+                        .freeBoardContent(freeboard.getFreeBoardContent())
+                        .freeBoardCategory(freeboard.getFreeBoardCategory().name())
+                        .freeBoardTitle(freeboard.getFreeBoardTitle()).build())
+                .collect(Collectors.toList());
+        return response;
+
+
+    }
+    private List<FreeBoard> getFreeBoardListByMember(JwtUserInfo jwtUserInfo) {
+        Member member = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
+        return freeBoardRepository.findByMember(member);
+    }
+
+    public List<FreeBoardResponseDTO> myActiveFreeBoard(JwtUserInfo jwtUserInfo) {
+        List<FreeBoard> freeboardList = getFreeBoardListByMember(jwtUserInfo);
+
+       return freeboardList.stream().map(freeboard -> FreeBoardResponseDTO.builder()
                         .freeBoardCategory(freeboard.getFreeBoardCategory().name())
                         .freeBoardLocation(freeboard.getFreeBoardLocation())
                         .freeBoardTitle(freeboard.getFreeBoardTitle())
                         .freeBoardWriteDate(String.valueOf(freeboard.getFreeBoardWriteDate())).build())
                 .collect(Collectors.toList());
-        return response;
     }
 
     //댓글의 경우 게시글 + 댓글content까지 -> 그러면 따로 dto를 다시 만들어야할까
-    public List<FreeBoardDetailReplyDTO> myActiveFreeBoardReply(Long memberIdx) {
+    public List<FreeBoardDetailReplyDTO> myActiveFreeBoardReply(JwtUserInfo jwtUserInfo) {
+        List<FreeBoard> freeboardList = getFreeBoardListByMember(jwtUserInfo);
 
-        Member member = memberRepository.findByMemberIdx(memberIdx);
-        List<FreeBoard> freeboardList = freeBoardRepository.findByMember(member);
-        List<FreeBoardDetailReplyDTO> response = freeboardList.stream().map(freeBoardReply -> FreeBoardDetailReplyDTO.builder()
+       return freeboardList.stream().map(freeBoardReply -> FreeBoardDetailReplyDTO.builder()
                 .freeBoardReplyIdx(freeBoardReply.getFreeBoardIdx())
                 .freeBoardReplyContent(freeBoardReply.getFreeBoardContent())
                 .build()).collect(Collectors.toList());
-        return response;
-
     }
-    public void modifyMember(Long memberIdx, MemberModifyRequestDTO modifyRequestDTO) {
-        Member member = memberRepository.findByMemberIdx(memberIdx);
+
+    public void modifyMember(JwtUserInfo jwtUserInfo, MemberModifyRequestDTO modifyRequestDTO) {
+        Member member = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
         member.setMemberPassword(modifyRequestDTO.getFirstPassword());
         member.setMemberName(modifyRequestDTO.getName());
         member.setMemberNickname(modifyRequestDTO.getNickName());
@@ -130,9 +123,9 @@ public class MyPageService {
     }
 
 
-    public void deleteMember(Long memberIdx) {
+    public void deleteMember(JwtUserInfo jwtUserInfo) {
 
-        Member member = memberRepository.findByMemberIdx(memberIdx);
+        Member member = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
         member.setMemberIdx(member.getMemberIdx());
         member.setMemberAccount(member.getMemberAccount());
 
