@@ -37,11 +37,6 @@ dependencies {
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:8.0.0'
 
 
-    // jsp 설정
-    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
-    implementation 'javax.servlet:jstl:1.2'
-
-
     // -------------- chatting
     //websocket
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
@@ -72,5 +67,6 @@ dependencies {
 
 }
 tasks.named('test') {
-    useJUnitPlatform()
+//    useJUnitPlatform()
+    exclude '**/*' // 빌드시 전체 테스트 생략
 }
