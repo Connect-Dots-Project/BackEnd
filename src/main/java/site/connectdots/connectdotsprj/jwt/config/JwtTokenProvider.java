@@ -57,7 +57,14 @@ public class JwtTokenProvider {
         System.out.println(isValidRefreshToken);
         System.out.println("-----------------------------------------------------");
 
-        if (isValidAccessToken) return true;
+        if (isValidAccessToken) {
+            Claims claimsAccessToken = getClaimsAccessToken(accessToken);
+            String account = claimsAccessToken.get(ACCOUNT, String.class);
+
+            setAuthenticationToken(account, request);
+
+            return true;
+        }
 
         if (isValidRefreshToken) {
             Claims claimsRefreshToken = getClaimsRefreshToken(refreshToken);
@@ -72,23 +79,26 @@ public class JwtTokenProvider {
                 throw new IllegalArgumentException("Refresh Token 이 만료됨");
             }
 
-            AbstractAuthenticationToken abstractAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                    JwtUserInfo.builder()
-                            .account(account)
-                            .build(),
-                    null,
-                    null
-            );
-
-            abstractAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(abstractAuthenticationToken);
-
+            setAuthenticationToken(account, request);
             setTokens(response, member);
 
             return true;
         }
 
         return false;
+    }
+
+    private void setAuthenticationToken(String account, HttpServletRequest request) {
+        AbstractAuthenticationToken abstractAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                JwtUserInfo.builder()
+                        .account(account)
+                        .build(),
+                null,
+                null
+        );
+
+        abstractAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(abstractAuthenticationToken);
     }
 
     public void setTokens(HttpServletResponse response, Member member) {
