@@ -2,6 +2,7 @@ package site.connectdots.connectdotsprj.musicboard.api;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
+import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 import site.connectdots.connectdotsprj.musicboard.dto.response.TrackBoardListResponseDTO;
 import site.connectdots.connectdotsprj.musicboard.dto.response.MusicListResponseDTO;
 import site.connectdots.connectdotsprj.musicboard.service.SpotifyApiService;
@@ -29,7 +32,7 @@ public class SpotifyApiController {
 
     @Autowired
     private final SpotifyApiService spotifyApiService;
-
+    private final int LIKE = 1;
     /**
      * 로그인
      *
@@ -74,6 +77,7 @@ public class SpotifyApiController {
         List<MusicListResponseDTO> response = spotifyApiService.getMusicList(playListId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
 
 
 }

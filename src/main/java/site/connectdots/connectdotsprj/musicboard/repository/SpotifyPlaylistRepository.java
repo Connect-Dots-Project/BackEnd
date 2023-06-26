@@ -11,7 +11,7 @@ import java.util.List;
 public interface SpotifyPlaylistRepository extends JpaRepository<SpotifyPlaylist, Long> {
 
 
-//    List<SpotifyPlaylist> findAllBySpotifyApi(SpotifyApi getSpotifyApi);
+
 
 
 }

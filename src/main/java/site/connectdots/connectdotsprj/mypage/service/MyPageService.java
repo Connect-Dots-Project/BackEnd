@@ -34,20 +34,16 @@ public class MyPageService {
     private final FreeBoardReplyRepository freeBoardReplyRepository;
     private final LikeRepository likeRepository;
 
-
-    public List<HotplaceDetailResponseDTO> myPage(JwtUserInfo jwtUserInfo) {
-        Member member = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
-
-        List<Hotplace> hotplaceList = hotplaceRepository.findByMember(member);
-        return makeHotplaceDetailResponseDTOList(jwtUserInfo.getAccount());
-    }
-
     private List<HotplaceDetailResponseDTO> makeHotplaceDetailResponseDTOList(String account) {
         Member member = memberRepository.findByMemberAccount(account);
 
         List<Hotplace> hotplaceList = hotplaceRepository.findByMember(member);
         List<HotplaceDetailResponseDTO> response = hotplaceList.stream().map(HotplaceDetailResponseDTO::new).collect(Collectors.toList());
         return response;
+    }
+
+    public List<HotplaceDetailResponseDTO> myPage(JwtUserInfo jwtUserInfo) {
+       return makeHotplaceDetailResponseDTOList(jwtUserInfo.getAccount());
     }
 
     public List<HotplaceDetailResponseDTO> likeHotPlace(JwtUserInfo jwtUserInfo) {
