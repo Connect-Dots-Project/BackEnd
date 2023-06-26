@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
@@ -14,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
@@ -23,6 +25,7 @@ import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceWriteRes
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.hotplace.repository.HotplaceRepository;
 import site.connectdots.connectdotsprj.hotplace.service.HotplaceService;
+import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +38,6 @@ import java.util.List;
 public class HotplaceController {
 
     private final HotplaceService hotplaceService;
-    private final HotplaceRepository hotplaceRepository;
 
     @Value("${upload.path}")
     private String uploadRootPath;
@@ -43,11 +45,6 @@ public class HotplaceController {
     // 글 전체조회
     @GetMapping("/list/{page}")
     public ResponseEntity<?> list(@PathVariable(name = "page") Integer page) {
-        log.info("전체조회!");
-
-        System.out.println("\n\n\n\n--------------------------");
-        System.out.println(page);
-        System.out.println("-------");
 
         try {
             HotplaceListResponseDTO hotplaceList = hotplaceService.findAll(page);
@@ -63,16 +60,16 @@ public class HotplaceController {
     // 글 작성
     @PostMapping
     public ResponseEntity<?> write(
-            /* @AuthenticationPrincipal TokenUserInfo userInfo */
-            @Validated @RequestPart("hotplace") HotplaceWriteRequestDTO dto
+            @AuthenticationPrincipal JwtUserInfo jwtUserInfo
+            , @Validated @RequestPart("hotplace") HotplaceWriteRequestDTO dto
             , @RequestPart("hotplaceImg") MultipartFile hotplaceImg
             , BindingResult result) {
 
+        System.out.println(jwtUserInfo);
         log.info("HotplaceController.write.info 글 작성 {}, {}", dto, result);
         if (dto == null) {
             return ResponseEntity.badRequest().body("핫플레이스 게시물 정보를 전달해주세요!");
         }
-
 
         String uploadFilePath = null;
         if (hotplaceImg != null) {
@@ -90,7 +87,7 @@ public class HotplaceController {
         if (fieldErrors != null) return fieldErrors;
 
         try {
-            HotplaceWriteResponseDTO hotplaceWriteResponseDTO = hotplaceService.write(dto, uploadFilePath);
+            HotplaceWriteResponseDTO hotplaceWriteResponseDTO = hotplaceService.write(jwtUserInfo, dto, uploadFilePath);
             return ResponseEntity.ok().body(hotplaceWriteResponseDTO);
         } catch (RuntimeException e) {
             e.printStackTrace();

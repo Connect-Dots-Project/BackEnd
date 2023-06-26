@@ -1,6 +1,7 @@
 package site.connectdots.connectdotsprj.hotplace.dto.requestDTO;
 
 import lombok.*;
+import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.member.entity.Member;
@@ -28,7 +29,7 @@ public class HotplaceWriteRequestDTO {
     private String kakaoLocation;
 
     // 수정필요
-    private Long memberIdx= 1L;
+    private Long memberIdx;
 
 
     public Hotplace toEntity(String uploadFilePath) {
@@ -47,10 +48,10 @@ public class HotplaceWriteRequestDTO {
                 .build();
     }
 
-    public Hotplace toEntity(Member member) {
+    public Hotplace toEntity(Member member, String uploadFilePath) {
         return Hotplace.builder()
                 .location(this.location)
-                .hotplaceImg(this.hotplaceImg)
+                .hotplaceImg(uploadFilePath)
                 .hotplaceContent(this.hotplaceContent)
                 .hotplaceLatitude(this.hotplaceLatitude)
                 .hotplaceLongitude(this.hotplaceLongitude)
