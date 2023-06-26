@@ -16,11 +16,11 @@ public class JwtConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry
                 .addInterceptor(jwtTokenInterceptor)
-                .addPathPatterns("/**") //
+//                .addPathPatterns("/**") //
 //                .addPathPatterns("/*") // /help  /help/helpe
-                .excludePathPatterns("/connects/sign-up")
-                .excludePathPatterns("/connects/login")
-//                .excludePathPatterns("/**")
+//                .excludePathPatterns("/connects/sign-up")
+//                .excludePathPatterns("/connects/login")
+                .excludePathPatterns("/**")
 //                .excludePathPatterns("/jwt/test/get-token")
         ;
     }
