@@ -14,6 +14,7 @@ import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.lang.Boolean.*;
@@ -61,7 +62,6 @@ public class LivechatService {
                 .build();
     }
 
-
     // 해시 태그 전체 조회 (인기순 정렬)
     private List<String> findAllHashtag() {
         return livechatRepository.findHashtagsOrderByCount();
@@ -80,8 +80,9 @@ public class LivechatService {
         Boolean isCreate = FALSE;
 
         if (count == 0) {
-            dto.setNickName(memberNickname);
-            Livechat saved = livechatRepository.save(dto.toEntity());
+            Livechat livechat = dto.toEntity();
+            livechat.setMemberNickname(userInfo.getNickname());
+            Livechat saved = livechatRepository.save(livechat);
             isCreate = TRUE;
         }
 
@@ -89,8 +90,14 @@ public class LivechatService {
     }
 
     // 글 삭제
-    public void deleteLivechat() {
+    public void deleteLivechat(JwtUserInfo jwtUserInfo) {
+        Member byMemberAccount = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
+        String nickname = byMemberAccount.getMemberNickname();
+        Optional<Livechat> byMemberNickname = livechatRepository.findByMemberNickname(nickname);
 
+        if (byMemberNickname.isEmpty()) return;
+
+        livechatRepository.deleteByMemberNickname(nickname);
     }
 
 }

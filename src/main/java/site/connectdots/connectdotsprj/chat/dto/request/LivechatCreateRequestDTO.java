@@ -14,13 +14,11 @@ import site.connectdots.connectdotsprj.chat.entity.Livechat;
 public class LivechatCreateRequestDTO {
     private String content;
     private String hashTag;
-    private String nickName;
 
     public Livechat toEntity() {
         return Livechat.builder()
                 .livechatContent(this.content)
                 .livechatHashtag(this.hashTag)
-                .memberNickname(this.nickName)
                 .build();
     }
 }

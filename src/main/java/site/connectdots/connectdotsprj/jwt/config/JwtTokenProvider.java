@@ -29,6 +29,7 @@ public class JwtTokenProvider {
     private final MemberRepository memberRepository;
     private final AuthRepository authRepository;
     private final String ACCOUNT = "ACCOUNT";
+    private final String NICKNAME = "NICKNAME";
     private final String LOGIN_METHOD = "LOGIN_METHOD";
     private final String ISSUER = "Connect-dots";
     private final String AUTHORIZATION = "Authorization";
@@ -52,16 +53,18 @@ public class JwtTokenProvider {
         boolean isValidAccessToken = isValidAccessToken(accessToken);
         boolean isValidRefreshToken = isValidRefreshToken(refreshToken);
 
-        System.out.println("-----------------------------------------------------");
-        System.out.println(isValidAccessToken);
-        System.out.println(isValidRefreshToken);
-        System.out.println("-----------------------------------------------------");
+        log.info("AccessToken - {}", accessToken);
+        log.info("RefreshToken - {}", refreshToken);
+
+        log.info("isValidAccessToken - {}", isValidAccessToken);
+        log.info("isValidRefreshToken - {}", isValidRefreshToken);
 
         if (isValidAccessToken) {
             Claims claimsAccessToken = getClaimsAccessToken(accessToken);
             String account = claimsAccessToken.get(ACCOUNT, String.class);
+            String nickname = claimsAccessToken.get(NICKNAME, String.class);
 
-            setAuthenticationToken(account, request);
+            setAuthenticationToken(account, nickname, request);
 
             return true;
         }
@@ -79,7 +82,7 @@ public class JwtTokenProvider {
                 throw new IllegalArgumentException("Refresh Token 이 만료됨");
             }
 
-            setAuthenticationToken(account, request);
+            setAuthenticationToken(account, member.getMemberNickname(), request);
             setTokens(response, member);
 
             return true;
@@ -88,10 +91,11 @@ public class JwtTokenProvider {
         return false;
     }
 
-    private void setAuthenticationToken(String account, HttpServletRequest request) {
+    private void setAuthenticationToken(String account, String nickname, HttpServletRequest request) {
         AbstractAuthenticationToken abstractAuthenticationToken = new UsernamePasswordAuthenticationToken(
                 JwtUserInfo.builder()
                         .account(account)
+                        .nickname(nickname)
                         .build(),
                 null,
                 null
@@ -105,11 +109,6 @@ public class JwtTokenProvider {
         String account = member.getMemberAccount();
         String newAccessToken = createAccessToken(member);
         String newRefreshToken = createRefreshToken(member);
-
-        System.out.println("--------------123123-------------------");
-        System.out.println(newAccessToken);
-        System.out.println(newRefreshToken);
-        System.out.println("--------------123123-------------------");
 
         Auth findByAccount = authRepository.findByAccount(account);
 
@@ -132,8 +131,8 @@ public class JwtTokenProvider {
     public Cookie makeCookie(String newRefreshToken) {
         Cookie cookie = new Cookie(REFRESH_TOKEN, newRefreshToken);
         cookie.setSecure(true);
-//        cookie.setHttpOnly(true);
-//        cookie.setDomain("http://localhost:3000");
+        cookie.setHttpOnly(true);
+
         int cookieTime = 60 * 60 * 24 * 90;
         cookie.setMaxAge(cookieTime);
         cookie.setPath("/");
@@ -152,6 +151,7 @@ public class JwtTokenProvider {
     public String createAccessToken(Member member) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(ACCOUNT, member.getMemberAccount());
+        claims.put(NICKNAME, member.getMemberNickname());
         claims.put(LOGIN_METHOD, String.valueOf(member.getMemberLoginMethod()));
 
         Date now = new Date();
@@ -256,26 +256,24 @@ public class JwtTokenProvider {
      * @return
      */
     public boolean isValidAccessToken(String accessToken) {
-        System.out.println("isValidAccessToken is : " + accessToken);
-
         if (accessToken == null) return false;
 
         try {
             Claims accessClaims = getClaimsAccessToken(accessToken);
 
-            System.out.println(accessClaims);
-            System.out.println("Access expireTime: " + accessClaims.getExpiration());
-            System.out.println("Access userId: " + accessClaims.get(ACCOUNT));
+            log.info("AccessClaims: {}", accessClaims);
+            log.info("Access expireTime: {}", accessClaims.getExpiration());
+            log.info("Access userId: {}", accessClaims.get(ACCOUNT));
 
             return true;
         } catch (ExpiredJwtException exception) {
-            System.out.println("Token Expired UserID : " + exception.getClaims().get(ACCOUNT));
+            log.warn("Token Expired UserID : {}", exception.getClaims().get(ACCOUNT));
             return false;
         } catch (JwtException exception) {
-            System.out.println("Token Tampered");
+            log.warn("Token Tampered");
             return false;
         } catch (NullPointerException exception) {
-            System.out.println("Token is null");
+            log.warn("Token is null");
             return false;
         }
     }
@@ -287,25 +285,25 @@ public class JwtTokenProvider {
      * @return
      */
     public boolean isValidRefreshToken(String refreshToken) {
-        System.out.println("isValidRefreshToken is : " + refreshToken);
-
         if (refreshToken == null) return false;
 
         try {
 
             Claims accessClaims = getClaimsRefreshToken(refreshToken);
-            System.out.println("Access expireTime: " + accessClaims.getExpiration());
-            System.out.println("Access userId: " + accessClaims.get(ACCOUNT));
+
+            log.info("AccessClaims: {}", accessClaims);
+            log.info("Access expireTime: {}", accessClaims.getExpiration());
+            log.info("Access userId: {}", accessClaims.get(ACCOUNT));
 
             return true;
         } catch (ExpiredJwtException exception) {
-            System.out.println("Token Expired UserID : " + exception.getClaims().get(ACCOUNT));
+            log.warn("Token Expired UserID : {}", exception.getClaims().get(ACCOUNT));
             return false;
         } catch (JwtException exception) {
-            System.out.println("Token Tampered");
+            log.warn("Token Tampered");
             return false;
         } catch (NullPointerException exception) {
-            System.out.println("Token is null");
+            log.warn("Token is null");
             return false;
         }
     }

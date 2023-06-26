@@ -11,4 +11,5 @@ import lombok.*;
 @EqualsAndHashCode
 public class JwtUserInfo {
     private String account;
+    private String nickname;
 }

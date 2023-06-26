@@ -5,6 +5,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import site.connectdots.connectdotsprj.aws.service.S3Service;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardModifyRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardReplyWriteRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardWriteRequestDTO;
@@ -16,6 +18,7 @@ import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardReply;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.LikeAndHateException;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.UnauthorizedModificationException;
 import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
+import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 import site.connectdots.connectdotsprj.member.exception.custom.NotFoundMemberByAccountException;
 import site.connectdots.connectdotsprj.member.exception.custom.NotFoundMemberByIdxException;
 import site.connectdots.connectdotsprj.freeboard.repository.FreeBoardReplyRepository;
@@ -24,7 +27,9 @@ import site.connectdots.connectdotsprj.freeboard.exception.custom.NotFoundFreeBo
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static site.connectdots.connectdotsprj.freeboard.exception.custom.FreeBoardErrorCode.*;
@@ -37,6 +42,7 @@ public class FreeBoardService {
     private final FreeBoardRepository freeBoardRepository;
     private final FreeBoardReplyRepository freeBoardReplyRepository;
     private final MemberRepository memberRepository;
+    private final S3Service s3Service;
     private final Integer START_PAGE = 0;
     private final Integer SIZE = 10;
     private final String KEY = "freeBoardIdx";
@@ -73,19 +79,19 @@ public class FreeBoardService {
      * 자유게시판 작성 메서드
      *
      * @param dto
+     * @param uploadFilePath
      * @return
      */
-    public List<FreeBoardResponseDTO> writeFreeBoard(FreeBoardWriteRequestDTO dto) {
+    public List<FreeBoardResponseDTO> writeFreeBoard(FreeBoardWriteRequestDTO dto, JwtUserInfo jwtUserInfo, String uploadFilePath) {
+
         freeBoardRepository.save(
                 FreeBoard.builder()
                         .freeBoardTitle(dto.getFreeBoardTitle())
                         .freeBoardContent(dto.getFreeBoardContent())
-                        .freeBoardImg(dto.getFreeBoardImg())
                         .freeBoardLocation(dto.getFreeBoardLocation())
                         .freeBoardCategory(dto.getFreeBoardCategory())
-                        .member(memberRepository.findById(dto.getMemberIdx()).orElseThrow(
-                                () -> new NotFoundMemberByIdxException(NOT_FOUND_MEMBER, dto.getMemberIdx())
-                        ))
+                        .freeBoardImg(uploadFilePath)
+                        .member(memberRepository.findByMemberAccount(jwtUserInfo.getAccount()))
                         .build()
         );
 
@@ -211,4 +217,9 @@ public class FreeBoardService {
     }
 
 
+    public String uploadFreeBoardImg(MultipartFile freeBoardImg) throws IOException {
+        String uniqueFileName = UUID.randomUUID() + "_" + freeBoardImg.getOriginalFilename();
+
+        return s3Service.uploadToS3Bucket(freeBoardImg.getBytes(), uniqueFileName);
+    }
 }
