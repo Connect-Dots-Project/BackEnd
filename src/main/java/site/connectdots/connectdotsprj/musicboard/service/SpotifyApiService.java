@@ -92,9 +92,6 @@ public List<TrackBoardListResponseDTO> getMusicBoardList() {
     try {
         List<SpotifyPlaylist> spotifyPlaylists = spotifyPlaylistRepository.findAll();
 
-        for (SpotifyPlaylist playlist : spotifyPlaylists) {
-            updateViewCount(playlist);
-        }
         List<TrackBoardListResponseDTO> musicBoardListResponseDTOList = spotifyPlaylists.stream().map(spotifyPlaylist -> {
             return TrackBoardListResponseDTO.builder().musicBoardIdx(spotifyPlaylist.getMusicBoardIdx())
                     .musicBoardPlaylistId(spotifyPlaylist.getMusicBoardPlaylistId())

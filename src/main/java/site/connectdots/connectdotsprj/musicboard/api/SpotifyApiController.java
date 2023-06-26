@@ -32,7 +32,7 @@ public class SpotifyApiController {
 
     @Autowired
     private final SpotifyApiService spotifyApiService;
-    private final int LIKE = 1;
+
     /**
      * 로그인
      *
