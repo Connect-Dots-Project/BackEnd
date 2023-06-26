@@ -10,8 +10,6 @@ import site.connectdots.connectdotsprj.jwt.config.JwtTokenProvider;
 import site.connectdots.connectdotsprj.jwt.entity.Auth;
 import site.connectdots.connectdotsprj.member.entity.Member;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @Transactional
 @Rollback(value = false)
@@ -53,8 +51,7 @@ class AuthRepositoryTest {
         String refreshToken = jwtTokenProvider.createRefreshToken(member);
 
         //when
-        int i = authRepository.updateRefreshTokenByAccount(refreshToken, member.getMemberAccount());
-        System.out.println(i);
+//        int i = authRepository.updateOrInsertRefreshTokenByAccount(refreshToken, member.getMemberAccount());
 
 
         //then

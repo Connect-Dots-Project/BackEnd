@@ -2,6 +2,7 @@ package site.connectdots.connectdotsprj.hotplace.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.member.entity.Member;
@@ -38,4 +39,10 @@ public interface HotplaceRepository extends JpaRepository<Hotplace, Long> {
 
     List<Hotplace> findAllByOrderByHotplaceWriteDateDesc();
 
+    List<Hotplace> findByHotplaceIdxIn(List<Long> hotplaceIdxList);
+
+    List<Hotplace> findByMember(Member member);
+    // 핫플레이스 이미지 저장경로 찾기
+    @Query("SELECT h FROM Hotplace h WHERE h.hotplaceImg =:fileName")
+    String findByHotplaceImg(@Param("fileName") String fileName);
 }

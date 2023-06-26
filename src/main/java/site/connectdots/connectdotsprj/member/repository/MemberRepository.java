@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import site.connectdots.connectdotsprj.member.entity.Member;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
@@ -15,6 +16,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
 
     Member findByMemberIdx(Long memberIdx);
-
 
 }
