@@ -22,8 +22,6 @@ public class MyPageController {
     private final MyPageService myPageService;
 
     /**
-     *
-     *
      * @param jwtUserInfo
      * @return
      */
