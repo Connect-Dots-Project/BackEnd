@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import site.connectdots.connectdotsprj.aws.service.S3Service;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
@@ -29,10 +30,11 @@ import java.util.stream.Collectors;
 public class HotplaceService {
 
     private final HotplaceRepository hotplaceRepository;
-    private final MemberRepository memberRepository;
+    private final S3Service s3Service;
 
-    @Value("${upload.path}")
-    private String uploadRootPath;
+    // 이미지 로컬 저장 경로 -> 133, 134, 140, 141, 147
+//    @Value("${upload.path}")
+//    private String uploadRootPath;
 
     // 글 전체조회
     @Transactional(readOnly = true)
@@ -74,7 +76,7 @@ public class HotplaceService {
 
 
     // 글 수정
-    public HotplaceDetailResponseDTO modify(final HotplaceModifyRequestDTO dto,  String uploadFilePath) {
+    public HotplaceDetailResponseDTO modify(final HotplaceModifyRequestDTO dto, String uploadFilePath) {
         // 조회
         final Hotplace hotplaceEntity = findOne(dto.getHotplaceIdx());
 
@@ -112,9 +114,6 @@ public class HotplaceService {
     }
 
 
-    // 질문
-    // 맵에 뿌려주는 서비스는 따로 만들까융?
-
     // 마커 전체보기
     public List<Hotplace> displayMarkersAll() {
         return hotplaceRepository.findAll();
@@ -126,21 +125,34 @@ public class HotplaceService {
         return hotplaceRepository.findByKakaoLocation(kakaoLocation);
     }
 
+
     // 핫플레이스 이미지 파일 저장 메서드
     public String uploadHotplaceImg(MultipartFile originalFile) throws IOException {
 
-        File rootDir = new File(uploadRootPath);
-        if (!rootDir.exists()) rootDir.mkdir();
+        // 루트 디렉토리 존재 확인 후, 존재하지 않으면 폴더 생성
+//        File rootDir = new File(uploadRootPath);
+//        if (!rootDir.exists()) rootDir.mkdir();
 
+        // 파일명 유니크하게 변경
         String uniqueFileName = UUID.randomUUID() + "_" + originalFile.getOriginalFilename();
 
-        File uploadFile = new File(uploadRootPath + "/" + uniqueFileName);
-        originalFile.transferTo(uploadFile);
+        // 파일 로컬에 저장하기
+//        File uploadFile = new File(uploadRootPath + "/" + uniqueFileName);
+//        originalFile.transferTo(uploadFile);
 
-        return uniqueFileName;
+        // 파일 aws s3 버킷에 저장하기
+        String uploadUrl = s3Service.uploadToS3Bucket(originalFile.getBytes(), uniqueFileName);
+
+        return uploadUrl;
+//        return uniqueFileName;
 
     }
 
+    // 핫플레이스 이미지 저장경로 찾기
+    public String getHotplacePath(String fileName) {
+        String hotplaceImgPath = hotplaceRepository.findByHotplaceImg(fileName);
 
+        return hotplaceImgPath;
 
+    }
 }
