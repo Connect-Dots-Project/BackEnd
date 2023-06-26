@@ -41,12 +41,16 @@ public class HotplaceController {
     private String uploadRootPath;
 
     // 글 전체조회
-    @GetMapping
-    public ResponseEntity<?> list() {
+    @GetMapping("/list/{page}")
+    public ResponseEntity<?> list(@PathVariable(name = "page") Integer page) {
         log.info("전체조회!");
 
+        System.out.println("\n\n\n\n--------------------------");
+        System.out.println(page);
+        System.out.println("-------");
+
         try {
-            HotplaceListResponseDTO hotplaceList = hotplaceService.findAll();
+            HotplaceListResponseDTO hotplaceList = hotplaceService.findAll(page);
             log.info("HotplaceController.list.info 글 전체조회 {} ", hotplaceList);
             return ResponseEntity.ok().body(hotplaceList);
         } catch (Exception e) {
@@ -161,7 +165,7 @@ public class HotplaceController {
 
     // 행정구역으로 핫플레이스 게시물 목록 조회하기
     @GetMapping("/{kakaoLocation}")
-    public ResponseEntity<?> getHotplaceByLocation(@PathVariable String kakaoLocation) {
+    public ResponseEntity<?> getHotplaceByLocation(@PathVariable("kakaoLocation") String kakaoLocation) {
 
         log.info("행정구역!");
         HotplaceListResponseDTO hotplaceList = hotplaceService.findByLocation(kakaoLocation);
@@ -240,9 +244,6 @@ public class HotplaceController {
         }
 
     }
-
-
-
 
 
 //    // 테스트용 - 웹페이지에서 지도 검색 (JSP)

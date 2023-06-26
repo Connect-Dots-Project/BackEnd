@@ -2,7 +2,11 @@ package site.connectdots.connectdotsprj.hotplace.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.TypeCache;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +21,7 @@ import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.hotplace.repository.HotplaceRepository;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -31,6 +36,10 @@ public class HotplaceService {
 
     private final HotplaceRepository hotplaceRepository;
     private final S3Service s3Service;
+    private final Integer START_PAGE = 0;
+    private final Integer SIZE = 10;
+    private final String KEY = "hotplaceIdx";
+
 
     // 이미지 로컬 저장 경로 -> 133, 134, 140, 141, 147
 //    @Value("${upload.path}")
@@ -38,8 +47,11 @@ public class HotplaceService {
 
     // 글 전체조회
     @Transactional(readOnly = true)
-    public HotplaceListResponseDTO findAll() {
-        List<Hotplace> hotplaceList = hotplaceRepository.findAllByOrderByHotplaceWriteDateDesc();
+    public HotplaceListResponseDTO findAll(Integer page) {
+        Sort hotplaceIdx = Sort.by(KEY);
+        PageRequest pageRequest = PageRequest.of(page, SIZE, hotplaceIdx.descending());
+
+        Page<Hotplace> hotplaceList = hotplaceRepository.findAll(pageRequest);
 
         List<HotplaceDetailResponseDTO> list = hotplaceList.stream()
                 .map(HotplaceDetailResponseDTO::new)
