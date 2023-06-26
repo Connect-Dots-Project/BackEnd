@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoard;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardReply;
-import site.connectdots.connectdotsprj.mypage.dto.response.MyPageWriteDTO;
+import site.connectdots.connectdotsprj.mypage.dto.response.MyPageBasicDTO;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ class MyPageServiceTest {
         Long memberIdx = 13L;
 
         // When
-        MyPageWriteDTO myPageWriteDTO = myPageService.findById(memberIdx);
+        MyPageBasicDTO myPageWriteDTO = myPageService.findById(memberIdx);
         List<FreeBoard> freeBoardList = myPageWriteDTO.getFreeBoardList();
 
         // Then
@@ -42,7 +42,7 @@ class MyPageServiceTest {
         Long memberIdx = 13L;
 
         // When
-        MyPageWriteDTO myPageWriteDTO = myPageService.findById(memberIdx);
+        MyPageBasicDTO myPageWriteDTO = myPageService.findById(memberIdx);
         List<FreeBoardReply> freeBoardReplyList = myPageWriteDTO.getFreeBoardReplyList();
 
         // Then
