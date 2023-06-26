@@ -42,7 +42,7 @@ public class JwtTokenProvider {
     private String REFRESH_KEY; // Refresh Token
 
 
-    @Transactional
+    //    @Transactional
     public boolean isValidRequest(HttpServletRequest request, HttpServletResponse response) {
         // 헤더에 담긴 AccessToken 과 RefreshToken 을 꺼낸다.
         String accessToken = resolveAccessToken(request);
@@ -57,7 +57,14 @@ public class JwtTokenProvider {
         System.out.println(isValidRefreshToken);
         System.out.println("-----------------------------------------------------");
 
-        if (isValidAccessToken) return true;
+        if (isValidAccessToken) {
+            Claims claimsAccessToken = getClaimsAccessToken(accessToken);
+            String account = claimsAccessToken.get(ACCOUNT, String.class);
+
+            setAuthenticationToken(account, request);
+
+            return true;
+        }
 
         if (isValidRefreshToken) {
             Claims claimsRefreshToken = getClaimsRefreshToken(refreshToken);
@@ -72,17 +79,7 @@ public class JwtTokenProvider {
                 throw new IllegalArgumentException("Refresh Token 이 만료됨");
             }
 
-            AbstractAuthenticationToken abstractAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                    JwtUserInfo.builder()
-                            .account(account)
-                            .build(),
-                    null,
-                    null
-            );
-
-            abstractAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(abstractAuthenticationToken);
-
+            setAuthenticationToken(account, request);
             setTokens(response, member);
 
             return true;
@@ -91,12 +88,28 @@ public class JwtTokenProvider {
         return false;
     }
 
+    private void setAuthenticationToken(String account, HttpServletRequest request) {
+        AbstractAuthenticationToken abstractAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                JwtUserInfo.builder()
+                        .account(account)
+                        .build(),
+                null,
+                null
+        );
+
+        abstractAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(abstractAuthenticationToken);
+    }
+
     public void setTokens(HttpServletResponse response, Member member) {
         String account = member.getMemberAccount();
         String newAccessToken = createAccessToken(member);
         String newRefreshToken = createRefreshToken(member);
 
-        response.setHeader(AUTHORIZATION, BEARER + newAccessToken);
+        System.out.println("--------------123123-------------------");
+        System.out.println(newAccessToken);
+        System.out.println(newRefreshToken);
+        System.out.println("--------------123123-------------------");
 
         Auth findByAccount = authRepository.findByAccount(account);
 
@@ -112,14 +125,15 @@ public class JwtTokenProvider {
 
         Cookie cookie = makeCookie(newRefreshToken);
         response.addCookie(cookie);
+        response.setHeader(AUTHORIZATION, BEARER + newAccessToken);
     }
 
 
     public Cookie makeCookie(String newRefreshToken) {
         Cookie cookie = new Cookie(REFRESH_TOKEN, newRefreshToken);
         cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-
+//        cookie.setHttpOnly(true);
+//        cookie.setDomain("http://localhost:3000");
         int cookieTime = 60 * 60 * 24 * 90;
         cookie.setMaxAge(cookieTime);
         cookie.setPath("/");
