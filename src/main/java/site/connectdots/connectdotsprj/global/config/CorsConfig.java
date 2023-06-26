@@ -16,6 +16,7 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedHeaders("*") // 어떤 요청 헤더를 허용할지?
                 .allowCredentials(true) // 쿠키 전달을 허용할 것인가?
                 .maxAge(3600) // 캐싱 시간을 설정
+                .exposedHeaders("Authorization", "Set-Cookie") // 헤더 셋팅 설정 권한
         ;
 
     }
