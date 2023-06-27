@@ -16,6 +16,7 @@ import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailRes
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoard;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.LikeAndHateException;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.NotFoundFreeBoardException;
+import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 import site.connectdots.connectdotsprj.musicboard.dto.response.TrackBoardListResponseDTO;
 import site.connectdots.connectdotsprj.musicboard.dto.response.MusicListResponseDTO;
 import site.connectdots.connectdotsprj.musicboard.entity.SpotifyMusic;
@@ -169,7 +170,7 @@ public List<TrackBoardListResponseDTO> getMusicBoardList() {
 
     public List<MusicListResponseDTO> getMusicList(final long playListId) {
         SpotifyPlaylist playlist = spotifyPlaylistRepository.findById(playListId).orElseThrow(() -> new NotFoundMusicBoardException());
-        updateViewCount(playlist);
+//        updateViewCount(playlist);
         List<MusicListResponseDTO> response = playlist.getSpotifyMusicPlaylists().stream().map(musicPlaylist -> {
             SpotifyMusic music = musicPlaylist.getSpotifyMusic();
             SpotifyPlaylist track = musicPlaylist.getSpotifyPlaylist();
@@ -190,8 +191,10 @@ public List<TrackBoardListResponseDTO> getMusicBoardList() {
         return response;
     }
 
-    private void updateViewCount(SpotifyPlaylist spotifyPlaylist) {
-        spotifyPlaylist.setMusicBoardViewCount(spotifyPlaylist.getMusicBoardViewCount()+1);
-        spotifyPlaylistRepository.save(spotifyPlaylist);
-    }
+//    private void updateViewCount(SpotifyPlaylist spotifyPlaylist) {
+//        spotifyPlaylist.setMusicBoardViewCount(spotifyPlaylist.getMusicBoardViewCount()+1);
+//        spotifyPlaylistRepository.save(spotifyPlaylist);
+//    }
+
+
 }
