@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @EqualsAndHashCode(of = "freeBoardReplyIdx")
-@Table(name = "TB_FREEBOARDREPLY")
+@Table(name = "tb_freeboardreply")
 public class FreeBoardReply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
