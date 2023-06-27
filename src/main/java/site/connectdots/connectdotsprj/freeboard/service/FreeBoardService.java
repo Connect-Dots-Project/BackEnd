@@ -72,6 +72,9 @@ public class FreeBoardService {
     public FreeBoardDetailResponseDTO detailView(Long freeBoardIdx, JwtUserInfo jwtUserInfo) {
         Member loginMember = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
 
+        Long likeCount = freeBoardLikeRepository.countByFreeboardIdx(freeBoardIdx);
+        // TODO : likeCount 수정해야함
+
         FreeBoard freeBoard = getFreeBoard(freeBoardIdx);
         updateViewCount(freeBoard); // TODO : 계정당 시간을 부여해서 새로고침 조회수를 막아야 함.
 
@@ -132,19 +135,16 @@ public class FreeBoardService {
      */
     public FreeBoardLikeResultResponseDTO updateLikeCount(Long freeBoardIdx, String memberAccount) {
         FreeBoard foundFreeBoard = freeBoardRepository.findById(freeBoardIdx).orElseThrow();
-        Long likeCount = freeBoardLikeRepository.countByFreeboardIdx(freeBoardIdx);
-
 
         if (foundFreeBoard.getMember().getMemberAccount().equals(memberAccount)) {
             return FreeBoardLikeResultResponseDTO.builder()
                     .message("본인 글은 추천할 수 없습니다.")
-                    .count(likeCount)
+                    .count(freeBoardLikeRepository.countByFreeboardIdx(freeBoardIdx))
                     .build();
         }
 
-
         FreeBoardLike foundFreeBoardLike = freeBoardLikeRepository.findByMemberAccountAndFreeboardIdx(memberAccount, freeBoardIdx);
-
+        String message = "";
 
         if (foundFreeBoardLike == null) {
             // 좋아요
@@ -152,20 +152,23 @@ public class FreeBoardService {
                     .freeboardIdx(freeBoardIdx)
                     .memberAccount(memberAccount)
                     .build());
-            return FreeBoardLikeResultResponseDTO.builder()
-                    .message("좋아요를 눌렀습니다.")
-                    .count(likeCount)
-                    .build();
+            message = "좋아요를 눌렀습니다.";
+
+            foundFreeBoard.setFreeBoardLikeCount(foundFreeBoard.getFreeBoardLikeCount() + 1);
+        } else {
+            // 싫어요
+            freeBoardLikeRepository.deleteByMemberAccountAndFreeboardIdx(memberAccount, freeBoardIdx);
+            message = "좋아요를 취소했습니다.";
+
+            foundFreeBoard.setFreeBoardLikeCount(foundFreeBoard.getFreeBoardLikeCount() - 1);
         }
 
-        // 싫어요
-        freeBoardLikeRepository.deleteByMemberAccountAndFreeboardIdx(memberAccount, freeBoardIdx);
+        freeBoardRepository.save(foundFreeBoard);
 
         return FreeBoardLikeResultResponseDTO.builder()
-                .message("좋아요를 취소했습니다.")
-                .count(likeCount)
+                .message(message)
+                .count(freeBoardLikeRepository.countByFreeboardIdx(freeBoardIdx))
                 .build();
-
     }
 
 
