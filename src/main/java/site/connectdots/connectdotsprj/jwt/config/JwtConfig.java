@@ -18,6 +18,7 @@ public class JwtConfig implements WebMvcConfigurer {
                 .addInterceptor(jwtTokenInterceptor)
                 .addPathPatterns("/**") //
                 .excludePathPatterns("/connects/sign-up")
+                .excludePathPatterns("/connects/sign-up/check-nickname")
                 .excludePathPatterns("/connects/sign-up/email")
                 .excludePathPatterns("/connects/sign-up/check")
                 .excludePathPatterns("/connects/login")

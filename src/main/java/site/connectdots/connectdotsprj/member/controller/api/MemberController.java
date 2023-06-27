@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import site.connectdots.connectdotsprj.member.dto.request.MemberLoginRequestDTO;
+import site.connectdots.connectdotsprj.member.dto.request.MemberNicknameCheckRequestDTO;
 import site.connectdots.connectdotsprj.member.dto.request.MemberSignUpRequestDTO;
 import site.connectdots.connectdotsprj.member.dto.response.MemberLoginResponseDTO;
+import site.connectdots.connectdotsprj.member.dto.response.MemberNicknameCheckResponseDTO;
 import site.connectdots.connectdotsprj.member.dto.response.MemberSignUpResponseDTO;
 import site.connectdots.connectdotsprj.member.service.MemberLoginService;
 import site.connectdots.connectdotsprj.member.service.MemberSignUpService;
@@ -26,6 +28,13 @@ public class MemberController {
         MemberSignUpResponseDTO memberSignUpResponseDTO = memberSignUpService.signUp(dto);
 
         return ResponseEntity.ok().body(memberSignUpResponseDTO);
+    }
+
+    @PostMapping("sign-up/check-nickname")
+    public ResponseEntity<?> checkNickname(@RequestBody MemberNicknameCheckRequestDTO dto) {
+        MemberNicknameCheckResponseDTO response = memberSignUpService.checkNickname(dto);
+
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/login")
