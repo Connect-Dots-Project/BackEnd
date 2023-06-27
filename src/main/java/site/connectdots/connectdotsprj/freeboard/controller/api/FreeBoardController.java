@@ -24,9 +24,6 @@ import java.util.List;
 @Slf4j
 public class FreeBoardController {
     private final FreeBoardService freeBoardService;
-    private final int LIKE = 1;
-    private final int HATE = -1;
-
 
     /**
      * 전체 조회
@@ -34,7 +31,7 @@ public class FreeBoardController {
      * @param page : 가져올 페이지
      * @return : 1페이지 당 10개의 게시글을 가장 최신 작서된 순으로 리턴
      */
-    @GetMapping("/{page}")
+    @GetMapping("/list/{page}")
     public ResponseEntity<List<FreeBoardResponseDTO>> findAll(@PathVariable(name = "page") Integer page) {
         List<FreeBoardResponseDTO> freeBoardList = freeBoardService.findAll(page);
 
