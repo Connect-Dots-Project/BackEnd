@@ -13,7 +13,7 @@ import javax.persistence.*;
 @ToString
 
 @Entity
-@Table(name = "TB_SPOTIFY_MUSIC_PLAYLIST")
+@Table(name = "tb_spotify_music_playlist")
 public class SpotifyMusicPlaylist {
 
     @Id

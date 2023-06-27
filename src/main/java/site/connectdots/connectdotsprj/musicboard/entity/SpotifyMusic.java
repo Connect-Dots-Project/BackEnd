@@ -12,7 +12,7 @@ import javax.persistence.*;
 @ToString
 @EqualsAndHashCode(of = "musicBoardIdx")
 @Entity
-@Table(name = "TB_SPOTIFY_MUSIC")
+@Table(name = "tb_spotify_music")
 public class SpotifyMusic {
 
     @Id
