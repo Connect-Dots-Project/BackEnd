@@ -3,14 +3,8 @@ package site.connectdots.connectdotsprj.member.controller.api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import site.connectdots.connectdotsprj.member.dto.request.MemberEmailCheckRequestDTO;
-import site.connectdots.connectdotsprj.member.dto.request.MemberLoginRequestDTO;
-import site.connectdots.connectdotsprj.member.dto.request.MemberNicknameCheckRequestDTO;
-import site.connectdots.connectdotsprj.member.dto.request.MemberSignUpRequestDTO;
-import site.connectdots.connectdotsprj.member.dto.response.MemberEmailCheckResponseDTO;
-import site.connectdots.connectdotsprj.member.dto.response.MemberLoginResponseDTO;
-import site.connectdots.connectdotsprj.member.dto.response.MemberNicknameCheckResponseDTO;
-import site.connectdots.connectdotsprj.member.dto.response.MemberSignUpResponseDTO;
+import site.connectdots.connectdotsprj.member.dto.request.*;
+import site.connectdots.connectdotsprj.member.dto.response.*;
 import site.connectdots.connectdotsprj.member.service.MemberLoginService;
 import site.connectdots.connectdotsprj.member.service.MemberSignUpService;
 
@@ -33,14 +27,14 @@ public class MemberController {
         return ResponseEntity.ok().body(memberSignUpResponseDTO);
     }
 
-    @PostMapping("sign-up/check-nickname")
+    @PostMapping("/sign-up/check-nickname")
     public ResponseEntity<?> checkNickname(@RequestBody MemberNicknameCheckRequestDTO dto) {
         MemberNicknameCheckResponseDTO response = memberSignUpService.checkNickname(dto);
 
         return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping("sign-up/check-email")
+    @PostMapping("/sign-up/check-email")
     public ResponseEntity<?> checkEmail(@RequestBody @Valid MemberEmailCheckRequestDTO dto) {
         MemberEmailCheckResponseDTO response = memberSignUpService.checkEmail(dto);
 
@@ -57,6 +51,21 @@ public class MemberController {
         MemberLoginResponseDTO loginResponse = memberLoginService.login(dto, response);
 
         return ResponseEntity.ok().body(loginResponse);
+    }
+
+
+    @PostMapping("/login/find/account")
+    public ResponseEntity<?> findAccount(@RequestBody MemberPhoneRequestDTO dto) {
+        // 아이디 찾기
+        MemberPhoneResponseDTO response = memberLoginService.findAccountByPhone(dto);
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/login/find/password")
+    public void test1() {
+        // 비밀번호 찾기
+
     }
 
 }

@@ -23,6 +23,8 @@ public class JwtConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/connects/sign-up/email")
                 .excludePathPatterns("/connects/sign-up/check")
                 .excludePathPatterns("/connects/login")
+                .excludePathPatterns("/connects/login/find/account")
+                .excludePathPatterns("/connects/login/find/password")
                 .excludePathPatterns("/contents/hot-place/list/*")
                 .excludePathPatterns("/contents/free-board/list/*")
                 .excludePathPatterns("/health-check")
