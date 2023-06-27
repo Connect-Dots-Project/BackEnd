@@ -59,7 +59,12 @@ public class FreeBoardService {
         PageRequest pageRequest = PageRequest.of(page, SIZE, freeBoardIdx.descending());
 
         return freeBoardRepository.findAll(pageRequest)
-                .stream().map(FreeBoardResponseDTO::new)
+                .stream()
+                .map(FreeBoardResponseDTO::new)
+                .peek(e -> {
+                    List<FreeBoardReply> foundReplyList = freeBoardReplyRepository.findAllByFreeBoardFreeBoardIdx(e.getFreeBoardIdx());
+                    e.setFreeBoardReplyCount((long) foundReplyList.size());
+                })
                 .collect(Collectors.toList());
     }
 
