@@ -8,6 +8,7 @@ import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
 import site.connectdots.connectdotsprj.member.entity.Member;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface HotplaceRepository extends JpaRepository<Hotplace, Long> {
 
@@ -45,4 +46,5 @@ public interface HotplaceRepository extends JpaRepository<Hotplace, Long> {
     // 핫플레이스 이미지 저장경로 찾기
     @Query("SELECT h FROM Hotplace h WHERE h.hotplaceImg =:fileName")
     String findByHotplaceImg(@Param("fileName") String fileName);
+
 }
