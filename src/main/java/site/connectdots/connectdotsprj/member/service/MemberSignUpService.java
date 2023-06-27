@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import site.connectdots.connectdotsprj.global.enums.Location;
+import site.connectdots.connectdotsprj.member.dto.request.MemberNicknameCheckRequestDTO;
 import site.connectdots.connectdotsprj.member.dto.request.MemberSignUpRequestDTO;
+import site.connectdots.connectdotsprj.member.dto.response.MemberNicknameCheckResponseDTO;
 import site.connectdots.connectdotsprj.member.dto.response.MemberSignUpResponseDTO;
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.exception.custom.SignUpFailException;
@@ -87,4 +89,16 @@ public class MemberSignUpService {
         return memberRepository.findByMemberPhone(phone) != null;
     }
 
+    public MemberNicknameCheckResponseDTO checkNickname(MemberNicknameCheckRequestDTO dto) {
+        System.out.println(memberRepository.findAll());
+        memberRepository.findAll().forEach(System.out::println);
+        System.out.println("\n\n\n-------------------------");
+        System.out.println(dto);
+        System.out.println(memberRepository.findByMemberNickname(dto.getNickname()));
+        System.out.println("-------------------------\n\n\n");
+
+        return MemberNicknameCheckResponseDTO.builder()
+                .checkNickname(memberRepository.findByMemberNickname(dto.getNickname()) == null)
+                .build();
+    }
 }
