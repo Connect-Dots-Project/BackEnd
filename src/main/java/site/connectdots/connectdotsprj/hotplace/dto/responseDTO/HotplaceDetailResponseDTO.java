@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
+import site.connectdots.connectdotsprj.member.entity.Member;
 
 import java.time.LocalDateTime;
 
@@ -41,7 +42,6 @@ public class HotplaceDetailResponseDTO {
         this.hotplaceFullAddress = hotplace.getHotplaceFullAddress();
         this.kakaoLocation = hotplace.getKakaoLocation();
         this.hotplaceWriteDate = hotplace.getHotplaceWriteDate();
-
     }
 
 
