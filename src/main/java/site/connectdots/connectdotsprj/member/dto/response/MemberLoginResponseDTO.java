@@ -12,10 +12,12 @@ import site.connectdots.connectdotsprj.member.entity.Member;
 @Builder
 public class MemberLoginResponseDTO {
 
-    private String email;
+    private String account;
+    private String nickname;
 
 
     public MemberLoginResponseDTO(Member member) {
-        this.email = member.getMemberAccount();
+        this.account = member.getMemberAccount();
+        this.nickname = member.getMemberNickname();
     }
 }
