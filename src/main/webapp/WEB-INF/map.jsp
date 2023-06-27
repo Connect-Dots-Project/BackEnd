@@ -1,0 +1,148 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>키워드로 장소검색하기</title>
+
+</head>
+<body>
+
+<button id="kakao-login">
+    <a id="custom-login-btn" href="/kakao/login">
+        <img src="//mud-kage.kakao.com/14/dn/btqbjxsO6vP/KPiGpdnsubSq3a0PHEGUK1/o.jpg" width="300"/>
+    </a>
+</button>
+
+
+<div id="map" style="width:100%;height:350px;"></div>
+
+<script type="text/javascript"
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=08637e590784f47dfde7ec9b2a40910a&libraries=services"></script>
+<script>
+    // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
+    var infowindow = new kakao.maps.InfoWindow({zIndex: 1});
+
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+        mapOption = {
+            center: new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
+            level: 3 // 지도의 확대 레벨
+        };
+
+    // 지도를 생성합니다
+    var map = new kakao.maps.Map(mapContainer, mapOption);
+
+    // 장소 검색 객체를 생성합니다
+    var ps = new kakao.maps.services.Places();
+
+    function searchPlace() {
+        // 사용자가 입력한 키워드 값을 받아옵니다
+        var keyword = document.getElementById('keywordInput').value;
+
+        const key = '서울시 ' + keyword;
+
+        // 키워드로 장소를 검색합니다
+        // ps.keywordSearch(keyword, placesSearchCB);
+        ps.keywordSearch(key, placesSearchCB);
+    }
+
+    // 엔터 키 이벤트를 처리하는 함수입니다
+    function handleKeyPress(e) {
+        if (e.keyCode === 13) { // 13은 엔터 키의 키 코드입니다
+            e.preventDefault(); // 기본 동작인 폼 제출을 방지합니다
+            searchPlace();
+            document.getElementById('keywordInput').value = ''; // 입력 폼을 비워줍니다
+        }
+    }
+
+    // 키워드 검색 완료 시 호출되는 콜백함수입니다
+    function placesSearchCB(data, status, pagination) {
+        if (status === kakao.maps.services.Status.OK) {
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기 위해
+            // LatLngBounds 객체에 좌표를 추가합니다
+            var bounds = new kakao.maps.LatLngBounds();
+
+            for (var i = 0; i < data.length; i++) {
+                displayMarker(data[i]);
+                bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+            }
+
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+            map.setBounds(bounds);
+        }
+    }
+
+    // 지도에 마커를 표시하는 함수입니다
+    function displayMarker(place) {
+        // 마커를 생성하고 지도에 표시합니다
+        var marker = new kakao.maps.Marker({
+            map: map,
+            position: new kakao.maps.LatLng(place.y, place.x)
+        });
+
+        // 마커에 클릭 이벤트를 등록합니다
+        kakao.maps.event.addListener(marker, 'click', function () {
+            // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+            infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
+            infowindow.open(map, marker);
+
+            var position = marker.getPosition();
+
+            // --------------------------------------------------------------------------------------------------------------------- 위도, 경도 -> 다시 주소로 변경
+
+            // 마커의 위치(위도, 경도)를 가져와서 주소로 변환합니다
+            var geocoder = new kakao.maps.services.Geocoder();
+
+            geocoder.coord2RegionCode(position.getLng(), position.getLat(), function (result, status) {
+                if (status === kakao.maps.services.Status.OK) {
+                    var address = result[0].address_name;
+                    console.log('주소: ' + address);
+
+                    // --------------------------------------------------------------------------------------------------------------------- 위도, 경도, 장소명, 주소!
+                    var MapRequestDTO = {
+                        hotplaceLatitude: position.getLat(),
+                        hotplaceLongitude: position.getLng(),
+                        hotplaceName: place.place_name,
+                        hotplaceFullAddress: address,
+                        kakaoLocation: address.split(" ")[1]
+                    };
+
+                    fetch('http://localhost:8181/contents/hot-place', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(MapRequestDTO)
+                    })
+
+                }
+            });
+
+
+        });
+
+
+        // 마커에 마우스 오버 이벤트를 등록합니다
+        kakao.maps.event.addListener(marker, 'mouseover', function () {
+            // 마커를 오버하면 장소명이 인포윈도우에 표출됩니다
+            infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
+            infowindow.open(map, marker);
+        });
+
+        // 마커에 마우스 아웃 이벤트를 등록합니다
+        kakao.maps.event.addListener(marker, 'mouseout', function () {
+            // 마커에서 마우스가 벗어나면 인포윈도우를 닫습니다
+            infowindow.close();
+        });
+    }
+
+
+</script>
+
+<!-- 키워드를 입력받을 input 요소와 검색 버튼 -->
+<input type="text" id="keywordInput" onkeypress="handleKeyPress(event)">
+<button onclick="searchPlace()">장소 검색</button>
+</body>
+</html>

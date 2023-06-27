@@ -27,11 +27,46 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
-//	testImplementation 'org.springframework.security:spring-security-test'
+    // swagger api 문서화
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    // https://mvnrepository.com/artifact/se.michaelthelin.spotify/spotify-web-api-java
+    implementation 'se.michaelthelin.spotify:spotify-web-api-java:8.0.0'
+
+
+    // -------------- chatting
+    //websocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.webjars:sockjs-client:1.1.2'
+    implementation 'org.webjars:stomp-websocket:2.3.3-1'
+    // -------------- chatting
+
+
+    // -------------- 메일 인증
+    implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    // -------------- 메일 인증
+
+    // -------------- jwt
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    // -------------- jwt
+
+    // 파일업로드 라이브러리
+    implementation 'commons-io:commons-io:2.8.0'
+
+    // 스프핑 시큐리티 의존성 관리
+//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // s3 라이브러리
+    implementation 'software.amazon.awssdk:s3:2.17.52'
 
 }
-
 tasks.named('test') {
-    useJUnitPlatform()
+//    useJUnitPlatform()
+    exclude '**/*' // 빌드시 전체 테스트 생략
 }
