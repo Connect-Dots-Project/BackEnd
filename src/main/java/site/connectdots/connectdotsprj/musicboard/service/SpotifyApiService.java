@@ -12,6 +12,10 @@ import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCrede
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
+import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailResponseDTO;
+import site.connectdots.connectdotsprj.freeboard.entity.FreeBoard;
+import site.connectdots.connectdotsprj.freeboard.exception.custom.LikeAndHateException;
+import site.connectdots.connectdotsprj.freeboard.exception.custom.NotFoundFreeBoardException;
 import site.connectdots.connectdotsprj.musicboard.dto.response.TrackBoardListResponseDTO;
 import site.connectdots.connectdotsprj.musicboard.dto.response.MusicListResponseDTO;
 import site.connectdots.connectdotsprj.musicboard.entity.SpotifyMusic;
@@ -27,6 +31,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static site.connectdots.connectdotsprj.musicboard.exception.custom.MusicErrorCode.NOT_FOUND_MUSIC_BOARD;
+
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -40,6 +47,8 @@ public class SpotifyApiService {
     private static final String clientId = "e665029ca3b34c27b937c214233fd932";
     private static final String clientSecret = "932abc3385b44159996813d0f82b1284";
     private static final URI redirectUri = SpotifyHttpManager.makeUri("http://localhost:8181/contents/music-board");
+
+
 
     public SpotifyApi getSpotifyApi(final String code) {
         try {
@@ -160,7 +169,7 @@ public List<TrackBoardListResponseDTO> getMusicBoardList() {
 
     public List<MusicListResponseDTO> getMusicList(final long playListId) {
         SpotifyPlaylist playlist = spotifyPlaylistRepository.findById(playListId).orElseThrow(() -> new NotFoundMusicBoardException());
-
+        updateViewCount(playlist);
         List<MusicListResponseDTO> response = playlist.getSpotifyMusicPlaylists().stream().map(musicPlaylist -> {
             SpotifyMusic music = musicPlaylist.getSpotifyMusic();
             SpotifyPlaylist track = musicPlaylist.getSpotifyPlaylist();
@@ -179,5 +188,10 @@ public List<TrackBoardListResponseDTO> getMusicBoardList() {
         }).collect(Collectors.toList());
 
         return response;
+    }
+
+    private void updateViewCount(SpotifyPlaylist spotifyPlaylist) {
+        spotifyPlaylist.setMusicBoardViewCount(spotifyPlaylist.getMusicBoardViewCount()+1);
+        spotifyPlaylistRepository.save(spotifyPlaylist);
     }
 }
