@@ -11,10 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardModifyRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardReplyWriteRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardWriteRequestDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDeleteResponseDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailReplyDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailResponseDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardResponseDTO;
+import site.connectdots.connectdotsprj.freeboard.dto.response.*;
 import site.connectdots.connectdotsprj.freeboard.service.FreeBoardService;
 import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 
@@ -74,10 +71,6 @@ public class FreeBoardController {
             @RequestPart("freeBoardImg") MultipartFile freeBoardImg,
             @AuthenticationPrincipal JwtUserInfo jwtUserInfo
             , BindingResult result) {
-        System.out.println("\n\n\n\n--------------123123--------writeFreeBoard----------------------------");
-        System.out.println(dto);
-        System.out.println(jwtUserInfo);
-        System.out.println(freeBoardImg.toString());
 
         String uploadFilePath = null;
         if (freeBoardImg != null) {
@@ -88,8 +81,6 @@ public class FreeBoardController {
                 return ResponseEntity.internalServerError().build();
             }
         }
-
-        System.out.println("----------------123123-------writeFreeBoard---------------------------\n\n\n\n");
 
         ResponseEntity<List<FieldError>> fieldErrors = getValidatedResult(result);
         if (fieldErrors != null) return fieldErrors;
@@ -154,31 +145,16 @@ public class FreeBoardController {
 
 
     /**
-     * 자유게시판의 좋아요 기능
+     * 자유게시판의 좋아요 or 취소 기능
      *
      * @param freeBoardIdx
      * @return
      */
     @PostMapping("/like/{freeBoardIdx}")
-    public ResponseEntity<FreeBoardDetailResponseDTO> likeCount(
-            @AuthenticationPrincipal JwtUserInfo userInfo // TODO : @AuthenticationPrincipal 수정해야 함
-            , @PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {
-        FreeBoardDetailResponseDTO responseDTO = freeBoardService.updateLikeCount(freeBoardIdx, LIKE, userInfo.getAccount());
-
-        return ResponseEntity.ok().body(responseDTO);
-    }
-
-    /**
-     * 자유게시판의 싫어요 기능
-     *
-     * @param freeBoardIdx
-     * @return
-     */
-    @PostMapping("/hate/{freeBoardIdx}")
-    public ResponseEntity<FreeBoardDetailResponseDTO> hateCount(
+    public ResponseEntity<FreeBoardLikeResultResponseDTO> updateLike(
             @AuthenticationPrincipal JwtUserInfo userInfo
             , @PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {
-        FreeBoardDetailResponseDTO responseDTO = freeBoardService.updateLikeCount(freeBoardIdx, HATE, userInfo.getAccount());
+        FreeBoardLikeResultResponseDTO responseDTO = freeBoardService.updateLikeCount(freeBoardIdx, userInfo.getAccount());
 
         return ResponseEntity.ok().body(responseDTO);
     }

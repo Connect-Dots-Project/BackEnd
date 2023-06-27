@@ -89,8 +89,8 @@ class FreeBoardRepositoryTest {
                 .freeBoardContent("hhh내용!!!TEST")
                 .freeBoardCategory(FreeBoardCategory.잡담)
                 .freeBoardLocation("강북구")
-                .freeBoardImg("null")
-                .memberIdx(15L)
+
+//                .memberIdx(15L)
                 .build();
 
         //given
@@ -100,10 +100,10 @@ class FreeBoardRepositoryTest {
                 FreeBoard.builder()
                         .freeBoardTitle(dto.getFreeBoardTitle())
                         .freeBoardContent(dto.getFreeBoardContent())
-                        .freeBoardImg(dto.getFreeBoardImg())
+//                        .freeBoardImg(dto.getFreeBoardImg())
                         .freeBoardLocation(dto.getFreeBoardLocation())
                         .freeBoardCategory(dto.getFreeBoardCategory())
-                        .member(memberRepository.findById(dto.getMemberIdx()).orElseThrow())
+//                        .member(memberRepository.findById(dto.getMemberIdx()).orElseThrow())
                         .build()
         );
         //then

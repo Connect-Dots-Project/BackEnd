@@ -10,14 +10,12 @@ import site.connectdots.connectdotsprj.aws.service.S3Service;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardModifyRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardReplyWriteRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardWriteRequestDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDeleteResponseDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailReplyDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailResponseDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardResponseDTO;
+import site.connectdots.connectdotsprj.freeboard.dto.response.*;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoard;
+import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardLike;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardReply;
-import site.connectdots.connectdotsprj.freeboard.exception.custom.LikeAndHateException;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.UnauthorizedModificationException;
+import site.connectdots.connectdotsprj.freeboard.repository.FreeBoardLikeRepository;
 import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 import site.connectdots.connectdotsprj.member.exception.custom.NotFoundMemberByAccountException;
 import site.connectdots.connectdotsprj.member.exception.custom.NotFoundMemberByIdxException;
@@ -43,6 +41,7 @@ import static site.connectdots.connectdotsprj.member.exception.custom.enums.Memb
 public class FreeBoardService {
     private final FreeBoardRepository freeBoardRepository;
     private final FreeBoardReplyRepository freeBoardReplyRepository;
+    private final FreeBoardLikeRepository freeBoardLikeRepository;
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
     private final Integer START_PAGE = 0;
@@ -72,6 +71,9 @@ public class FreeBoardService {
      */
     public FreeBoardDetailResponseDTO detailView(Long freeBoardIdx, JwtUserInfo jwtUserInfo) {
         Member loginMember = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
+
+        Long likeCount = freeBoardLikeRepository.countByFreeboardIdx(freeBoardIdx);
+        // TODO : likeCount 수정해야함
 
         FreeBoard freeBoard = getFreeBoard(freeBoardIdx);
         updateViewCount(freeBoard); // TODO : 계정당 시간을 부여해서 새로고침 조회수를 막아야 함.
@@ -128,21 +130,45 @@ public class FreeBoardService {
      * 본인 글은 익셉션 발생
      *
      * @param freeBoardIdx
-     * @param likeCountDelta
-     * @param userAccount
+     * @param memberAccount
      * @return
      */
-    public FreeBoardDetailResponseDTO updateLikeCount(Long freeBoardIdx, int likeCountDelta, String userAccount) {
-        FreeBoard freeBoard = getFreeBoard(freeBoardIdx);
-        if (freeBoard.getMember().getMemberAccount().equals(userAccount)) {
-            throw new LikeAndHateException(UNAUTHORIZED_LIKE_AND_HATE_EXCEPTION);
-        }
-        freeBoard.setFreeBoardLikeCount(freeBoard.getFreeBoardLikeCount() + likeCountDelta);
+    public FreeBoardLikeResultResponseDTO updateLikeCount(Long freeBoardIdx, String memberAccount) {
+        FreeBoard foundFreeBoard = freeBoardRepository.findById(freeBoardIdx).orElseThrow();
 
-        return getFreeBoardDetailResponseDTO(freeBoardIdx, freeBoard, Member.builder()
-                .memberAccount("test")
-                .memberProfile("test")
-                .build()); // TODO : 멤버 추가해야함
+        if (foundFreeBoard.getMember().getMemberAccount().equals(memberAccount)) {
+            return FreeBoardLikeResultResponseDTO.builder()
+                    .message("본인 글은 추천할 수 없습니다.")
+                    .count(freeBoardLikeRepository.countByFreeboardIdx(freeBoardIdx))
+                    .build();
+        }
+
+        FreeBoardLike foundFreeBoardLike = freeBoardLikeRepository.findByMemberAccountAndFreeboardIdx(memberAccount, freeBoardIdx);
+        String message = "";
+
+        if (foundFreeBoardLike == null) {
+            // 좋아요
+            freeBoardLikeRepository.save(FreeBoardLike.builder()
+                    .freeboardIdx(freeBoardIdx)
+                    .memberAccount(memberAccount)
+                    .build());
+            message = "좋아요를 눌렀습니다.";
+
+            foundFreeBoard.setFreeBoardLikeCount(foundFreeBoard.getFreeBoardLikeCount() + 1);
+        } else {
+            // 싫어요
+            freeBoardLikeRepository.deleteByMemberAccountAndFreeboardIdx(memberAccount, freeBoardIdx);
+            message = "좋아요를 취소했습니다.";
+
+            foundFreeBoard.setFreeBoardLikeCount(foundFreeBoard.getFreeBoardLikeCount() - 1);
+        }
+
+        freeBoardRepository.save(foundFreeBoard);
+
+        return FreeBoardLikeResultResponseDTO.builder()
+                .message(message)
+                .count(freeBoardLikeRepository.countByFreeboardIdx(freeBoardIdx))
+                .build();
     }
 
 
