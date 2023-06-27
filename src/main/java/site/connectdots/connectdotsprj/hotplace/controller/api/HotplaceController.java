@@ -98,12 +98,14 @@ public class HotplaceController {
 
     // 글 삭제
     @DeleteMapping("/{hotplaceIdx}")
-    public ResponseEntity<?> delete(@PathVariable Long hotplaceIdx) {
-        log.info("살제============================================");
+    public ResponseEntity<?> delete(
+            @AuthenticationPrincipal JwtUserInfo jwtUserInfo
+            , @PathVariable Long hotplaceIdx) {
+
         log.info("HotplaceController.delete.info 글 삭제 {}", hotplaceIdx);
 
         try {
-            hotplaceService.delete(hotplaceIdx);
+            hotplaceService.delete(jwtUserInfo, hotplaceIdx);
             return ResponseEntity.ok("정상적으로 삭제되었습니다!");
         } catch (Exception e) {
             e.printStackTrace();
@@ -114,9 +116,12 @@ public class HotplaceController {
 
     // 글 수정
     @RequestMapping(method = {RequestMethod.PUT, RequestMethod.PATCH})
-    public ResponseEntity<?> modify(@Validated @RequestPart("hotplace") HotplaceModifyRequestDTO dto
+    public ResponseEntity<?> modify(
+            @AuthenticationPrincipal JwtUserInfo jwtUserInfo
+            , @Validated @RequestPart("hotplace") HotplaceModifyRequestDTO dto
             , @RequestPart("hotplaceImg") MultipartFile hotplaceImg
             , BindingResult result) {
+
         log.info("HotplaceController.modify.info 글 수정 {}", dto);
 
         ResponseEntity<List<FieldError>> fieldErrors = getValidatedResult(result);
@@ -136,7 +141,7 @@ public class HotplaceController {
         }
 
         try {
-            HotplaceDetailResponseDTO modifiedHotplace = hotplaceService.modify(dto, uploadFilePath);
+            HotplaceDetailResponseDTO modifiedHotplace = hotplaceService.modify(jwtUserInfo, dto, uploadFilePath);
             return ResponseEntity.ok().body(modifiedHotplace);
         } catch (Exception e) {
             e.printStackTrace();
