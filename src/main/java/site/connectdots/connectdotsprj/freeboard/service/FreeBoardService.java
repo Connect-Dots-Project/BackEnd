@@ -10,14 +10,12 @@ import site.connectdots.connectdotsprj.aws.service.S3Service;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardModifyRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardReplyWriteRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardWriteRequestDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDeleteResponseDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailReplyDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailResponseDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardResponseDTO;
+import site.connectdots.connectdotsprj.freeboard.dto.response.*;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoard;
+import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardLike;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardReply;
-import site.connectdots.connectdotsprj.freeboard.exception.custom.LikeAndHateException;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.UnauthorizedModificationException;
+import site.connectdots.connectdotsprj.freeboard.repository.FreeBoardLikeRepository;
 import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 import site.connectdots.connectdotsprj.member.exception.custom.NotFoundMemberByAccountException;
 import site.connectdots.connectdotsprj.member.exception.custom.NotFoundMemberByIdxException;
@@ -43,6 +41,7 @@ import static site.connectdots.connectdotsprj.member.exception.custom.enums.Memb
 public class FreeBoardService {
     private final FreeBoardRepository freeBoardRepository;
     private final FreeBoardReplyRepository freeBoardReplyRepository;
+    private final FreeBoardLikeRepository freeBoardLikeRepository;
     private final MemberRepository memberRepository;
     private final S3Service s3Service;
     private final Integer START_PAGE = 0;
@@ -128,21 +127,45 @@ public class FreeBoardService {
      * 본인 글은 익셉션 발생
      *
      * @param freeBoardIdx
-     * @param likeCountDelta
-     * @param userAccount
+     * @param memberAccount
      * @return
      */
-    public FreeBoardDetailResponseDTO updateLikeCount(Long freeBoardIdx, int likeCountDelta, String userAccount) {
-        FreeBoard freeBoard = getFreeBoard(freeBoardIdx);
-        if (freeBoard.getMember().getMemberAccount().equals(userAccount)) {
-            throw new LikeAndHateException(UNAUTHORIZED_LIKE_AND_HATE_EXCEPTION);
-        }
-        freeBoard.setFreeBoardLikeCount(freeBoard.getFreeBoardLikeCount() + likeCountDelta);
+    public FreeBoardLikeResultResponseDTO updateLikeCount(Long freeBoardIdx, String memberAccount) {
+        FreeBoard foundFreeBoard = freeBoardRepository.findById(freeBoardIdx).orElseThrow();
+        Long likeCount = freeBoardLikeRepository.countByFreeboardIdx(freeBoardIdx);
 
-        return getFreeBoardDetailResponseDTO(freeBoardIdx, freeBoard, Member.builder()
-                .memberAccount("test")
-                .memberProfile("test")
-                .build()); // TODO : 멤버 추가해야함
+
+        if (foundFreeBoard.getMember().getMemberAccount().equals(memberAccount)) {
+            return FreeBoardLikeResultResponseDTO.builder()
+                    .message("본인 글은 추천할 수 없습니다.")
+                    .count(likeCount)
+                    .build();
+        }
+
+
+        FreeBoardLike foundFreeBoardLike = freeBoardLikeRepository.findByMemberAccountAndFreeboardIdx(memberAccount, freeBoardIdx);
+
+
+        if (foundFreeBoardLike == null) {
+            // 좋아요
+            freeBoardLikeRepository.save(FreeBoardLike.builder()
+                    .freeboardIdx(freeBoardIdx)
+                    .memberAccount(memberAccount)
+                    .build());
+            return FreeBoardLikeResultResponseDTO.builder()
+                    .message("좋아요를 눌렀습니다.")
+                    .count(likeCount)
+                    .build();
+        }
+
+        // 싫어요
+        freeBoardLikeRepository.deleteByMemberAccountAndFreeboardIdx(memberAccount, freeBoardIdx);
+
+        return FreeBoardLikeResultResponseDTO.builder()
+                .message("좋아요를 취소했습니다.")
+                .count(likeCount)
+                .build();
+
     }
 
 
