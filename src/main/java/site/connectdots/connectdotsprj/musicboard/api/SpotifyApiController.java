@@ -12,14 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
-import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 import site.connectdots.connectdotsprj.musicboard.dto.response.TrackBoardListResponseDTO;
 import site.connectdots.connectdotsprj.musicboard.dto.response.MusicListResponseDTO;
 import site.connectdots.connectdotsprj.musicboard.service.SpotifyApiService;
 
 
-import java.io.IOException;
 import java.util.List;
 
 

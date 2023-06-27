@@ -15,13 +15,11 @@ import site.connectdots.connectdotsprj.member.entity.Member;
 public class FreeBoardReplyWriteRequestDTO {
 
     private String freeBoardReplyContent;
-    private Long memberIdx;
     private Long freeBoardIdx;
 
     public FreeBoardReply toEntity(FreeBoard freeBoard, Member member) {
         return FreeBoardReply.builder()
                 .freeBoard(freeBoard)
-                .member(member)
                 .freeBoardReplyContent(this.freeBoardReplyContent)
                 .build();
     }
