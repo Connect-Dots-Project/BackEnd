@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
+import site.connectdots.connectdotsprj.member.entity.Member;
 
 
 @Getter
@@ -27,7 +28,8 @@ public class HotplaceModifyRequestDTO {
     private String kakaoLocation;
 
 
-    public void updateHotplace(Hotplace hotplace, String uploadFilePath){
+
+    public void updateHotplace(Member member, Hotplace hotplace, String uploadFilePath){
         hotplace.setHotplaceImg(uploadFilePath);
         hotplace.setHotplaceContent(this.hotplaceContent);
         hotplace.setHotplaceLatitude(this.hotplaceLatitude);
@@ -35,6 +37,7 @@ public class HotplaceModifyRequestDTO {
         hotplace.setHotplaceName(this.hotplaceName);
         hotplace.setHotplaceFullAddress(this.hotplaceFullAddress);
         hotplace.setKakaoLocation(this.kakaoLocation);
+        hotplace.setMember(member);
     }
 
 }
