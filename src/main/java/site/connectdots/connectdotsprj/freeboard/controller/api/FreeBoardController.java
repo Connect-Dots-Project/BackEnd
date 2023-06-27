@@ -1,9 +1,13 @@
 package site.connectdots.connectdotsprj.freeboard.controller.api;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardModifyRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardReplyWriteRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardWriteRequestDTO;
@@ -12,12 +16,16 @@ import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailRes
 import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardResponseDTO;
 import site.connectdots.connectdotsprj.freeboard.service.FreeBoardService;
 import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
+import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceWriteResponseDTO;
+import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/contents/free-board")
 @RequiredArgsConstructor
+@Slf4j
 public class FreeBoardController {
     private final FreeBoardService freeBoardService;
     private final int LIKE = 1;
@@ -57,13 +65,39 @@ public class FreeBoardController {
      * @return
      */
     @PostMapping()
-    public ResponseEntity<List<FreeBoardResponseDTO>> writeFreeBoard(@RequestBody FreeBoardWriteRequestDTO dto) {
-        System.out.println("\n\n\n\n----------------------writeFreeBoard----------------------------");
+    public ResponseEntity<?> writeFreeBoard(
+            @RequestPart("freeBoard") FreeBoardWriteRequestDTO dto,
+            @RequestPart("freeBoardImg") MultipartFile freeBoardImg,
+            @AuthenticationPrincipal JwtUserInfo jwtUserInfo
+            , BindingResult result) {
+        System.out.println("\n\n\n\n--------------123123--------writeFreeBoard----------------------------");
         System.out.println(dto);
-        System.out.println("-----------------------writeFreeBoard---------------------------\n\n\n\n");
-        List<FreeBoardResponseDTO> freeBoardResponseDTO = freeBoardService.writeFreeBoard(dto);
+        System.out.println(jwtUserInfo);
+        System.out.println(freeBoardImg.toString());
 
-        return ResponseEntity.ok().body(freeBoardResponseDTO);
+        String uploadFilePath = null;
+        if (freeBoardImg != null) {
+            try {
+                uploadFilePath = freeBoardService.uploadFreeBoardImg(freeBoardImg);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.internalServerError().build();
+            }
+        }
+
+        System.out.println("----------------123123-------writeFreeBoard---------------------------\n\n\n\n");
+
+        ResponseEntity<List<FieldError>> fieldErrors = getValidatedResult(result);
+        if (fieldErrors != null) return fieldErrors;
+
+        try {
+            List<FreeBoardResponseDTO> freeBoardResponseDTO = freeBoardService.writeFreeBoard(dto, jwtUserInfo, uploadFilePath);
+            return ResponseEntity.ok().body(freeBoardResponseDTO);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+
     }
 
     /**
@@ -74,9 +108,6 @@ public class FreeBoardController {
      */
     @PostMapping("/replies")
     public ResponseEntity<List<FreeBoardDetailReplyDTO>> writeReplyByFreeBoard(@RequestBody FreeBoardReplyWriteRequestDTO dto) {
-        System.out.println("\n\n\n\n-------------------------writeReplyByFreeBoard-------------------------");
-        System.out.println(dto);
-        System.out.println("------------------------writeReplyByFreeBoard--------------------------\n\n\n\n");
         List<FreeBoardDetailReplyDTO> freeBoardDetailReplyDTO = freeBoardService.writeReplyByFreeBoard(dto);
 
         return ResponseEntity.ok().body(freeBoardDetailReplyDTO);
@@ -115,7 +146,7 @@ public class FreeBoardController {
      */
     @PostMapping("/like/{freeBoardIdx}")
     public ResponseEntity<FreeBoardDetailResponseDTO> likeCount(
-            @AuthenticationPrincipal TokenUserInfo userInfo
+            @AuthenticationPrincipal TokenUserInfo userInfo // TODO : @AuthenticationPrincipal 수정해야 함
             , @PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {
         FreeBoardDetailResponseDTO responseDTO = freeBoardService.updateLikeCount(freeBoardIdx, LIKE, userInfo.getAccount());
 
@@ -151,6 +182,19 @@ public class FreeBoardController {
         List<FreeBoardResponseDTO> freeBoardResponseList = freeBoardService.myPageFindAll(userInfo.getAccount());
 
         return ResponseEntity.ok().body(freeBoardResponseList);
+    }
+
+    // 입력값 검증
+    private ResponseEntity<List<FieldError>> getValidatedResult(BindingResult result) {
+        if (result.hasErrors()) {
+            List<FieldError> fieldErrors = result.getFieldErrors();
+            fieldErrors.forEach(err -> {
+                log.warn("입력값 검증에 걸림!!!!!!!!!!!! invalid client data - {}", err.toString());
+            });
+
+            return ResponseEntity.badRequest().body(fieldErrors);
+        }
+        return null;
     }
 
 }

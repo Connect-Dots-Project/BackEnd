@@ -22,8 +22,8 @@ public class JwtConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/connects/sign-up/email")
                 .excludePathPatterns("/connects/sign-up/check")
                 .excludePathPatterns("/connects/login")
+
 //                .excludePathPatterns("/**")
-//                .excludePathPatterns("/jwt/test/get-token")
         ;
     }
 }

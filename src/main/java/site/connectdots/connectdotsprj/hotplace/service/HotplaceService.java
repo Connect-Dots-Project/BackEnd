@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import site.connectdots.connectdotsprj.aws.service.S3Service;
-import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetailResponseDTO;
@@ -23,6 +22,7 @@ import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -67,7 +67,7 @@ public class HotplaceService {
             final JwtUserInfo jwtUserInfo
             , final HotplaceWriteRequestDTO dto
             , final String uploadFilePath
-            ) throws RuntimeException {
+    ) throws RuntimeException {
 
 
         Member member = getAccount(jwtUserInfo.getAccount());
@@ -87,27 +87,47 @@ public class HotplaceService {
 
 
     // 글 삭제
-    public void delete(Long hotplaceIdx) {
+    public void delete(JwtUserInfo jwtUserInfo, Long hotplaceIdx) {
+
+        Member member = getAccount(jwtUserInfo.getAccount());
+
         Hotplace hotplace = hotplaceRepository.findById(hotplaceIdx)
                 .orElseThrow(() -> new RuntimeException(hotplaceIdx + "의 글을 찾을 수 없습니다."));
 
-        hotplaceRepository.delete(hotplace);
+        try {
+            if (member == hotplace.getMember()) {
+                System.out.println("삭제 ============================제====================");
+                hotplaceRepository.delete(hotplace);
+            }
+        } catch (Exception e) {
+            log.error("삭제에 실패하였습니다.");
+            e.printStackTrace();
+            throw new RuntimeException("삭제에 실패하였습니다.");
+        }
+
     }
 
 
     // 글 수정
-    public HotplaceDetailResponseDTO modify(final HotplaceModifyRequestDTO dto, String uploadFilePath) {
-        // 조회
+    public HotplaceDetailResponseDTO modify(
+            JwtUserInfo jwtUserInfo
+            , final HotplaceModifyRequestDTO dto
+            , String uploadFilePath) {
+
         final Hotplace hotplaceEntity = findOne(dto.getHotplaceIdx());
 
-        //세터
-        dto.updateHotplace(hotplaceEntity, uploadFilePath);
+        Member member = getAccount(jwtUserInfo.getAccount());
 
-        // 저장
-        Hotplace modified = hotplaceRepository.save(hotplaceEntity);
 
-        return new HotplaceDetailResponseDTO(modified);
+        if (hotplaceEntity.getMember() == member) {
+            dto.updateHotplace(member, hotplaceEntity, uploadFilePath);
+            Hotplace modified = hotplaceRepository.saveAndFlush(hotplaceEntity);
+            return new HotplaceDetailResponseDTO(modified);
+        }
+        return null;
+
     }
+
 
 
     private Hotplace findOne(Long hotplaceIdx) {
