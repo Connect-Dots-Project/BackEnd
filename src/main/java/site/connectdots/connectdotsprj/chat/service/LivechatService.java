@@ -3,7 +3,9 @@ package site.connectdots.connectdotsprj.chat.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.connectdots.connectdotsprj.chat.dto.request.LiveChatSenderRequestDTO;
 import site.connectdots.connectdotsprj.chat.dto.request.LivechatCreateRequestDTO;
+import site.connectdots.connectdotsprj.chat.dto.response.LiveChatSenderResponseDTO;
 import site.connectdots.connectdotsprj.chat.dto.response.LivechatCreateResponseDTO;
 import site.connectdots.connectdotsprj.chat.dto.response.LivechatListAndHashtagListResponseDTO;
 import site.connectdots.connectdotsprj.chat.entity.Livechat;
@@ -100,4 +102,21 @@ public class LivechatService {
         livechatRepository.deleteByMemberNickname(nickname);
     }
 
+    public LiveChatSenderResponseDTO setupMessages(JwtUserInfo jwtUserInfo, LiveChatSenderRequestDTO dto) {
+        // null....
+        Member sender = memberRepository.findByMemberNickname(dto.getMessageSender());
+        Member tokenMember = memberRepository.findByMemberNickname(jwtUserInfo.getNickname());
+
+        Boolean isSender = FALSE;
+        if (sender.getMemberAccount().equals(tokenMember.getMemberAccount())) {
+            // 보내는이와 토큰주인이 같음
+            isSender = TRUE;
+        }
+
+        return LiveChatSenderResponseDTO.builder()
+                .senderProfile(sender.getMemberProfile())
+                .isSender(isSender)
+                .build();
+
+    }
 }

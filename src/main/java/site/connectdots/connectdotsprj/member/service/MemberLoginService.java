@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 
 import site.connectdots.connectdotsprj.jwt.config.JwtTokenProvider;
 import site.connectdots.connectdotsprj.member.dto.request.MemberLoginRequestDTO;
+import site.connectdots.connectdotsprj.member.dto.request.MemberPhoneRequestDTO;
 import site.connectdots.connectdotsprj.member.dto.response.MemberLoginResponseDTO;
+import site.connectdots.connectdotsprj.member.dto.response.MemberPhoneResponseDTO;
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.exception.custom.LoginFailException;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
@@ -39,4 +41,16 @@ public class MemberLoginService {
         return new MemberLoginResponseDTO(saved);
     }
 
+    public MemberPhoneResponseDTO findAccountByPhone(MemberPhoneRequestDTO dto) {
+        Member byMemberPhone = memberRepository.findByMemberPhone(dto.getPhone());
+        if (byMemberPhone == null) {
+            return MemberPhoneResponseDTO.builder()
+                    .account(null)
+                    .build();
+        }
+
+        return MemberPhoneResponseDTO.builder()
+                .account(byMemberPhone.getMemberAccount())
+                .build();
+    }
 }
