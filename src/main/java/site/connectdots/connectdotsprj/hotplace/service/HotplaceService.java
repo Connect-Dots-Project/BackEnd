@@ -55,9 +55,15 @@ public class HotplaceService {
         PageRequest pageRequest = PageRequest.of(page, SIZE, hotplaceIdx.descending());
 
         Page<Hotplace> hotplaceList = hotplaceRepository.findAll(pageRequest);
+        // TODO 토큰에서 꺼낸 account or nickname 이 고유하기 때문에
+        // 이 값으로 비교해서 DTO 에 있는 조건 값을 true, false 를 설정해주면 된다.
+
 
         List<HotplaceDetailResponseDTO> list = hotplaceList.stream()
-                .map(hotplace -> new HotplaceDetailResponseDTO(hotplace, Member.builder().build()) )
+                .map(hotplace -> {
+                    Member member = memberRepository.findByMemberAccount(hotplace.getMember().getMemberAccount());
+                    return new HotplaceDetailResponseDTO(hotplace, member);
+                })
                 .collect(Collectors.toList());
 
         return HotplaceListResponseDTO.builder()
@@ -77,6 +83,7 @@ public class HotplaceService {
         Member member = getAccount(jwtUserInfo.getAccount());
 
         Hotplace saved = hotplaceRepository.save(dto.toEntity(member, uploadFilePath));
+
 
         HotplaceDetailResponseDTO hotplaceDetailResponseDTO = new HotplaceDetailResponseDTO(saved, member);
 
@@ -124,12 +131,26 @@ public class HotplaceService {
 
         final Hotplace foundHotplace = findOne(dto.getHotplaceIdx());
 
-        Member member = getAccount(jwtUserInfo.getAccount());
+//        Member member = getAccount(jwtUserInfo.getAccount());
+        Member member = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
+        System.out.println("=============================================== 멤버" + member);
 
         if (member.getMemberAccount().equals(foundHotplace.getMember().getMemberAccount())) {
             dto.updateHotplace(member, foundHotplace, uploadFilePath);
             Hotplace modified = hotplaceRepository.saveAndFlush(foundHotplace);
-            return new HotplaceDetailResponseDTO(modified, member);
+            return new HotplaceDetailResponseDTO(modified);
+
+//            HotplaceDetailResponseDTO responseDTO = new HotplaceDetailResponseDTO(modified, member);
+//            System.out.println("responseDTO = " + responseDTO);
+
+//            List<Hotplace> hotplaceList = hotplaceRepository.findByMember(member);
+//            List<HotplaceDetailResponseDTO> list = hotplaceList.stream()
+//                    .map(hotplace -> new HotplaceDetailResponseDTO(hotplace, member))
+//                    .collect(Collectors.toList());
+//
+//            return HotplaceListResponseDTO.builder()
+//                    .hotplaceList(list)
+//                    .build();
         }
         return null;
 

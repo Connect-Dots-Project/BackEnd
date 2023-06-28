@@ -40,9 +40,10 @@ public class HotplaceController {
     // 글 전체조회
     @GetMapping("/list/{page}")
     public ResponseEntity<?> list(@PathVariable(name = "page") Integer page) {
+        // TODO : @Auth 토큰 취득
 
         try {
-            HotplaceListResponseDTO hotplaceList = hotplaceService.findAll(page);
+            HotplaceListResponseDTO hotplaceList = hotplaceService.findAll(page); // TODO : 취득한 토큰 넘겨주기
             log.info("HotplaceController.list.info 글 전체조회 {} ", hotplaceList);
             return ResponseEntity.ok().body(hotplaceList);
         } catch (Exception e) {
@@ -137,8 +138,8 @@ public class HotplaceController {
         }
 
         try {
-            HotplaceDetailResponseDTO modifiedHotplace = hotplaceService.modify(jwtUserInfo, dto, uploadFilePath);
-            return ResponseEntity.ok().body(modifiedHotplace);
+            HotplaceDetailResponseDTO modify = hotplaceService.modify(jwtUserInfo, dto, uploadFilePath);
+            return ResponseEntity.ok().body(modify);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(e.getMessage());
