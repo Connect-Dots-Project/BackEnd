@@ -11,8 +11,7 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry
                 .addMapping("/**") // 어떤 요청에 대해서 허용할지?
-                .allowedOrigins("http://localhost:3000", "http://330-special-bucket.s3-website.ap-northeast-2.amazonaws.com") // 어떤 클라이언트들을 허용할지? , 여러개 가능
-                .allowedOrigins("http://connect-dots.site", "http://330-special-bucket.s3-website.ap-northeast-2.amazonaws.com") // 어떤 클라이언트들을 허용할지? , 여러개 가능
+                .allowedOrigins("http://localhost:3000", "http://connect-dots.site") // 어떤 클라이언트들을 허용할지? , 여러개 가능
                 .allowedMethods("*") // 어떤 메소드들을 허용할지?
                 .allowedHeaders("*") // 어떤 요청 헤더를 허용할지?
                 .allowCredentials(true) // 쿠키 전달을 허용할 것인가?
