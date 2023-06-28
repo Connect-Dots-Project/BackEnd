@@ -3,8 +3,10 @@ package site.connectdots.connectdotsprj.chat.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RestController;
 import site.connectdots.connectdotsprj.chat.entity.ChatMessage;
+import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,7 +19,9 @@ public class MessageController {
      * @MessageMapping("/chat/message") : 클라이언트로부터 메시지를 수신하기 위한 메시지 매핑을 처리 해당 경로로 메시지를 전송할 수 있음
      */
     @MessageMapping("/chat/message")
-    public void enter(ChatMessage message) {
+    public void enter(ChatMessage message, @AuthenticationPrincipal JwtUserInfo jwtUserInfo) {
+
+
 
         if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
             message.setMessage(message.getSender() + "님이 입장하였습니다."); // 메시지 타입이 ENTER 면 입장하였다는 메시지를 뿌려줍니다.

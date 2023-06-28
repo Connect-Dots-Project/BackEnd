@@ -19,7 +19,7 @@ import java.util.List;
 @Builder
 @Entity
 @EqualsAndHashCode(of = "freeBoardIdx")
-@Table(name = "TB_FREEBOARD")
+@Table(name = "tb_freeboard")
 public class FreeBoard {
 
     @Id
