@@ -7,23 +7,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
-import site.connectdots.connectdotsprj.global.enums.Location;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
+import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDeleteResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetailResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceListResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceWriteResponseDTO;
-import site.connectdots.connectdotsprj.hotplace.entity.Hotplace;
-import site.connectdots.connectdotsprj.hotplace.repository.HotplaceRepository;
 import site.connectdots.connectdotsprj.hotplace.service.HotplaceService;
 import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 
@@ -45,9 +40,10 @@ public class HotplaceController {
     // 글 전체조회
     @GetMapping("/list/{page}")
     public ResponseEntity<?> list(@PathVariable(name = "page") Integer page) {
+        // TODO : @Auth 토큰 취득
 
         try {
-            HotplaceListResponseDTO hotplaceList = hotplaceService.findAll(page);
+            HotplaceListResponseDTO hotplaceList = hotplaceService.findAll(page); // TODO : 취득한 토큰 넘겨주기
             log.info("HotplaceController.list.info 글 전체조회 {} ", hotplaceList);
             return ResponseEntity.ok().body(hotplaceList);
         } catch (Exception e) {
@@ -100,16 +96,17 @@ public class HotplaceController {
     @DeleteMapping("/{hotplaceIdx}")
     public ResponseEntity<?> delete(
             @AuthenticationPrincipal JwtUserInfo jwtUserInfo
-            , @PathVariable Long hotplaceIdx) {
+            , @PathVariable(name = "hotplaceIdx") Long hotplaceIdx
+    ) {
 
         log.info("HotplaceController.delete.info 글 삭제 {}", hotplaceIdx);
 
         try {
-            hotplaceService.delete(jwtUserInfo, hotplaceIdx);
-            return ResponseEntity.ok("정상적으로 삭제되었습니다!");
+            HotplaceDeleteResponseDTO delete = hotplaceService.delete(jwtUserInfo, hotplaceIdx);
+            return ResponseEntity.ok().body(delete);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -141,8 +138,8 @@ public class HotplaceController {
         }
 
         try {
-            HotplaceDetailResponseDTO modifiedHotplace = hotplaceService.modify(jwtUserInfo, dto, uploadFilePath);
-            return ResponseEntity.ok().body(modifiedHotplace);
+            HotplaceDetailResponseDTO modify = hotplaceService.modify(jwtUserInfo, dto, uploadFilePath);
+            return ResponseEntity.ok().body(modify);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body(e.getMessage());

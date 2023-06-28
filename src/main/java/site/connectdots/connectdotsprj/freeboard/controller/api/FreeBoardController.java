@@ -11,12 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardModifyRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardReplyWriteRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardWriteRequestDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailReplyDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailResponseDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardResponseDTO;
+import site.connectdots.connectdotsprj.freeboard.dto.response.*;
 import site.connectdots.connectdotsprj.freeboard.service.FreeBoardService;
-import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
-import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceWriteResponseDTO;
 import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 
 import java.util.List;
@@ -52,8 +48,13 @@ public class FreeBoardController {
      * @return : 해당 글 + 리플을 리턴
      */
     @GetMapping("/detail/{freeBoardIdx}")
-    public ResponseEntity<FreeBoardDetailResponseDTO> detailViewById(@PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {
-        FreeBoardDetailResponseDTO foundFreeBoardDetail = freeBoardService.detailView(freeBoardIdx);
+    public ResponseEntity<FreeBoardDetailResponseDTO> detailViewById(
+            @PathVariable(name = "freeBoardIdx") Long freeBoardIdx,
+            @AuthenticationPrincipal JwtUserInfo jwtUserInfo) {
+
+        System.out.println("\n\n\n\n--------------------------------------------");
+        System.out.println(jwtUserInfo);
+        FreeBoardDetailResponseDTO foundFreeBoardDetail = freeBoardService.detailView(freeBoardIdx, jwtUserInfo);
 
         return ResponseEntity.ok().body(foundFreeBoardDetail);
     }
@@ -70,10 +71,6 @@ public class FreeBoardController {
             @RequestPart("freeBoardImg") MultipartFile freeBoardImg,
             @AuthenticationPrincipal JwtUserInfo jwtUserInfo
             , BindingResult result) {
-        System.out.println("\n\n\n\n--------------123123--------writeFreeBoard----------------------------");
-        System.out.println(dto);
-        System.out.println(jwtUserInfo);
-        System.out.println(freeBoardImg.toString());
 
         String uploadFilePath = null;
         if (freeBoardImg != null) {
@@ -84,8 +81,6 @@ public class FreeBoardController {
                 return ResponseEntity.internalServerError().build();
             }
         }
-
-        System.out.println("----------------123123-------writeFreeBoard---------------------------\n\n\n\n");
 
         ResponseEntity<List<FieldError>> fieldErrors = getValidatedResult(result);
         if (fieldErrors != null) return fieldErrors;
@@ -107,8 +102,11 @@ public class FreeBoardController {
      * @return
      */
     @PostMapping("/replies")
-    public ResponseEntity<List<FreeBoardDetailReplyDTO>> writeReplyByFreeBoard(@RequestBody FreeBoardReplyWriteRequestDTO dto) {
-        List<FreeBoardDetailReplyDTO> freeBoardDetailReplyDTO = freeBoardService.writeReplyByFreeBoard(dto);
+    public ResponseEntity<List<FreeBoardDetailReplyDTO>> writeReplyByFreeBoard(
+            @RequestBody FreeBoardReplyWriteRequestDTO dto,
+            @AuthenticationPrincipal JwtUserInfo jwtUserInfo
+    ) {
+        List<FreeBoardDetailReplyDTO> freeBoardDetailReplyDTO = freeBoardService.writeReplyByFreeBoard(dto, jwtUserInfo);
 
         return ResponseEntity.ok().body(freeBoardDetailReplyDTO);
     }
@@ -120,7 +118,7 @@ public class FreeBoardController {
      */
     @PatchMapping()
     public ResponseEntity<FreeBoardDetailResponseDTO> modifyFreeBoard(
-            @AuthenticationPrincipal TokenUserInfo userInfo
+            @AuthenticationPrincipal JwtUserInfo userInfo
             , @RequestBody FreeBoardModifyRequestDTO dto
     ) {
         FreeBoardDetailResponseDTO responseDTO = freeBoardService.modifyFreeBoard(dto, userInfo);
@@ -129,41 +127,34 @@ public class FreeBoardController {
     }
 
     @DeleteMapping("/{freeBoardIdx}")
-    public ResponseEntity<?> deleteFreeBoard(
-            @AuthenticationPrincipal TokenUserInfo userInfo
+    public ResponseEntity<FreeBoardDeleteResponseDTO> deleteFreeBoard(
+            @AuthenticationPrincipal JwtUserInfo jwtUserInfo
             , @PathVariable(name = "freeBoardIdx") Long freeBoardIdx
     ) {
 
-        return null;
+        System.out.println("\n\n\n\n\n-----------------------------------");
+        System.out.println(jwtUserInfo);
+        System.out.println(freeBoardIdx);
+
+        System.out.println("-----------------------------------\n\n\n\n");
+
+        FreeBoardDeleteResponseDTO freeBoardDeleteResponseDTO = freeBoardService.delete(jwtUserInfo, freeBoardIdx);
+
+        return ResponseEntity.ok().body(freeBoardDeleteResponseDTO);
     }
 
 
     /**
-     * 자유게시판의 좋아요 기능
+     * 자유게시판의 좋아요 or 취소 기능
      *
      * @param freeBoardIdx
      * @return
      */
     @PostMapping("/like/{freeBoardIdx}")
-    public ResponseEntity<FreeBoardDetailResponseDTO> likeCount(
-            @AuthenticationPrincipal TokenUserInfo userInfo // TODO : @AuthenticationPrincipal 수정해야 함
+    public ResponseEntity<FreeBoardLikeResultResponseDTO> updateLike(
+            @AuthenticationPrincipal JwtUserInfo userInfo
             , @PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {
-        FreeBoardDetailResponseDTO responseDTO = freeBoardService.updateLikeCount(freeBoardIdx, LIKE, userInfo.getAccount());
-
-        return ResponseEntity.ok().body(responseDTO);
-    }
-
-    /**
-     * 자유게시판의 싫어요 기능
-     *
-     * @param freeBoardIdx
-     * @return
-     */
-    @PostMapping("/hate/{freeBoardIdx}")
-    public ResponseEntity<FreeBoardDetailResponseDTO> hateCount(
-            @AuthenticationPrincipal TokenUserInfo userInfo
-            , @PathVariable(name = "freeBoardIdx") Long freeBoardIdx) {
-        FreeBoardDetailResponseDTO responseDTO = freeBoardService.updateLikeCount(freeBoardIdx, HATE, userInfo.getAccount());
+        FreeBoardLikeResultResponseDTO responseDTO = freeBoardService.updateLikeCount(freeBoardIdx, userInfo.getAccount());
 
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -177,7 +168,7 @@ public class FreeBoardController {
      */
     @GetMapping("/my-page/free-board")
     public ResponseEntity<List<FreeBoardResponseDTO>> myPageFreeBoardList(
-            @AuthenticationPrincipal TokenUserInfo userInfo
+            @AuthenticationPrincipal JwtUserInfo userInfo
     ) {
         List<FreeBoardResponseDTO> freeBoardResponseList = freeBoardService.myPageFindAll(userInfo.getAccount());
 
