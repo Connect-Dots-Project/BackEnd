@@ -1,3 +1,12 @@
+
+Initial SQL
+===========
+    CREATE DATABASE connectdotsprj;
+    USE connectdotsprj;
+
+Database Diagram
+=====
+
 ```mermaid
 erDiagram
     TB_MEMBER{
