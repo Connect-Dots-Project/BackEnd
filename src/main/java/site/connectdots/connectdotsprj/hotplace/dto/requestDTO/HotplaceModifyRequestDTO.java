@@ -27,6 +27,8 @@ public class HotplaceModifyRequestDTO {
     private String hotplaceFullAddress;
     private String kakaoLocation;
 
+    private String memberAccount;
+
 
 
     public void updateHotplace(Member member, Hotplace hotplace, String uploadFilePath){
