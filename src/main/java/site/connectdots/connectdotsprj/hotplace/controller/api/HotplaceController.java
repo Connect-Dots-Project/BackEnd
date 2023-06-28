@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
+import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDeleteResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetailResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceListResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceWriteResponseDTO;
@@ -94,16 +95,17 @@ public class HotplaceController {
     @DeleteMapping("/{hotplaceIdx}")
     public ResponseEntity<?> delete(
             @AuthenticationPrincipal JwtUserInfo jwtUserInfo
-            , @PathVariable Long hotplaceIdx) {
+            , @PathVariable(name = "hotplaceIdx") Long hotplaceIdx
+    ) {
 
         log.info("HotplaceController.delete.info 글 삭제 {}", hotplaceIdx);
 
         try {
-            hotplaceService.delete(jwtUserInfo, hotplaceIdx);
-            return ResponseEntity.ok("정상적으로 삭제되었습니다!");
+            HotplaceDeleteResponseDTO delete = hotplaceService.delete(jwtUserInfo, hotplaceIdx);
+            return ResponseEntity.ok().body(delete);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
