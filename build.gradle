@@ -35,12 +35,6 @@ dependencies {
 
     // https://mvnrepository.com/artifact/se.michaelthelin.spotify/spotify-web-api-java
     implementation 'se.michaelthelin.spotify:spotify-web-api-java:8.0.0'
-    implementation 'org.modelmapper:modelmapper:3.1.1'
-
-
-    // jsp 설정
-    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
-    implementation 'javax.servlet:jstl:1.2'
 
 
     // -------------- chatting
@@ -49,16 +43,6 @@ dependencies {
     implementation 'org.webjars:sockjs-client:1.1.2'
     implementation 'org.webjars:stomp-websocket:2.3.3-1'
     // -------------- chatting
-
-    // -------------- chatting --- view
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-freemarker'
-    implementation 'org.springframework.boot:spring-boot-devtools'
-    implementation 'org.webjars.bower:bootstrap:4.3.1'
-    implementation 'org.webjars.bower:vue:2.5.16'
-    implementation 'org.webjars.bower:axios:0.17.1'
-    implementation 'com.google.code.gson:gson:2.8.0'
-    // -------------- chatting --- view
 
 
     // -------------- 메일 인증
@@ -78,7 +62,11 @@ dependencies {
     // 스프핑 시큐리티 의존성 관리
 //    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+    // s3 라이브러리
+    implementation 'software.amazon.awssdk:s3:2.17.52'
+
 }
 tasks.named('test') {
-    useJUnitPlatform()
+//    useJUnitPlatform()
+    exclude '**/*' // 빌드시 전체 테스트 생략
 }

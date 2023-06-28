@@ -5,6 +5,10 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -38,7 +42,7 @@ public class JwtTokenProvider {
     private String REFRESH_KEY; // Refresh Token
 
 
-    @Transactional
+    //    @Transactional
     public boolean isValidRequest(HttpServletRequest request, HttpServletResponse response) {
         // 헤더에 담긴 AccessToken 과 RefreshToken 을 꺼낸다.
         String accessToken = resolveAccessToken(request);
@@ -48,7 +52,19 @@ public class JwtTokenProvider {
         boolean isValidAccessToken = isValidAccessToken(accessToken);
         boolean isValidRefreshToken = isValidRefreshToken(refreshToken);
 
-        if (isValidAccessToken) return true;
+        System.out.println("-----------------------------------------------------");
+        System.out.println(isValidAccessToken);
+        System.out.println(isValidRefreshToken);
+        System.out.println("-----------------------------------------------------");
+
+        if (isValidAccessToken) {
+            Claims claimsAccessToken = getClaimsAccessToken(accessToken);
+            String account = claimsAccessToken.get(ACCOUNT, String.class);
+
+            setAuthenticationToken(account, request);
+
+            return true;
+        }
 
         if (isValidRefreshToken) {
             Claims claimsRefreshToken = getClaimsRefreshToken(refreshToken);
@@ -63,6 +79,7 @@ public class JwtTokenProvider {
                 throw new IllegalArgumentException("Refresh Token 이 만료됨");
             }
 
+            setAuthenticationToken(account, request);
             setTokens(response, member);
 
             return true;
@@ -71,25 +88,52 @@ public class JwtTokenProvider {
         return false;
     }
 
-    @Transactional
+    private void setAuthenticationToken(String account, HttpServletRequest request) {
+        AbstractAuthenticationToken abstractAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                JwtUserInfo.builder()
+                        .account(account)
+                        .build(),
+                null,
+                null
+        );
+
+        abstractAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(abstractAuthenticationToken);
+    }
+
     public void setTokens(HttpServletResponse response, Member member) {
         String account = member.getMemberAccount();
         String newAccessToken = createAccessToken(member);
         String newRefreshToken = createRefreshToken(member);
 
-        response.setHeader(AUTHORIZATION, BEARER + newAccessToken);
-        int i = authRepository.updateRefreshTokenByAccount(newRefreshToken, account);
+        System.out.println("--------------123123-------------------");
+        System.out.println(newAccessToken);
+        System.out.println(newRefreshToken);
+        System.out.println("--------------123123-------------------");
+
+        Auth findByAccount = authRepository.findByAccount(account);
+
+        if (findByAccount == null) {
+            authRepository.save(Auth.builder()
+                    .refreshToken(newRefreshToken)
+                    .account(account)
+                    .build());
+        } else {
+            findByAccount.setRefreshToken(newRefreshToken);
+            authRepository.save(findByAccount);
+        }
 
         Cookie cookie = makeCookie(newRefreshToken);
         response.addCookie(cookie);
+        response.setHeader(AUTHORIZATION, BEARER + newAccessToken);
     }
 
 
     public Cookie makeCookie(String newRefreshToken) {
         Cookie cookie = new Cookie(REFRESH_TOKEN, newRefreshToken);
         cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-
+//        cookie.setHttpOnly(true);
+//        cookie.setDomain("http://localhost:3000");
         int cookieTime = 60 * 60 * 24 * 90;
         cookie.setMaxAge(cookieTime);
         cookie.setPath("/");
@@ -212,7 +256,7 @@ public class JwtTokenProvider {
      * @return
      */
     public boolean isValidAccessToken(String accessToken) {
-        System.out.println("isValidToken is : " + accessToken);
+        System.out.println("isValidAccessToken is : " + accessToken);
 
         if (accessToken == null) return false;
 
@@ -243,7 +287,7 @@ public class JwtTokenProvider {
      * @return
      */
     public boolean isValidRefreshToken(String refreshToken) {
-        System.out.println("isValidToken is : " + refreshToken);
+        System.out.println("isValidRefreshToken is : " + refreshToken);
 
         if (refreshToken == null) return false;
 

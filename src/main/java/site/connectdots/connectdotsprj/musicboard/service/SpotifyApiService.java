@@ -4,7 +4,6 @@ package site.connectdots.connectdotsprj.musicboard.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.michaelthelin.spotify.SpotifyApi;
@@ -37,7 +36,6 @@ public class SpotifyApiService {
     private final SpotifyPlaylistRepository spotifyPlaylistRepository;
     private final SpotifyMusicRepository spotifyMusicRepository;
     private final SpotifyMusicPlaylistRepository spotifyMusicPlaylistRepository;
-    private final ModelMapper modelMapper;
 
     private static final String clientId = "e665029ca3b34c27b937c214233fd932";
     private static final String clientSecret = "932abc3385b44159996813d0f82b1284";
@@ -160,8 +158,8 @@ public List<TrackBoardListResponseDTO> getMusicBoardList() {
 
 
 
-    public List<MusicListResponseDTO> getMusicList(final long musicBoardIdx) {
-        SpotifyPlaylist playlist = spotifyPlaylistRepository.findById(musicBoardIdx).orElseThrow(() -> new NotFoundMusicBoardException());
+    public List<MusicListResponseDTO> getMusicList(final long playListId) {
+        SpotifyPlaylist playlist = spotifyPlaylistRepository.findById(playListId).orElseThrow(() -> new NotFoundMusicBoardException());
 
         List<MusicListResponseDTO> response = playlist.getSpotifyMusicPlaylists().stream().map(musicPlaylist -> {
             SpotifyMusic music = musicPlaylist.getSpotifyMusic();

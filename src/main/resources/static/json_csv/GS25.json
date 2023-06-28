@@ -98,13 +98,6 @@
 		"cvs": "GS25"
 	},
 	{
-		"img": "https://image.woodongs.com/imgsvr/item/GD_2345001703894_002.jpg",
-		"title": "NEW)한끼스테이크(부채)150G",
-		"price": "12,500원",
-		"sale": "1+1",
-		"cvs": "GS25"
-	},
-	{
 		"img": "https://image.woodongs.com/imgsvr/item/GD_2345001707618_001.jpg",
 		"title": "NEW)한끼스테이크(채끝)150G",
 		"price": "12,500원",
@@ -539,13 +532,6 @@
 		"cvs": "GS25"
 	},
 	{
-		"img": "https://image.woodongs.com/imgsvr/item/GD_8801094082604_610.jpg",
-		"title": "코카콜라제로PET500ML",
-		"price": "2,300원",
-		"sale": "1+1",
-		"cvs": "GS25"
-	},
-	{
 		"img": "https://image.woodongs.com/imgsvr/item/GD_8806011416005_001.JPG",
 		"title": "동아)모닝케어D100ML",
 		"price": "5,000원",
@@ -555,6 +541,20 @@
 	{
 		"img": "https://image.woodongs.com/imgsvr/item/GD_8806011415992_001.JPG",
 		"title": "동아)모닝케어H100ML",
+		"price": "5,000원",
+		"sale": "1+1",
+		"cvs": "GS25"
+	},
+	{
+		"img": "https://image.woodongs.com/imgsvr/item/GD_8806023014787_001.jpg",
+		"title": "종근당)산에는삼100ML",
+		"price": "3,000원",
+		"sale": "1+1",
+		"cvs": "GS25"
+	},
+	{
+		"img": "https://image.woodongs.com/imgsvr/item/GD_8806023014824_001.jpg",
+		"title": "종근당)자황력액100ML",
 		"price": "5,000원",
 		"sale": "1+1",
 		"cvs": "GS25"
@@ -833,13 +833,6 @@
 		"cvs": "GS25"
 	},
 	{
-		"img": "https://image.woodongs.com/imgsvr/item/GD_8801068913804_003.jpg",
-		"title": "브레디크)소금버터와플",
-		"price": "1,800원",
-		"sale": "2+1",
-		"cvs": "GS25"
-	},
-	{
 		"img": "https://image.woodongs.com/imgsvr/item/GD_8801068915761_002.jpg",
 		"title": "브레디크)이즈니버터휘낭시에",
 		"price": "1,600원",
@@ -1099,13 +1092,6 @@
 		"cvs": "GS25"
 	},
 	{
-		"img": "https://image.woodongs.com/imgsvr/item/GD_8801382148524_001.JPG",
-		"title": "웅진)티즐유자그린티500ML",
-		"price": "2,200원",
-		"sale": "2+1",
-		"cvs": "GS25"
-	},
-	{
 		"img": "https://image.woodongs.com/imgsvr/item/GD_8801382149743_002.jpg",
 		"title": "웅진)티즐제로자몽블랙티500ML",
 		"price": "2,200원",
@@ -1116,6 +1102,20 @@
 		"img": "https://image.woodongs.com/imgsvr/item/GD_8801382148500_001.JPG",
 		"title": "웅진)티즐피치우롱티500ML",
 		"price": "2,200원",
+		"sale": "2+1",
+		"cvs": "GS25"
+	},
+	{
+		"img": "https://image.woodongs.com/imgsvr/item/GD_8801382135036_037.jpg",
+		"title": "웅진)누룽지차500ML",
+		"price": "1,800원",
+		"sale": "2+1",
+		"cvs": "GS25"
+	},
+	{
+		"img": "https://image.woodongs.com/imgsvr/item/GD_8801382148449_001.jpg",
+		"title": "웅진)옥수수수염차500ML",
+		"price": "1,800원",
 		"sale": "2+1",
 		"cvs": "GS25"
 	}

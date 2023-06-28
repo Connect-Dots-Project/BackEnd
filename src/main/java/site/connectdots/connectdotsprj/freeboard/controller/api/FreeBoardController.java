@@ -58,6 +58,9 @@ public class FreeBoardController {
      */
     @PostMapping()
     public ResponseEntity<List<FreeBoardResponseDTO>> writeFreeBoard(@RequestBody FreeBoardWriteRequestDTO dto) {
+        System.out.println("\n\n\n\n----------------------writeFreeBoard----------------------------");
+        System.out.println(dto);
+        System.out.println("-----------------------writeFreeBoard---------------------------\n\n\n\n");
         List<FreeBoardResponseDTO> freeBoardResponseDTO = freeBoardService.writeFreeBoard(dto);
 
         return ResponseEntity.ok().body(freeBoardResponseDTO);
@@ -71,6 +74,9 @@ public class FreeBoardController {
      */
     @PostMapping("/replies")
     public ResponseEntity<List<FreeBoardDetailReplyDTO>> writeReplyByFreeBoard(@RequestBody FreeBoardReplyWriteRequestDTO dto) {
+        System.out.println("\n\n\n\n-------------------------writeReplyByFreeBoard-------------------------");
+        System.out.println(dto);
+        System.out.println("------------------------writeReplyByFreeBoard--------------------------\n\n\n\n");
         List<FreeBoardDetailReplyDTO> freeBoardDetailReplyDTO = freeBoardService.writeReplyByFreeBoard(dto);
 
         return ResponseEntity.ok().body(freeBoardDetailReplyDTO);
