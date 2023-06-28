@@ -18,7 +18,7 @@ import java.util.List;
 @ToString
 @Builder
 @Entity
-@EqualsAndHashCode(of = "freeBoardLikeIdx")
+@EqualsAndHashCode(of = "freeboardLikeIdx")
 @Table(name = "tb_freeboardlike")
 public class FreeBoardLike {
     @Id
