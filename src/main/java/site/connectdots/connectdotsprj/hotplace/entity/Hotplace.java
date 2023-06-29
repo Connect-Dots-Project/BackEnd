@@ -59,8 +59,7 @@ public class Hotplace {
     private String kakaoLocation;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_idx", nullable = false
-//            , foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+    @JoinColumn(name = "member_idx", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
     private Member member;
 
