@@ -34,6 +34,13 @@ public class MemberController {
         return ResponseEntity.ok().body(response);
     }
 
+    @PostMapping("/sign-up/check-phone")
+    public ResponseEntity<MemberPhoneCheckResponseDTO> checkPhone(@RequestBody MemberPhoneRequestDTO dto) {
+        MemberPhoneCheckResponseDTO responseDTO = memberSignUpService.checkPhone(dto);
+
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     @PostMapping("/sign-up/check-email")
     public ResponseEntity<?> checkEmail(@RequestBody @Valid MemberEmailCheckRequestDTO dto) {
         MemberEmailCheckResponseDTO response = memberSignUpService.checkEmail(dto);
@@ -67,5 +74,12 @@ public class MemberController {
         // 비밀번호 찾기
 
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        memberLoginService.logout(response);
+        return ResponseEntity.ok().body("ok");
+    }
+
 
 }

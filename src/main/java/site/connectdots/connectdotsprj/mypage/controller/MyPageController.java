@@ -10,6 +10,9 @@ import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardResponseD
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetailResponseDTO;
 import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 import site.connectdots.connectdotsprj.mypage.dto.response.MemberModifyRequestDTO;
+import site.connectdots.connectdotsprj.mypage.dto.response.MyPageBasicDTO;
+import site.connectdots.connectdotsprj.mypage.dto.response.MyPageFreeBoardReplyResponseDTO;
+import site.connectdots.connectdotsprj.mypage.dto.response.MyPageFreeBoardResponseDTO;
 import site.connectdots.connectdotsprj.mypage.service.MyPageService;
 
 import java.util.List;
@@ -21,29 +24,38 @@ public class MyPageController {
 
     private final MyPageService myPageService;
 
-    /**
-     * @param jwtUserInfo
-     * @return
-     */
-    @GetMapping()
-    public ResponseEntity<List<HotplaceDetailResponseDTO>> myPage(@AuthenticationPrincipal JwtUserInfo jwtUserInfo) {
-        List<HotplaceDetailResponseDTO> member = myPageService.myPage(jwtUserInfo);
-        return ResponseEntity.ok(member);
+//    /**
+//     * @param jwtUserInfo
+//     * @return
+//     */
+//    @GetMapping()
+//    public ResponseEntity<List<HotplaceDetailResponseDTO>> myPage(@AuthenticationPrincipal JwtUserInfo jwtUserInfo) {
+//        List<HotplaceDetailResponseDTO> member = myPageService.myPage(jwtUserInfo);
+//        return ResponseEntity.ok(member);
+//    }
+
+    @GetMapping
+    public ResponseEntity<?> myPageInfo(@AuthenticationPrincipal JwtUserInfo jwtUserInfo) {
+        MyPageBasicDTO myPageInfo = myPageService.mypage(jwtUserInfo);
+
+        return ResponseEntity.ok().body(myPageInfo);
     }
 
     /**
      * 내가 쓴 글 핫플레이스
+     *
      * @param jwtUserInfo
      * @return
      */
     @GetMapping("/myactive/hotplace")
     public ResponseEntity<List<HotplaceDetailResponseDTO>> myActiveHotPlace(@AuthenticationPrincipal JwtUserInfo jwtUserInfo) {
-        List<HotplaceDetailResponseDTO> member = myPageService.myPage(jwtUserInfo);
+        List<HotplaceDetailResponseDTO> member = myPageService.hotplace(jwtUserInfo);
         return ResponseEntity.ok(member);
     }
 
     /**
      * 내가 쓴 글 자유게시판
+     *
      * @param jwtUserInfo
      * @return
      */
@@ -56,18 +68,21 @@ public class MyPageController {
 
     /**
      * 내가 쓴 댓글 자유게시판
+     *
      * @param jwtUserInfo
      * @return
      */
     @GetMapping("/myactive/freeboard/reply")
-    public ResponseEntity<List<FreeBoardDetailReplyDTO>> myActiveFreeBoardReply(@AuthenticationPrincipal JwtUserInfo jwtUserInfo) {
-        List<FreeBoardDetailReplyDTO> dto = myPageService.myActiveFreeBoardReply(jwtUserInfo);
+    public ResponseEntity<List<MyPageFreeBoardReplyResponseDTO>> myActiveFreeBoardReply(@AuthenticationPrincipal JwtUserInfo jwtUserInfo) {
+        List<MyPageFreeBoardReplyResponseDTO> dto = myPageService.myActiveFreeBoardReply(jwtUserInfo);
+
         return ResponseEntity.ok(dto);
     }
 
 
     /**
      * 좋아요 핫플레이스
+     *
      * @param jwtUserInfo
      * @return
      */
@@ -80,12 +95,14 @@ public class MyPageController {
 
     /**
      * 좋아요 자유게시판
+     *
      * @param jwtUserInfo
      * @return
      */
-    @GetMapping("/like/freeboard/{memberIdx}")
-    public ResponseEntity<List<FreeBoardResponseDTO>> likeFreeBoard(@AuthenticationPrincipal JwtUserInfo jwtUserInfo) {
-        List<FreeBoardResponseDTO> dto = myPageService.likeFreeBoard(jwtUserInfo);
+    @GetMapping("/myactive/freeboard/like")
+    public ResponseEntity<List<MyPageFreeBoardResponseDTO>> likeFreeBoard(@AuthenticationPrincipal JwtUserInfo jwtUserInfo) {
+        List<MyPageFreeBoardResponseDTO> dto = myPageService.likeFreeBoard(jwtUserInfo);
+
         return ResponseEntity.ok(dto);
 
     }
@@ -96,6 +113,7 @@ public class MyPageController {
 
     /**
      * 내 정보 수정  <Void> 따로 받아서 돌려줄게 없으니까 return 생략 가능
+     *
      * @param jwtUserInfo
      * @param member
      * @return
@@ -109,6 +127,7 @@ public class MyPageController {
 
     /**
      * 회원삭제
+     *
      * @param jwtUserInfo
      * @return
      */
