@@ -4,10 +4,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailReplyDTO;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardReply;
+import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
 import java.util.List;
@@ -28,6 +30,7 @@ class FreeBoardReplyRepositoryTest {
 
     @Autowired
     FreeBoardRepository freeBoardRepository;
+
 
     @Test
     @DisplayName("13번 게시글을 찾았을 때 댓글의 수는 12개일 것이다.")
@@ -70,6 +73,23 @@ class FreeBoardReplyRepositoryTest {
         //then
         assertEquals("테스트에서 추가된 댓글입니다!!", save.getFreeBoardReplyContent());
 
+    }
+
+
+    @Test
+    @DisplayName("내가 작성한 댓글 조회하기")
+    void findAllReplyTest() {
+        //given
+
+        Member foundMember = memberRepository.findByMemberNickname("카카카카카카");
+
+        System.out.println(foundMember);
+
+        //when
+        List<FreeBoardReply> allByMemberMemberIdx = replyRepository.findByMember(foundMember);
+        allByMemberMemberIdx.forEach(System.out::println);
+
+        //then
     }
 
 }
