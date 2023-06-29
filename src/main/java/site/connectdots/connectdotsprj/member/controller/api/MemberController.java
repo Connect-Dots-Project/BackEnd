@@ -34,6 +34,13 @@ public class MemberController {
         return ResponseEntity.ok().body(response);
     }
 
+    @PostMapping("/sign-up/check-phone")
+    public ResponseEntity<MemberPhoneCheckResponseDTO> checkPhone(@RequestBody MemberPhoneRequestDTO dto) {
+        MemberPhoneCheckResponseDTO responseDTO = memberSignUpService.checkPhone(dto);
+
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     @PostMapping("/sign-up/check-email")
     public ResponseEntity<?> checkEmail(@RequestBody @Valid MemberEmailCheckRequestDTO dto) {
         MemberEmailCheckResponseDTO response = memberSignUpService.checkEmail(dto);
