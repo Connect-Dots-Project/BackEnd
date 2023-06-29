@@ -27,7 +27,6 @@ public class HotplaceWriteRequestDTO {
     private String hotplaceFullAddress;
     private String kakaoLocation;
 
-    // 수정필요
     private String memberAccount;
 
 
