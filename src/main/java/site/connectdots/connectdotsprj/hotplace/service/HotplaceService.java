@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import site.connectdots.connectdotsprj.aws.service.S3Service;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceModifyRequestDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.requestDTO.HotplaceWriteRequestDTO;
+import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDeleteResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetailResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceListResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceWriteResponseDTO;
@@ -25,6 +26,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 @Service
 @Slf4j
@@ -51,9 +55,15 @@ public class HotplaceService {
         PageRequest pageRequest = PageRequest.of(page, SIZE, hotplaceIdx.descending());
 
         Page<Hotplace> hotplaceList = hotplaceRepository.findAll(pageRequest);
+        // TODO 토큰에서 꺼낸 account or nickname 이 고유하기 때문에
+        // 이 값으로 비교해서 DTO 에 있는 조건 값을 true, false 를 설정해주면 된다.
+
 
         List<HotplaceDetailResponseDTO> list = hotplaceList.stream()
-                .map(HotplaceDetailResponseDTO::new)
+                .map(hotplace -> {
+                    Member member = memberRepository.findByMemberAccount(hotplace.getMember().getMemberAccount());
+                    return new HotplaceDetailResponseDTO(hotplace, member);
+                })
                 .collect(Collectors.toList());
 
         return HotplaceListResponseDTO.builder()
@@ -74,7 +84,8 @@ public class HotplaceService {
 
         Hotplace saved = hotplaceRepository.save(dto.toEntity(member, uploadFilePath));
 
-        HotplaceDetailResponseDTO hotplaceDetailResponseDTO = new HotplaceDetailResponseDTO(saved);
+
+        HotplaceDetailResponseDTO hotplaceDetailResponseDTO = new HotplaceDetailResponseDTO(saved, member);
 
         return HotplaceWriteResponseDTO.builder()
                 .isWrite(hotplaceDetailResponseDTO.getHotplaceFullAddress() != null)
@@ -87,24 +98,28 @@ public class HotplaceService {
 
 
     // 글 삭제
-    public void delete(JwtUserInfo jwtUserInfo, Long hotplaceIdx) {
-
+    public HotplaceDeleteResponseDTO delete(JwtUserInfo jwtUserInfo, Long hotplaceIdx) {
+        Boolean isDelete = FALSE;
         Member member = getAccount(jwtUserInfo.getAccount());
 
         Hotplace hotplace = hotplaceRepository.findById(hotplaceIdx)
                 .orElseThrow(() -> new RuntimeException(hotplaceIdx + "의 글을 찾을 수 없습니다."));
 
         try {
-            if (member == hotplace.getMember()) {
-                System.out.println("삭제 ============================제====================");
+            if (member.getMemberAccount().equals(hotplace.getMember().getMemberAccount())) {
+                System.out.println("삭제 ================================================");
                 hotplaceRepository.delete(hotplace);
+                isDelete = TRUE;
             }
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
             log.error("삭제에 실패하였습니다.");
             e.printStackTrace();
             throw new RuntimeException("삭제에 실패하였습니다.");
         }
 
+        return HotplaceDeleteResponseDTO.builder()
+                .isDelete(isDelete)
+                .build();
     }
 
 
@@ -114,15 +129,28 @@ public class HotplaceService {
             , final HotplaceModifyRequestDTO dto
             , String uploadFilePath) {
 
-        final Hotplace hotplaceEntity = findOne(dto.getHotplaceIdx());
+        final Hotplace foundHotplace = findOne(dto.getHotplaceIdx());
 
-        Member member = getAccount(jwtUserInfo.getAccount());
+//        Member member = getAccount(jwtUserInfo.getAccount());
+        Member member = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
+        System.out.println("=============================================== 멤버" + member);
 
-
-        if (hotplaceEntity.getMember() == member) {
-            dto.updateHotplace(member, hotplaceEntity, uploadFilePath);
-            Hotplace modified = hotplaceRepository.saveAndFlush(hotplaceEntity);
+        if (member.getMemberAccount().equals(foundHotplace.getMember().getMemberAccount())) {
+            dto.updateHotplace(member, foundHotplace, uploadFilePath);
+            Hotplace modified = hotplaceRepository.saveAndFlush(foundHotplace);
             return new HotplaceDetailResponseDTO(modified);
+
+//            HotplaceDetailResponseDTO responseDTO = new HotplaceDetailResponseDTO(modified, member);
+//            System.out.println("responseDTO = " + responseDTO);
+
+//            List<Hotplace> hotplaceList = hotplaceRepository.findByMember(member);
+//            List<HotplaceDetailResponseDTO> list = hotplaceList.stream()
+//                    .map(hotplace -> new HotplaceDetailResponseDTO(hotplace, member))
+//                    .collect(Collectors.toList());
+//
+//            return HotplaceListResponseDTO.builder()
+//                    .hotplaceList(list)
+//                    .build();
         }
         return null;
 
@@ -144,7 +172,7 @@ public class HotplaceService {
         List<Hotplace> hotplaceList = hotplaceRepository.findByKakaoLocation(kakaoLocation);
 
         List<HotplaceDetailResponseDTO> list = hotplaceList.stream()
-                .map(HotplaceDetailResponseDTO::new)
+                .map(hotplace -> new HotplaceDetailResponseDTO(hotplace, Member.builder().build()) )
                 .collect(Collectors.toList());
 
         return HotplaceListResponseDTO.builder()

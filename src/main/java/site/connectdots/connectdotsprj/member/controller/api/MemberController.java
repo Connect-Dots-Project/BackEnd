@@ -68,4 +68,11 @@ public class MemberController {
 
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        memberLoginService.logout(response);
+        return ResponseEntity.ok().body("ok");
+    }
+
+
 }
