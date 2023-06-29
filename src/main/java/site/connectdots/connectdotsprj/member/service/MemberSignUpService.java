@@ -4,7 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import site.connectdots.connectdotsprj.global.enums.Location;
+import site.connectdots.connectdotsprj.member.dto.request.MemberEmailCheckRequestDTO;
+import site.connectdots.connectdotsprj.member.dto.request.MemberNicknameCheckRequestDTO;
 import site.connectdots.connectdotsprj.member.dto.request.MemberSignUpRequestDTO;
+import site.connectdots.connectdotsprj.member.dto.response.MemberEmailCheckResponseDTO;
+import site.connectdots.connectdotsprj.member.dto.response.MemberNicknameCheckResponseDTO;
 import site.connectdots.connectdotsprj.member.dto.response.MemberSignUpResponseDTO;
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.exception.custom.SignUpFailException;
@@ -87,4 +91,18 @@ public class MemberSignUpService {
         return memberRepository.findByMemberPhone(phone) != null;
     }
 
+    public MemberNicknameCheckResponseDTO checkNickname(MemberNicknameCheckRequestDTO dto) {
+        return MemberNicknameCheckResponseDTO.builder()
+                .checkNickname(memberRepository.findByMemberNickname(dto.getNickname()) == null)
+                .build();
+    }
+
+
+    public MemberEmailCheckResponseDTO checkEmail(MemberEmailCheckRequestDTO dto) {
+        Member foundMember = memberRepository.findByMemberAccount(dto.getEmail());
+
+        return MemberEmailCheckResponseDTO.builder()
+                .checkEmail(foundMember == null)
+                .build();
+    }
 }
