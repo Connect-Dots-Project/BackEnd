@@ -19,6 +19,7 @@ import site.connectdots.connectdotsprj.hotplace.repository.HotplaceRepository;
 import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
+import site.connectdots.connectdotsprj.mypage.dto.request.MemberInfoModifyRequestDTO;
 import site.connectdots.connectdotsprj.mypage.dto.response.MemberModifyRequestDTO;
 import site.connectdots.connectdotsprj.mypage.dto.response.MyPageBasicDTO;
 import site.connectdots.connectdotsprj.mypage.dto.response.MyPageFreeBoardReplyResponseDTO;
@@ -173,4 +174,14 @@ public class MyPageService {
         return member.getMemberProfile();
     }
 
+    public void modifyMemberInfo(JwtUserInfo jwtUserInfo, MemberInfoModifyRequestDTO requestDTO) {
+
+        Member foundMember = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
+
+        foundMember.setMemberNickname(requestDTO.getInputMemberNickname());
+        foundMember.setMemberComment(requestDTO.getInputMemberComment());
+
+        memberRepository.save(foundMember);
+
+    }
 }
