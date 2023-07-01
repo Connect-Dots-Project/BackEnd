@@ -19,7 +19,7 @@ import java.util.List;
 @Builder
 @Entity
 @EqualsAndHashCode(of = "freeBoardIdx")
-@Table(name = "TB_FREEBOARD")
+@Table(name = "tb_freeboard")
 public class FreeBoard {
 
     @Id
@@ -49,7 +49,7 @@ public class FreeBoard {
     @JoinColumn(name = "member_idx", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Member member;
 
-    @OneToMany(mappedBy = "freeBoard")
+    @OneToMany(mappedBy = "freeBoard", cascade = CascadeType.REMOVE)
     @Builder.Default
     private List<FreeBoardReply> freeBoardReplyList = new ArrayList<>();
 

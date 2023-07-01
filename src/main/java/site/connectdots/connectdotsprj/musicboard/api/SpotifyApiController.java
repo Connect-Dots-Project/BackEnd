@@ -2,6 +2,7 @@ package site.connectdots.connectdotsprj.musicboard.api;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -16,7 +17,6 @@ import site.connectdots.connectdotsprj.musicboard.dto.response.MusicListResponse
 import site.connectdots.connectdotsprj.musicboard.service.SpotifyApiService;
 
 
-import java.io.IOException;
 import java.util.List;
 
 
@@ -74,6 +74,7 @@ public class SpotifyApiController {
         List<MusicListResponseDTO> response = spotifyApiService.getMusicList(playListId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
 
 
 }

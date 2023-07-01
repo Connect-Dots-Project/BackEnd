@@ -1,4 +1,4 @@
-package site.connectdots.connectdotsprj.jwt.config;
+package site.connectdots.connectdotsprj.member.dto.request;
 
 import lombok.*;
 
@@ -6,10 +6,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @ToString
 @EqualsAndHashCode
-public class JwtUserInfo {
-    private String account;
+public class MemberNicknameCheckRequestDTO {
     private String nickname;
 }

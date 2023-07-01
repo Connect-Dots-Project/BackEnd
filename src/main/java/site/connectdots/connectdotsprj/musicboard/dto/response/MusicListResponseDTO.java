@@ -26,5 +26,6 @@ public class MusicListResponseDTO {
 
     private String musicBoardTrack;
     private String musicBoardTrackImage;
+    private  Long musicBoardViewCount;
 
 }

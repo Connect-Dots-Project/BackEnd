@@ -17,13 +17,17 @@ public class JwtConfig implements WebMvcConfigurer {
         registry
                 .addInterceptor(jwtTokenInterceptor)
                 .addPathPatterns("/**") //
-//                .addPathPatterns("/*") // /help  /help/helpe
                 .excludePathPatterns("/connects/sign-up")
+                .excludePathPatterns("/connects/sign-up/check-nickname")
+                .excludePathPatterns("/connects/sign-up/check-email")
                 .excludePathPatterns("/connects/sign-up/email")
                 .excludePathPatterns("/connects/sign-up/check")
                 .excludePathPatterns("/connects/login")
-//                .excludePathPatterns("/**")
-//                .excludePathPatterns("/jwt/test/get-token")
+                .excludePathPatterns("/connects/login/find/account")
+                .excludePathPatterns("/connects/login/find/password")
+                .excludePathPatterns("/contents/hot-place/list/*")
+                .excludePathPatterns("/contents/free-board/list/*")
+                .excludePathPatterns("/health-check")
         ;
     }
 }

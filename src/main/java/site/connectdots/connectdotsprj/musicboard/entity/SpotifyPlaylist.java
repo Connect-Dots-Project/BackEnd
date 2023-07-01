@@ -14,7 +14,7 @@ import java.util.List;
 @ToString
 
 @Entity
-@Table(name = "TB_SPOTIFY_PLAYLIST")
+@Table(name = "tb_spotify_playlist")
 public class SpotifyPlaylist {
 
     @Id

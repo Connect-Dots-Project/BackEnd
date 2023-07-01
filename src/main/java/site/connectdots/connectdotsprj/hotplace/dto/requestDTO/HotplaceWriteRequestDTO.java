@@ -28,29 +28,29 @@ public class HotplaceWriteRequestDTO {
     private String kakaoLocation;
 
     // 수정필요
-    private Long memberIdx= 1L;
+    private String memberAccount;
 
 
-    public Hotplace toEntity(String uploadFilePath) {
+//    public Hotplace toEntity(String uploadFilePath) {
+//        return Hotplace.builder()
+//                .location(this.location)
+//                .hotplaceImg(uploadFilePath)
+//                .hotplaceContent(this.hotplaceContent)
+//                .hotplaceLatitude(this.hotplaceLatitude)
+//                .hotplaceLongitude(this.hotplaceLongitude)
+//                .hotplaceName(this.hotplaceName)
+//                .hotplaceFullAddress(this.hotplaceFullAddress)
+//                .kakaoLocation(this.kakaoLocation)
+//                .member(Member.builder()
+//                        .memberAccount(this.memberAccount)
+//                        .build())
+//                .build();
+//    }
+
+    public Hotplace toEntity(Member member, String uploadFilePath) {
         return Hotplace.builder()
                 .location(this.location)
                 .hotplaceImg(uploadFilePath)
-                .hotplaceContent(this.hotplaceContent)
-                .hotplaceLatitude(this.hotplaceLatitude)
-                .hotplaceLongitude(this.hotplaceLongitude)
-                .hotplaceName(this.hotplaceName)
-                .hotplaceFullAddress(this.hotplaceFullAddress)
-                .kakaoLocation(this.kakaoLocation)
-                .member(Member.builder()
-                        .memberIdx(this.memberIdx)
-                        .build())
-                .build();
-    }
-
-    public Hotplace toEntity(Member member) {
-        return Hotplace.builder()
-                .location(this.location)
-                .hotplaceImg(this.hotplaceImg)
                 .hotplaceContent(this.hotplaceContent)
                 .hotplaceLatitude(this.hotplaceLatitude)
                 .hotplaceLongitude(this.hotplaceLongitude)

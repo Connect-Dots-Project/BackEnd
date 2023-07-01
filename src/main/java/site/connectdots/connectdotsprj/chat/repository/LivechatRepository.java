@@ -21,4 +21,10 @@ public interface LivechatRepository extends JpaRepository<Livechat, Long> {
     List<Livechat> findAllByLivechatHashtagOrderByLivechatIdxDesc(String hashtag);
 
     Long countByMemberNickname(String memberNickname);
+
+    void deleteByMemberNickname(String memberNickname);
+
+    Optional<Livechat> findByMemberNickname(String memberNickname);
+
+
 }

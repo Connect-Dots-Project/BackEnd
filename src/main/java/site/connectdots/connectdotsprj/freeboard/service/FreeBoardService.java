@@ -5,17 +5,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import site.connectdots.connectdotsprj.aws.service.S3Service;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardModifyRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardReplyWriteRequestDTO;
 import site.connectdots.connectdotsprj.freeboard.dto.request.FreeBoardWriteRequestDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailReplyDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailResponseDTO;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardResponseDTO;
+import site.connectdots.connectdotsprj.freeboard.dto.response.*;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoard;
+import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardLike;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardReply;
-import site.connectdots.connectdotsprj.freeboard.exception.custom.LikeAndHateException;
 import site.connectdots.connectdotsprj.freeboard.exception.custom.UnauthorizedModificationException;
-import site.connectdots.connectdotsprj.global.config.TokenUserInfo;
+import site.connectdots.connectdotsprj.freeboard.repository.FreeBoardLikeRepository;
+import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 import site.connectdots.connectdotsprj.member.exception.custom.NotFoundMemberByAccountException;
 import site.connectdots.connectdotsprj.member.exception.custom.NotFoundMemberByIdxException;
 import site.connectdots.connectdotsprj.freeboard.repository.FreeBoardReplyRepository;
@@ -24,9 +25,13 @@ import site.connectdots.connectdotsprj.freeboard.exception.custom.NotFoundFreeBo
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 import static site.connectdots.connectdotsprj.freeboard.exception.custom.FreeBoardErrorCode.*;
 import static site.connectdots.connectdotsprj.member.exception.custom.enums.MemberErrorCode.NOT_FOUND_MEMBER;
 
@@ -36,7 +41,9 @@ import static site.connectdots.connectdotsprj.member.exception.custom.enums.Memb
 public class FreeBoardService {
     private final FreeBoardRepository freeBoardRepository;
     private final FreeBoardReplyRepository freeBoardReplyRepository;
+    private final FreeBoardLikeRepository freeBoardLikeRepository;
     private final MemberRepository memberRepository;
+    private final S3Service s3Service;
     private final Integer START_PAGE = 0;
     private final Integer SIZE = 10;
     private final String KEY = "freeBoardIdx";
@@ -52,7 +59,12 @@ public class FreeBoardService {
         PageRequest pageRequest = PageRequest.of(page, SIZE, freeBoardIdx.descending());
 
         return freeBoardRepository.findAll(pageRequest)
-                .stream().map(FreeBoardResponseDTO::new)
+                .stream()
+                .map(FreeBoardResponseDTO::new)
+                .peek(e -> {
+                    List<FreeBoardReply> foundReplyList = freeBoardReplyRepository.findAllByFreeBoardFreeBoardIdx(e.getFreeBoardIdx());
+                    e.setFreeBoardReplyCount((long) foundReplyList.size());
+                })
                 .collect(Collectors.toList());
     }
 
@@ -62,30 +74,35 @@ public class FreeBoardService {
      * @param freeBoardIdx : 매개변수로 받은 인덱스
      * @return : 해당 글의 리플을 포함시켜 리턴
      */
-    public FreeBoardDetailResponseDTO detailView(Long freeBoardIdx) {
-        FreeBoard freeBoard = getFreeBoard(freeBoardIdx);
-        updateViewCount(freeBoard);
+    public FreeBoardDetailResponseDTO detailView(Long freeBoardIdx, JwtUserInfo jwtUserInfo) {
+        Member loginMember = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
 
-        return getFreeBoardDetailResponseDTO(freeBoardIdx, freeBoard);
+        Long likeCount = freeBoardLikeRepository.countByFreeboardIdx(freeBoardIdx);
+        // TODO : likeCount 수정해야함
+
+        FreeBoard freeBoard = getFreeBoard(freeBoardIdx);
+        updateViewCount(freeBoard); // TODO : 계정당 시간을 부여해서 새로고침 조회수를 막아야 함.
+
+        return getFreeBoardDetailResponseDTO(freeBoardIdx, freeBoard, loginMember);
     }
 
     /**
      * 자유게시판 작성 메서드
      *
      * @param dto
+     * @param uploadFilePath
      * @return
      */
-    public List<FreeBoardResponseDTO> writeFreeBoard(FreeBoardWriteRequestDTO dto) {
+    public List<FreeBoardResponseDTO> writeFreeBoard(FreeBoardWriteRequestDTO dto, JwtUserInfo jwtUserInfo, String uploadFilePath) {
+
         freeBoardRepository.save(
                 FreeBoard.builder()
                         .freeBoardTitle(dto.getFreeBoardTitle())
                         .freeBoardContent(dto.getFreeBoardContent())
-                        .freeBoardImg(dto.getFreeBoardImg())
                         .freeBoardLocation(dto.getFreeBoardLocation())
                         .freeBoardCategory(dto.getFreeBoardCategory())
-                        .member(memberRepository.findById(dto.getMemberIdx()).orElseThrow(
-                                () -> new NotFoundMemberByIdxException(NOT_FOUND_MEMBER, dto.getMemberIdx())
-                        ))
+                        .freeBoardImg(uploadFilePath)
+                        .member(memberRepository.findByMemberAccount(jwtUserInfo.getAccount()))
                         .build()
         );
 
@@ -98,13 +115,17 @@ public class FreeBoardService {
      * @param dto
      * @return
      */
-    public List<FreeBoardDetailReplyDTO> writeReplyByFreeBoard(FreeBoardReplyWriteRequestDTO dto) {
+    public List<FreeBoardDetailReplyDTO> writeReplyByFreeBoard(FreeBoardReplyWriteRequestDTO dto, JwtUserInfo jwtUserInfo) {
+        Member foundMember = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
+        FreeBoard foundFreeBoard = freeBoardRepository.findById(dto.getFreeBoardIdx()).orElseThrow();
 
-        freeBoardReplyRepository.save(
-                dto.toEntity(
-                        getFreeBoard(dto.getFreeBoardIdx()),
-                        getMember(dto.getMemberIdx()))
-        );
+        FreeBoardReply saved = FreeBoardReply.builder()
+                .freeBoardReplyContent(dto.getFreeBoardReplyContent())
+                .freeBoard(foundFreeBoard)
+                .member(foundMember)
+                .build();
+
+        freeBoardReplyRepository.save(saved);
 
         return findAllByFreeBoardIdx(dto.getFreeBoardIdx());
     }
@@ -114,18 +135,45 @@ public class FreeBoardService {
      * 본인 글은 익셉션 발생
      *
      * @param freeBoardIdx
-     * @param likeCountDelta
-     * @param userAccount
+     * @param memberAccount
      * @return
      */
-    public FreeBoardDetailResponseDTO updateLikeCount(Long freeBoardIdx, int likeCountDelta, String userAccount) {
-        FreeBoard freeBoard = getFreeBoard(freeBoardIdx);
-        if (freeBoard.getMember().getMemberAccount().equals(userAccount)) {
-            throw new LikeAndHateException(UNAUTHORIZED_LIKE_AND_HATE_EXCEPTION);
-        }
-        freeBoard.setFreeBoardLikeCount(freeBoard.getFreeBoardLikeCount() + likeCountDelta);
+    public FreeBoardLikeResultResponseDTO updateLikeCount(Long freeBoardIdx, String memberAccount) {
+        FreeBoard foundFreeBoard = freeBoardRepository.findById(freeBoardIdx).orElseThrow();
 
-        return getFreeBoardDetailResponseDTO(freeBoardIdx, freeBoard);
+        if (foundFreeBoard.getMember().getMemberAccount().equals(memberAccount)) {
+            return FreeBoardLikeResultResponseDTO.builder()
+                    .message("본인 글은 추천할 수 없습니다.")
+                    .count(freeBoardLikeRepository.countByFreeboardIdx(freeBoardIdx))
+                    .build();
+        }
+
+        FreeBoardLike foundFreeBoardLike = freeBoardLikeRepository.findByMemberAccountAndFreeboardIdx(memberAccount, freeBoardIdx);
+        String message = "";
+
+        if (foundFreeBoardLike == null) {
+            // 좋아요
+            freeBoardLikeRepository.save(FreeBoardLike.builder()
+                    .freeboardIdx(freeBoardIdx)
+                    .memberAccount(memberAccount)
+                    .build());
+            message = "좋아요를 눌렀습니다.";
+
+            foundFreeBoard.setFreeBoardLikeCount(foundFreeBoard.getFreeBoardLikeCount() + 1);
+        } else {
+            // 싫어요
+            freeBoardLikeRepository.deleteByMemberAccountAndFreeboardIdx(memberAccount, freeBoardIdx);
+            message = "좋아요를 취소했습니다.";
+
+            foundFreeBoard.setFreeBoardLikeCount(foundFreeBoard.getFreeBoardLikeCount() - 1);
+        }
+
+        freeBoardRepository.save(foundFreeBoard);
+
+        return FreeBoardLikeResultResponseDTO.builder()
+                .message(message)
+                .count(freeBoardLikeRepository.countByFreeboardIdx(freeBoardIdx))
+                .build();
     }
 
 
@@ -136,7 +184,7 @@ public class FreeBoardService {
                 .collect(Collectors.toList());
     }
 
-    public FreeBoardDetailResponseDTO modifyFreeBoard(FreeBoardModifyRequestDTO dto, TokenUserInfo tokenUserInfo) {
+    public FreeBoardDetailResponseDTO modifyFreeBoard(FreeBoardModifyRequestDTO dto, JwtUserInfo tokenUserInfo) {
         validateDTO(dto, tokenUserInfo);
         Member byId = memberRepository.findById(dto.getMemberIdx()).orElseThrow();
 
@@ -152,10 +200,38 @@ public class FreeBoardService {
                         .build()
         );
 
-        return getFreeBoardDetailResponseDTO(savedFreeBoard.getFreeBoardIdx(), savedFreeBoard);
+        return getFreeBoardDetailResponseDTO(savedFreeBoard.getFreeBoardIdx(), savedFreeBoard, byId);
     }
 
-    private void validateDTO(FreeBoardModifyRequestDTO dto, TokenUserInfo tokenUserInfo) {
+
+    public FreeBoardDeleteResponseDTO delete(JwtUserInfo userInfo, Long boardIdx) {
+        Boolean isDelete = FALSE;
+        Member foundMember = memberRepository.findByMemberAccount(userInfo.getAccount());
+        FreeBoard foundFreeBoard = freeBoardRepository.findById(boardIdx).orElseThrow();
+
+        System.out.println("\n\n\n\n\n\n\n");
+        System.out.println(foundFreeBoard);
+        System.out.println("---------------------------------");
+        System.out.println(foundFreeBoard.getMember());
+        System.out.println(foundMember);
+
+        if (foundMember == null || foundFreeBoard == null) {
+            return FreeBoardDeleteResponseDTO.builder()
+                    .isDelete(isDelete)
+                    .build();
+        }
+
+        if (foundMember.getMemberIdx() == foundFreeBoard.getMember().getMemberIdx()) {
+            System.out.println("delete!!!!!!!!!!!!!!!!");
+            freeBoardRepository.deleteById(boardIdx);
+            freeBoardRepository.flush();
+            isDelete = TRUE;
+        }
+
+        return FreeBoardDeleteResponseDTO.builder().isDelete(isDelete).build();
+    }
+
+    private void validateDTO(FreeBoardModifyRequestDTO dto, JwtUserInfo tokenUserInfo) {
         if (tokenUserInfo == null) {
             throw new NotFoundMemberByAccountException(NOT_FOUND_MEMBER, "token이 없습니다.");
         }
@@ -180,9 +256,10 @@ public class FreeBoardService {
      * @param freeBoard
      * @return
      */
-    private FreeBoardDetailResponseDTO getFreeBoardDetailResponseDTO(Long freeBoardIdx, FreeBoard freeBoard) {
+    private FreeBoardDetailResponseDTO getFreeBoardDetailResponseDTO(Long freeBoardIdx, FreeBoard freeBoard, Member member) {
         List<FreeBoardDetailReplyDTO> replyList = findAllByFreeBoardIdx(freeBoardIdx);
-        return new FreeBoardDetailResponseDTO(freeBoard, replyList);
+
+        return new FreeBoardDetailResponseDTO(freeBoard, replyList, member);
     }
 
     private Member getMember(Long memberIdx) {
@@ -211,4 +288,9 @@ public class FreeBoardService {
     }
 
 
+    public String uploadFreeBoardImg(MultipartFile freeBoardImg) throws IOException {
+        String uniqueFileName = UUID.randomUUID() + "_" + freeBoardImg.getOriginalFilename();
+
+        return s3Service.uploadToS3Bucket(freeBoardImg.getBytes(), uniqueFileName);
+    }
 }

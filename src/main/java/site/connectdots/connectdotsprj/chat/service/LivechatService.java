@@ -3,7 +3,9 @@ package site.connectdots.connectdotsprj.chat.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.connectdots.connectdotsprj.chat.dto.request.LiveChatSenderRequestDTO;
 import site.connectdots.connectdotsprj.chat.dto.request.LivechatCreateRequestDTO;
+import site.connectdots.connectdotsprj.chat.dto.response.LiveChatSenderResponseDTO;
 import site.connectdots.connectdotsprj.chat.dto.response.LivechatCreateResponseDTO;
 import site.connectdots.connectdotsprj.chat.dto.response.LivechatListAndHashtagListResponseDTO;
 import site.connectdots.connectdotsprj.chat.entity.Livechat;
@@ -14,6 +16,7 @@ import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.lang.Boolean.*;
@@ -61,7 +64,6 @@ public class LivechatService {
                 .build();
     }
 
-
     // 해시 태그 전체 조회 (인기순 정렬)
     private List<String> findAllHashtag() {
         return livechatRepository.findHashtagsOrderByCount();
@@ -80,8 +82,9 @@ public class LivechatService {
         Boolean isCreate = FALSE;
 
         if (count == 0) {
-            dto.setNickName(memberNickname);
-            Livechat saved = livechatRepository.save(dto.toEntity());
+            Livechat livechat = dto.toEntity();
+            livechat.setMemberNickname(userInfo.getNickname());
+            Livechat saved = livechatRepository.save(livechat);
             isCreate = TRUE;
         }
 
@@ -89,8 +92,31 @@ public class LivechatService {
     }
 
     // 글 삭제
-    public void deleteLivechat() {
+    public void deleteLivechat(JwtUserInfo jwtUserInfo) {
+        Member byMemberAccount = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
+        String nickname = byMemberAccount.getMemberNickname();
+        Optional<Livechat> byMemberNickname = livechatRepository.findByMemberNickname(nickname);
 
+        if (byMemberNickname.isEmpty()) return;
+
+        livechatRepository.deleteByMemberNickname(nickname);
     }
 
+    public LiveChatSenderResponseDTO setupMessages(JwtUserInfo jwtUserInfo, LiveChatSenderRequestDTO dto) {
+        // null....
+        Member sender = memberRepository.findByMemberNickname(dto.getMessageSender());
+        Member tokenMember = memberRepository.findByMemberNickname(jwtUserInfo.getNickname());
+
+        Boolean isSender = FALSE;
+        if (sender.getMemberAccount().equals(tokenMember.getMemberAccount())) {
+            // 보내는이와 토큰주인이 같음
+            isSender = TRUE;
+        }
+
+        return LiveChatSenderResponseDTO.builder()
+                .senderProfile(sender.getMemberProfile())
+                .isSender(isSender)
+                .build();
+
+    }
 }
