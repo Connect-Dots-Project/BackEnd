@@ -1,8 +1,11 @@
 package site.connectdots.connectdotsprj.mypage.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import site.connectdots.connectdotsprj.aws.service.S3Service;
 import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardResponseDTO;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoard;
 import site.connectdots.connectdotsprj.freeboard.entity.FreeBoardLike;
@@ -16,6 +19,7 @@ import site.connectdots.connectdotsprj.hotplace.repository.HotplaceRepository;
 import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
 import site.connectdots.connectdotsprj.member.entity.Member;
 import site.connectdots.connectdotsprj.member.repository.MemberRepository;
+import site.connectdots.connectdotsprj.mypage.dto.request.MemberInfoModifyRequestDTO;
 import site.connectdots.connectdotsprj.mypage.dto.response.MemberModifyRequestDTO;
 import site.connectdots.connectdotsprj.mypage.dto.response.MyPageBasicDTO;
 import site.connectdots.connectdotsprj.mypage.dto.response.MyPageFreeBoardReplyResponseDTO;
@@ -25,9 +29,11 @@ import site.connectdots.connectdotsprj.mypage.entity.LikeType;
 import site.connectdots.connectdotsprj.mypage.repository.LikeRepository;
 
 
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +47,7 @@ public class MyPageService {
     private final FreeBoardReplyRepository freeBoardReplyRepository;
     private final LikeRepository likeRepository;
     private final FreeBoardLikeRepository freeBoardLikeRepository;
+    private final S3Service s3Service;
 
     private List<HotplaceDetailResponseDTO> makeHotplaceDetailResponseDTOList(String account) {
         Member member = memberRepository.findByMemberAccount(account);
@@ -145,4 +152,36 @@ public class MyPageService {
     }
 
 
+
+    public String uploadProfile(JwtUserInfo jwtUserInfo, MultipartFile memberProfile) throws IOException {
+
+        String uniqueFileName = UUID.randomUUID() + "-" + memberProfile.getOriginalFilename();
+        String uploadURL = s3Service.uploadToS3Bucket(memberProfile.getBytes(), uniqueFileName);
+        System.out.println(uploadURL);
+
+        Member foundMember = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
+        foundMember.setMemberProfile(uploadURL);
+        memberRepository.save(foundMember);
+
+        return uploadURL;
+    }
+
+
+    // 이미지 클라이언트에게 응답
+
+    public String getProfilePath(String account) {
+        Member member = memberRepository.findByMemberAccount(account);
+        return member.getMemberProfile();
+    }
+
+    public void modifyMemberInfo(JwtUserInfo jwtUserInfo, MemberInfoModifyRequestDTO requestDTO) {
+
+        Member foundMember = memberRepository.findByMemberAccount(jwtUserInfo.getAccount());
+
+        foundMember.setMemberNickname(requestDTO.getInputMemberNickname());
+        foundMember.setMemberComment(requestDTO.getInputMemberComment());
+
+        memberRepository.save(foundMember);
+
+    }
 }

@@ -1,25 +1,27 @@
 package site.connectdots.connectdotsprj.mypage.controller;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardDetailReplyDTO;
+import org.springframework.web.multipart.MultipartFile;
 import site.connectdots.connectdotsprj.freeboard.dto.response.FreeBoardResponseDTO;
 import site.connectdots.connectdotsprj.hotplace.dto.responseDTO.HotplaceDetailResponseDTO;
 import site.connectdots.connectdotsprj.jwt.config.JwtUserInfo;
-import site.connectdots.connectdotsprj.mypage.dto.response.MemberModifyRequestDTO;
-import site.connectdots.connectdotsprj.mypage.dto.response.MyPageBasicDTO;
-import site.connectdots.connectdotsprj.mypage.dto.response.MyPageFreeBoardReplyResponseDTO;
-import site.connectdots.connectdotsprj.mypage.dto.response.MyPageFreeBoardResponseDTO;
+import site.connectdots.connectdotsprj.mypage.dto.request.MemberInfoModifyRequestDTO;
+import site.connectdots.connectdotsprj.mypage.dto.response.*;
 import site.connectdots.connectdotsprj.mypage.service.MyPageService;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/member/mypage")
 @RequiredArgsConstructor
+@Slf4j
 public class MyPageController {
 
     private final MyPageService myPageService;
@@ -134,6 +136,62 @@ public class MyPageController {
     @DeleteMapping("/delete/{memberIdx}")
     public ResponseEntity<Void> deleteMember(@AuthenticationPrincipal JwtUserInfo jwtUserInfo) {
         myPageService.deleteMember(jwtUserInfo);
+        return ResponseEntity.ok().build();
+    }
+
+
+    // 프로필 사진 등록
+    @PostMapping("/profile")
+    public ResponseEntity<?> uploadProfile(
+            @AuthenticationPrincipal JwtUserInfo jwtUserInfo
+            , @RequestPart(value = "profileImage") MultipartFile memberProfile) throws IOException {
+
+        try {
+            if (memberProfile != null) {
+                log.info("프로필 이미지 파일명 : {} ====================", memberProfile.getOriginalFilename());
+                String uploadFilePath = myPageService.uploadProfile(jwtUserInfo, memberProfile);
+
+
+                return ResponseEntity.ok().build();
+            }
+        } catch (IOException e) {
+            log.warn("파일업로드 예외 발생");
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+
+        return null;
+    }
+
+
+    // 이미지 응답 처리
+    @GetMapping("/load-s3")
+    public ResponseEntity<?> loadS3(
+            @AuthenticationPrincipal JwtUserInfo jwtUserInfo) {
+
+        log.info("/member/mypage/load-s3 GET =================={}", jwtUserInfo);
+
+        try {
+            String profilePath = myPageService.getProfilePath(jwtUserInfo.getAccount());
+            return ResponseEntity.ok().body(profilePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
+    //     회원 정보 수정
+    @PatchMapping("/modify")
+    public ResponseEntity<?> modifyMemberInfo(
+            @AuthenticationPrincipal JwtUserInfo jwtUserInfo
+            , @RequestBody MemberInfoModifyRequestDTO requestDTO) {
+
+        System.out.println("===================================");
+        System.out.println(requestDTO);
+        System.out.println("===================================");
+        myPageService.modifyMemberInfo(jwtUserInfo, requestDTO);
+
         return ResponseEntity.ok().build();
     }
 
