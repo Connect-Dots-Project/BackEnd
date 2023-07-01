@@ -26,7 +26,9 @@ public class HotplaceDetailResponseDTO {
     private String hotplaceName;
     private String hotplaceFullAddress;
     private String kakaoLocation;
+
     private String memberNickname;
+    private String memberProfile;
 
     // TODO : private Boolean asdfjlkasdjf;
 
@@ -59,7 +61,8 @@ public class HotplaceDetailResponseDTO {
         this.hotplaceFullAddress = hotplace.getHotplaceFullAddress();
         this.kakaoLocation = hotplace.getKakaoLocation();
         this.hotplaceWriteDate = hotplace.getHotplaceWriteDate();
-        this.memberNickname =  member.getMemberNickname();
+        this.memberNickname = member.getMemberNickname();
+        this.memberProfile = member.getMemberProfile();
 
         // TODO 여기서 조건문으로 member의 닉네임이나 어카운트가 hotplae의 작성자의 닉네임이나 어카운트가 같다면
         // 휴지통을 보여줄 수 있게 설정해야함
