@@ -104,7 +104,9 @@ public class MyPageController {
     @GetMapping("/myactive/freeboard/like")
     public ResponseEntity<List<MyPageFreeBoardResponseDTO>> likeFreeBoard(@AuthenticationPrincipal JwtUserInfo jwtUserInfo) {
         List<MyPageFreeBoardResponseDTO> dto = myPageService.likeFreeBoard(jwtUserInfo);
-
+        System.out.println("-------------------------------");
+        System.out.println(dto);
+        System.out.println("-------------------------------");
         return ResponseEntity.ok(dto);
 
     }

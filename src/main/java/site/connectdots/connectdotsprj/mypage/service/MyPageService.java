@@ -31,9 +31,7 @@ import site.connectdots.connectdotsprj.mypage.repository.LikeRepository;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,13 +82,20 @@ public class MyPageService {
 
     public List<MyPageFreeBoardResponseDTO> likeFreeBoard(JwtUserInfo jwtUserInfo) {
         List<FreeBoardLike> likeList = freeBoardLikeRepository.findByMemberAccount(jwtUserInfo.getAccount());
+        List<MyPageFreeBoardResponseDTO> response = new ArrayList<>();
 
-        return likeList.stream().map(freeBoard ->
-                        freeBoardRepository
-                                .findById(freeBoard.getFreeboardLikeIdx())
-                                .orElseThrow())
-                .map(MyPageFreeBoardResponseDTO::new)
-                .collect(Collectors.toList());
+        for (FreeBoardLike freeBoardLike : likeList) {
+            FreeBoard freeBoard = freeBoardRepository.findById(freeBoardLike.getFreeboardIdx()).orElseThrow();
+
+            if (freeBoard == null) continue;
+
+            response.add(new MyPageFreeBoardResponseDTO(freeBoard));
+        }
+
+
+        Collections.reverse(response);
+
+        return response;
     }
 
     private List<FreeBoard> getFreeBoardListByMember(JwtUserInfo jwtUserInfo) {
@@ -150,7 +155,6 @@ public class MyPageService {
         memberRepository.delete(member);
 
     }
-
 
 
     public String uploadProfile(JwtUserInfo jwtUserInfo, MultipartFile memberProfile) throws IOException {
