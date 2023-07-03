@@ -2,7 +2,9 @@
 
 ---
 
-<br>
+> 👩‍💻 담당자 : 이재필<br>
+> 👉 [GitHub](https://github.com/JeFeel)
+
 <br>
 <br>
 

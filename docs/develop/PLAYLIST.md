@@ -2,7 +2,9 @@
 
 ---
 
-<br>
+> 👩‍💻 담당자 : 권상지<br>
+> 👉 [GitHub](https://github.com/qwr133)
+
 <br>
 <br>
 
