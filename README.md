@@ -38,7 +38,7 @@
 #### 🔥 Hot Place
 
 > 👩‍💻 담당자 : 박수민 <br>
-> 🎯 [기능 구현 로직 👉]()
+> 🎯 [기능 구현 로직 👉](https://github.com/Connect-Dots-Project/BackEnd/blob/main/docs/develop/HOTPLACE.md)
 
 동네에 있는 맛집이나 나만 아는 장소가 있나요? 🤔<br>
 그렇다면 사진과 위치를 공유해주세요!<br>
@@ -51,7 +51,7 @@
 #### 📱 자유게시판
 
 > 👨‍💻 담당자 : 이기덕 <br>
-> 🎯 [기능 구현 로직 👉]()
+> 🎯 [기능 구현 로직 👉](https://github.com/Connect-Dots-Project/BackEnd/blob/main/docs/develop/FREEBOARD.md)
 
 아무 말, 아무 사진이나 올리고 싶다고요? 🤔<br>
 동네 친구들에게 다양한 글을 써보세요!<br>
@@ -61,7 +61,7 @@
 #### 💬 실시간 채팅
 
 > 👨‍💻 담당자 : 이기덕 <br>
-> 🎯 [기능 구현 로직 👉]()
+> 🎯 [기능 구현 로직 👉](https://github.com/Connect-Dots-Project/BackEnd/blob/main/docs/develop/LIVECHAT.md)
 
 게시판 소통이 답답하다면, 실시간으로 채팅을 해보세요! 😁<br>
 지역에 상관없이 누구나 자유롭게 이용이 가능합니다<br>
@@ -71,7 +71,7 @@
 #### 🎧 플레이 리스트
 
 > 👩‍💻 담당자 : 권상지 <br>
-> 🎯 [기능 구현 로직 👉]()
+> 🎯 [기능 구현 로직 👉](https://github.com/Connect-Dots-Project/BackEnd/blob/main/docs/develop/PLAYLIST.md)
 
 지금 유행하는 노래가 궁금하신가요? 🤔<br>
 너가 뭘 좋아할지 몰라서 다 준비했어..!<br>
@@ -82,7 +82,7 @@
 #### 🏪 편의점 정보
 
 > 👨‍💻 담당자 : 이재필 <br>
-> 🎯 [기능 구현 로직 👉]()
+> 🎯 [기능 구현 로직 👉](https://github.com/Connect-Dots-Project/BackEnd/blob/main/docs/develop/CSV.md)
 
 분명 어제까지 1+1이었는데... 😕<br>
 헷갈리는 편의점 행사 정보들..<br>
