@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 @Entity
-@Table(name = "TB_LIKE",
+@Table(name = "tb_like",
         uniqueConstraints = {
             @UniqueConstraint(columnNames = {"member_idx", "item_idx", "type"})
         })

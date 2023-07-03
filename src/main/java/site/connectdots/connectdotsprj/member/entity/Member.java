@@ -37,7 +37,7 @@ public class Member {
     private Gender memberGender;
     @Column(length = 50)
     @Builder.Default
-    private String memberProfile = "profile.png";
+    private String memberProfile = "https://330-special-bucket.s3.ap-northeast-2.amazonaws.com/0db7fbb1-4985-4b36-923b-c5c5b38540e9_who.png";
     @JsonFormat(pattern = "yyyy-HH-dd")
     private LocalDateTime memberBirth;
     @CreationTimestamp

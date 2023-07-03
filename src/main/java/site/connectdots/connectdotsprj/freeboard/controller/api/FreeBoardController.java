@@ -128,13 +128,6 @@ public class FreeBoardController {
             @AuthenticationPrincipal JwtUserInfo jwtUserInfo
             , @PathVariable(name = "freeBoardIdx") Long freeBoardIdx
     ) {
-
-        System.out.println("\n\n\n\n\n-----------------------------------");
-        System.out.println(jwtUserInfo);
-        System.out.println(freeBoardIdx);
-
-        System.out.println("-----------------------------------\n\n\n\n");
-
         FreeBoardDeleteResponseDTO freeBoardDeleteResponseDTO = freeBoardService.delete(jwtUserInfo, freeBoardIdx);
 
         return ResponseEntity.ok().body(freeBoardDeleteResponseDTO);
