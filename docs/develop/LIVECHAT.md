@@ -2,7 +2,9 @@
 
 ---
 
-<br>
+> 👩‍💻 담당자 : 이기덕<br>
+> 👉 [GitHub](https://github.com/lkdcode)
+
 <br>
 <br>
 
